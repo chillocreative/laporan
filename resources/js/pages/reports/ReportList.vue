@@ -27,9 +27,9 @@
                         <option value="">All Users</option>
                         <option v-for="user in userOptions" :key="user.id" :value="user.id">{{ user.name }}</option>
                     </select>
-                    <select v-if="auth.hasPermission('roles.view')" v-model="filters.role" @change="fetchReports" class="input-field">
+                    <select v-if="auth.hasPermission('users.view') || auth.hasPermission('roles.view')" v-model="filters.role" @change="fetchReports" class="input-field">
                         <option value="">All Roles</option>
-                        <option v-for="role in roleOptions" :key="role.id" :value="role.name">{{ role.name }}</option>
+                        <option v-for="role in filteredRoleOptions" :key="role.id" :value="role.name">{{ role.name }}</option>
                     </select>
                 </div>
             </div>
@@ -69,7 +69,7 @@
 </template>
 
 <script setup>
-import { ref, reactive, onMounted } from 'vue';
+import { ref, reactive, computed, onMounted } from 'vue';
 import { useAuth } from '../../composables/useAuth';
 import reportsApi from '../../api/reports';
 import categoriesApi from '../../api/categories';
@@ -89,6 +89,13 @@ const reports = ref([]);
 const loading = ref(true);
 const pagination = reactive({ currentPage: 1, lastPage: 1, total: 0 });
 const filters = reactive({ search: '', category: '', risk_level: '', user_id: '', role: '' });
+
+// Filter out super-admin and admin roles for the dropdown
+const filteredRoleOptions = computed(() => {
+    return roleOptions.value.filter(role =>
+        !['super-admin', 'admin'].includes(role.slug)
+    );
+});
 
 let debounceTimer;
 const debouncedFetch = () => {
@@ -128,7 +135,7 @@ onMounted(() => {
     if (auth.hasPermission('users.view')) {
         usersApi.list({ per_page: 1000 }).then(({ data }) => { userOptions.value = data.data; }).catch(() => {});
     }
-    if (auth.hasPermission('roles.view')) {
+    if (auth.hasPermission('users.view') || auth.hasPermission('roles.view')) {
         rolesApi.list({ per_page: 100 }).then(({ data }) => { roleOptions.value = data.data; }).catch(() => {});
     }
 });
