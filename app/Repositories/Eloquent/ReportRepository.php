@@ -48,6 +48,12 @@ class ReportRepository extends BaseRepository implements ReportRepositoryInterfa
             $query->where('user_id', $filters['user_id']);
         }
 
+        if (! empty($filters['role'])) {
+            $query->whereHas('user.roles', function ($q) use ($filters) {
+                $q->where('name', $filters['role']);
+            });
+        }
+
         if (! empty($filters['status'])) {
             $query->where('status', $filters['status']);
         }

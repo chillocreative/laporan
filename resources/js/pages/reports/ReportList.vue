@@ -13,7 +13,7 @@
         <!-- Filters -->
         <div class="card mb-6">
             <div class="card-body">
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
                     <input v-model="filters.search" @input="debouncedFetch" type="text" placeholder="Search reports..." class="input-field" />
                     <select v-model="filters.category" @change="fetchReports" class="input-field">
                         <option value="">All Categories</option>
@@ -22,6 +22,14 @@
                     <select v-model="filters.risk_level" @change="fetchReports" class="input-field">
                         <option value="">All Risk Levels</option>
                         <option v-for="r in RISK_LEVELS" :key="r.value" :value="r.value">{{ r.label }}</option>
+                    </select>
+                    <select v-model="filters.user_id" @change="fetchReports" class="input-field">
+                        <option value="">All Users</option>
+                        <option v-for="user in userOptions" :key="user.id" :value="user.id">{{ user.name }}</option>
+                    </select>
+                    <select v-model="filters.role" @change="fetchReports" class="input-field">
+                        <option value="">All Roles</option>
+                        <option v-for="role in roleOptions" :key="role.id" :value="role.name">{{ role.name }}</option>
                     </select>
                 </div>
             </div>
@@ -34,6 +42,9 @@
                     <router-link :to="{ name: 'reports.show', params: { id: item.id } }" class="font-medium text-primary-600 hover:text-primary-800">
                         {{ item.title }}
                     </router-link>
+                </template>
+                <template #cell-user="{ item }">
+                    <span class="text-sm text-gray-700">{{ item.user?.name || 'N/A' }}</span>
                 </template>
                 <template #cell-ai_analysis="{ item }">
                     <Badge v-if="item.ai_analysis" :color="item.ai_analysis.risk_level?.color">{{ item.ai_analysis.risk_level?.label }}</Badge>
@@ -62,6 +73,8 @@ import { ref, reactive, onMounted } from 'vue';
 import { useAuth } from '../../composables/useAuth';
 import reportsApi from '../../api/reports';
 import categoriesApi from '../../api/categories';
+import usersApi from '../../api/users';
+import rolesApi from '../../api/roles';
 import { RISK_LEVELS } from '../../utils/constants';
 import { formatDate } from '../../utils/formatters';
 import DataTable from '../../components/common/DataTable.vue';
@@ -70,10 +83,12 @@ import Pagination from '../../components/common/Pagination.vue';
 
 const auth = useAuth();
 const categoryOptions = ref([]);
+const userOptions = ref([]);
+const roleOptions = ref([]);
 const reports = ref([]);
 const loading = ref(true);
 const pagination = reactive({ currentPage: 1, lastPage: 1, total: 0 });
-const filters = reactive({ search: '', category: '', risk_level: '' });
+const filters = reactive({ search: '', category: '', risk_level: '', user_id: '', role: '' });
 
 let debounceTimer;
 const debouncedFetch = () => {
@@ -84,6 +99,7 @@ const debouncedFetch = () => {
 const columns = [
     { key: 'title', label: 'Title' },
     { key: 'category', label: 'Category' },
+    { key: 'user', label: 'User' },
     { key: 'ai_analysis', label: 'Risk' },
     { key: 'incident_date', label: 'Date' },
 ];
@@ -109,5 +125,7 @@ function goToPage(page) {
 onMounted(() => {
     fetchReports();
     categoriesApi.active().then(({ data }) => { categoryOptions.value = data.data; }).catch(() => {});
+    usersApi.list({ per_page: 1000 }).then(({ data }) => { userOptions.value = data.data; }).catch(() => {});
+    rolesApi.list({ per_page: 100 }).then(({ data }) => { roleOptions.value = data.data; }).catch(() => {});
 });
 </script>
