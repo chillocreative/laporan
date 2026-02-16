@@ -1,5 +1,12 @@
 <template>
-    <div class="overflow-x-auto">
+    <div
+        ref="scrollContainer"
+        class="overflow-x-auto cursor-grab active:cursor-grabbing select-none"
+        @mousedown="startDragging"
+        @mousemove="onDragging"
+        @mouseup="stopDragging"
+        @mouseleave="stopDragging"
+    >
         <table class="min-w-full divide-y divide-gray-200">
             <thead class="bg-gray-50">
                 <tr>
@@ -43,6 +50,7 @@
 </template>
 
 <script setup>
+import { ref } from 'vue';
 import LoadingSpinner from './LoadingSpinner.vue';
 
 defineProps({
@@ -54,5 +62,30 @@ defineProps({
 
 function getNestedValue(obj, path) {
     return path.split('.').reduce((o, k) => (o || {})[k], obj) ?? '-';
+}
+
+// Drag-to-scroll functionality
+const scrollContainer = ref(null);
+const isDragging = ref(false);
+const startX = ref(0);
+const scrollLeft = ref(0);
+
+function startDragging(e) {
+    if (!scrollContainer.value) return;
+    isDragging.value = true;
+    startX.value = e.pageX - scrollContainer.value.offsetLeft;
+    scrollLeft.value = scrollContainer.value.scrollLeft;
+}
+
+function onDragging(e) {
+    if (!isDragging.value || !scrollContainer.value) return;
+    e.preventDefault();
+    const x = e.pageX - scrollContainer.value.offsetLeft;
+    const walk = (x - startX.value) * 2; // Scroll speed multiplier
+    scrollContainer.value.scrollLeft = scrollLeft.value - walk;
+}
+
+function stopDragging() {
+    isDragging.value = false;
 }
 </script>

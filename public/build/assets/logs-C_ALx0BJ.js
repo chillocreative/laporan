@@ -1,1 +1,0 @@
-import{D as e}from"./app-C4KUgVyX.js";const a={activity(t={}){return e.get("/logs/activity",{params:t})},security(t={}){return e.get("/logs/security",{params:t})},ai(t={}){return e.get("/logs/ai",{params:t})},aiTodayUsage(){return e.get("/logs/ai/today-usage")},systemHealth(){return e.get("/system-health")}};export{a as l};
