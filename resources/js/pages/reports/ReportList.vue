@@ -27,7 +27,7 @@
                         <option value="">All Users</option>
                         <option v-for="user in userOptions" :key="user.id" :value="user.id">{{ user.name }}</option>
                     </select>
-                    <select v-model="filters.role" @change="fetchReports" class="input-field">
+                    <select v-if="auth.hasPermission('roles.view')" v-model="filters.role" @change="fetchReports" class="input-field">
                         <option value="">All Roles</option>
                         <option v-for="role in roleOptions" :key="role.id" :value="role.name">{{ role.name }}</option>
                     </select>
@@ -126,6 +126,8 @@ onMounted(() => {
     fetchReports();
     categoriesApi.active().then(({ data }) => { categoryOptions.value = data.data; }).catch(() => {});
     usersApi.list({ per_page: 1000 }).then(({ data }) => { userOptions.value = data.data; }).catch(() => {});
-    rolesApi.list({ per_page: 100 }).then(({ data }) => { roleOptions.value = data.data; }).catch(() => {});
+    if (auth.hasPermission('roles.view')) {
+        rolesApi.list({ per_page: 100 }).then(({ data }) => { roleOptions.value = data.data; }).catch(() => {});
+    }
 });
 </script>
