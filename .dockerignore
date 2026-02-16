@@ -1,0 +1,49 @@
+# =============================================================================
+# Sistem Pelaporan - Docker Ignore
+# =============================================================================
+
+# Version control
+.git
+.gitignore
+.gitattributes
+
+# IDE and editor files
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Node modules (rebuilt inside container or via CI)
+node_modules/
+
+# Vendor (rebuilt via composer install)
+vendor/
+
+# Environment files (secrets)
+.env
+.env.backup
+.env.*.local
+
+# Testing
+tests/
+phpunit.xml
+.phpunit.cache/
+coverage/
+
+# Development tooling
+docker-compose.yml
+docker-compose.override.yml
+deploy.sh
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs (use volumes instead)
+storage/logs/*.log
+
+# Laravel caches (rebuilt on deploy)
+bootstrap/cache/*.php
+storage/framework/cache/data/*
+storage/framework/sessions/*
+storage/framework/views/*

@@ -1,0 +1,90 @@
+@import 'tailwindcss';
+
+@source '../js/**/*.vue';
+@source '../js/**/*.js';
+@source '../**/*.blade.php';
+
+@theme {
+    --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+
+    /* Sistem Pelaporan Color Palette */
+    --color-brand-yellow: #FFF100;
+    --color-brand-blue: #006BFF;
+    --color-brand-cyan: #08C2FF;
+    --color-brand-light: #BCF2F6;
+
+    --color-primary-50: #EBF5FF;
+    --color-primary-100: #D6EBFF;
+    --color-primary-200: #ADd7FF;
+    --color-primary-300: #85C3FF;
+    --color-primary-400: #3D9DFF;
+    --color-primary-500: #006BFF;
+    --color-primary-600: #0055CC;
+    --color-primary-700: #004099;
+    --color-primary-800: #002B66;
+    --color-primary-900: #001533;
+
+    --color-accent-50: #E6FAFE;
+    --color-accent-100: #CCFAFF;
+    --color-accent-200: #99EEFF;
+    --color-accent-300: #66E1FF;
+    --color-accent-400: #33D1FF;
+    --color-accent-500: #08C2FF;
+    --color-accent-600: #069BCC;
+    --color-accent-700: #057499;
+    --color-accent-800: #034D66;
+    --color-accent-900: #022733;
+}
+
+/* Custom utilities */
+@layer base {
+    body {
+        @apply bg-gray-50 text-gray-900 antialiased;
+    }
+}
+
+@layer components {
+    .btn-primary {
+        @apply inline-flex items-center justify-center px-4 py-2 bg-primary-500 text-white font-medium rounded-lg hover:bg-primary-600 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed;
+    }
+
+    .btn-secondary {
+        @apply inline-flex items-center justify-center px-4 py-2 bg-white text-gray-700 font-medium rounded-lg border border-gray-300 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-colors duration-200;
+    }
+
+    .btn-danger {
+        @apply inline-flex items-center justify-center px-4 py-2 bg-red-600 text-white font-medium rounded-lg hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition-colors duration-200;
+    }
+
+    .btn-sm {
+        @apply px-3 py-1.5 text-sm;
+    }
+
+    .input-field {
+        @apply block w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-gray-900 placeholder-gray-400 focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 focus:outline-none transition-colors duration-200 sm:text-sm;
+    }
+
+    .label-text {
+        @apply block text-sm font-medium text-gray-700 mb-1;
+    }
+
+    .card {
+        @apply bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden;
+    }
+
+    .card-header {
+        @apply px-6 py-4 border-b border-gray-200;
+    }
+
+    .card-body {
+        @apply px-6 py-4;
+    }
+
+    .page-title {
+        @apply text-2xl font-bold text-gray-900;
+    }
+
+    .page-subtitle {
+        @apply text-sm text-gray-500 mt-1;
+    }
+}
