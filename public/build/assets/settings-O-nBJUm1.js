@@ -1,1 +1,0 @@
-import{D as t}from"./app-TWPD4Due.js";const o={getAll(){return t.get("/settings")},getPublic(){return t.get("/settings/public")},updateGroup(e,s){if(e==="branding"){const n=new FormData;return n.append("logo",s.logo),n.append("_method","PUT"),t.post(`/settings/${e}`,n,{headers:{"Content-Type":"multipart/form-data"}})}return t.put(`/settings/${e}`,s)}};export{o as s};
