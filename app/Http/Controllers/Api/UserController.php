@@ -49,7 +49,7 @@ class UserController extends Controller
         $this->activityLogService->log('user_created', $user, "User created: {$user->email}");
 
         return response()->json([
-            'message' => 'User created successfully.',
+            'message' => 'Pengguna berjaya dicipta.',
             'data' => new UserResource($user->load('roles')),
         ], 201);
     }
@@ -82,7 +82,7 @@ class UserController extends Controller
         $this->activityLogService->log('user_updated', $user, "User updated: {$user->email}");
 
         return response()->json([
-            'message' => 'User updated successfully.',
+            'message' => 'Pengguna berjaya dikemas kini.',
             'data' => new UserResource($user->load('roles')),
         ]);
     }
@@ -95,7 +95,7 @@ class UserController extends Controller
 
         $user->delete();
 
-        return response()->json(['message' => 'User deleted successfully.']);
+        return response()->json(['message' => 'Pengguna berjaya dipadam.']);
     }
 
     public function approve(Request $request, User $user): JsonResponse
@@ -120,7 +120,7 @@ class UserController extends Controller
         }
 
         return response()->json([
-            'message' => "User approved and assigned role '{$role->name}'. Email notification sent.",
+            'message' => "Pengguna diluluskan dan diberikan peranan '{$role->name}'. Notifikasi e-mel telah dihantar.",
             'data' => new UserResource($user->load('roles')),
         ]);
     }
@@ -140,11 +140,11 @@ class UserController extends Controller
 
         $user->update(['is_active' => ! $user->is_active]);
 
-        $status = $user->is_active ? 'activated' : 'deactivated';
+        $status = $user->is_active ? 'diaktifkan' : 'dinyahaktifkan';
         $this->activityLogService->log('user_toggle_active', $user, "User {$status}: {$user->email}");
 
         return response()->json([
-            'message' => "User {$status} successfully.",
+            'message' => "Pengguna berjaya {$status}.",
             'data' => new UserResource($user->load('roles')),
         ]);
     }

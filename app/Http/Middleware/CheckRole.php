@@ -13,11 +13,11 @@ class CheckRole
         $user = $request->user();
 
         if (! $user) {
-            abort(401, 'Unauthenticated.');
+            abort(401, 'Tidak disahkan.');
         }
 
         if (! $user->hasAnyRole($roles)) {
-            abort(403, 'Unauthorized. Insufficient role.');
+            abort(403, 'Tidak dibenarkan. Peranan tidak mencukupi.');
         }
 
         return $next($request);

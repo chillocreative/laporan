@@ -26,14 +26,14 @@ class AuthController extends Controller
     {
         if (! $this->recaptchaService->verify($request->input('recaptcha_token'))) {
             throw ValidationException::withMessages([
-                'recaptcha_token' => ['CAPTCHA verification failed.'],
+                'recaptcha_token' => ['Pengesahan CAPTCHA gagal.'],
             ]);
         }
 
         $this->authService->register($request->validated());
 
         return response()->json([
-            'message' => 'Registration successful. Your account is pending approval from an administrator. You will receive an email notification once approved.',
+            'message' => 'Pendaftaran berjaya. Akaun anda sedang menunggu kelulusan daripada pentadbir. Anda akan menerima notifikasi e-mel setelah diluluskan.',
             'pending_approval' => true,
         ], 201);
     }
@@ -43,7 +43,7 @@ class AuthController extends Controller
         $user = $this->authService->login($request->validated());
 
         return response()->json([
-            'message' => 'Login successful.',
+            'message' => 'Log masuk berjaya.',
             'user' => new UserResource($user->load('roles.permissions')),
         ]);
     }
@@ -52,7 +52,7 @@ class AuthController extends Controller
     {
         $this->authService->logout();
 
-        return response()->json(['message' => 'Logged out successfully.']);
+        return response()->json(['message' => 'Berjaya log keluar.']);
     }
 
     public function user(Request $request): JsonResponse
@@ -71,7 +71,7 @@ class AuthController extends Controller
         $status = Password::sendResetLink($request->only('email'));
 
         if ($status === Password::RESET_LINK_SENT) {
-            return response()->json(['message' => 'Password reset link sent to your email.']);
+            return response()->json(['message' => 'Pautan tetapan semula kata laluan telah dihantar ke e-mel anda.']);
         }
 
         throw ValidationException::withMessages([
@@ -98,7 +98,7 @@ class AuthController extends Controller
         );
 
         if ($status === Password::PASSWORD_RESET) {
-            return response()->json(['message' => 'Password has been reset successfully.']);
+            return response()->json(['message' => 'Kata laluan berjaya ditetapkan semula.']);
         }
 
         throw ValidationException::withMessages([

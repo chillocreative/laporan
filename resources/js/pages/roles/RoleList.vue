@@ -2,11 +2,11 @@
     <div>
         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6 gap-4">
             <div>
-                <h1 class="page-title">Roles</h1>
-                <p class="page-subtitle">Manage user roles and permissions</p>
+                <h1 class="page-title">Peranan</h1>
+                <p class="page-subtitle">Urus peranan dan kebenaran pengguna</p>
             </div>
             <router-link :to="{ name: 'roles.create' }" class="btn-primary">
-                + New Role
+                + Peranan Baru
             </router-link>
         </div>
 
@@ -15,7 +15,7 @@
         <div class="card">
             <DataTable :columns="columns" :items="roles" :loading="loading">
                 <template #cell-is_system="{ item }">
-                    <Badge v-if="item.is_system" color="indigo">System</Badge>
+                    <Badge v-if="item.is_system" color="indigo">Sistem</Badge>
                     <span v-else class="text-xs text-gray-400">-</span>
                 </template>
                 <template #cell-permissions_count="{ item }">
@@ -53,9 +53,9 @@
 
         <ConfirmDialog
             v-model="showDeleteDialog"
-            title="Delete Role"
-            :message="`Are you sure you want to delete the role '${roleToDelete?.name}'? This action cannot be undone.`"
-            confirm-text="Delete"
+            title="Padam Peranan"
+            :message="`Adakah anda pasti mahu memadam peranan '${roleToDelete?.name}'? Tindakan ini tidak boleh dibatalkan.`"
+            confirm-text="Padam"
             :danger="true"
             @confirm="handleDelete"
         />
@@ -79,11 +79,11 @@ const showDeleteDialog = ref(false);
 const roleToDelete = ref(null);
 
 const columns = [
-    { key: 'name', label: 'Name' },
+    { key: 'name', label: 'Nama' },
     { key: 'slug', label: 'Slug' },
-    { key: 'is_system', label: 'Type' },
-    { key: 'permissions_count', label: 'Permissions' },
-    { key: 'users_count', label: 'Users' },
+    { key: 'is_system', label: 'Jenis' },
+    { key: 'permissions_count', label: 'Kebenaran' },
+    { key: 'users_count', label: 'Pengguna' },
 ];
 
 async function fetchRoles() {
@@ -93,7 +93,7 @@ async function fetchRoles() {
         const { data } = await rolesApi.list();
         roles.value = data.data;
     } catch {
-        errorMsg.value = 'Failed to load roles.';
+        errorMsg.value = 'Gagal memuatkan peranan.';
     }
     loading.value = false;
 }
@@ -108,12 +108,12 @@ async function handleDelete() {
     if (!roleToDelete.value) return;
     try {
         await rolesApi.delete(roleToDelete.value.id);
-        notify.success('Role deleted successfully.');
+        notify.success('Peranan berjaya dipadam.');
         showDeleteDialog.value = false;
         roleToDelete.value = null;
         await fetchRoles();
     } catch (e) {
-        const msg = e.response?.data?.message || 'Failed to delete role.';
+        const msg = e.response?.data?.message || 'Gagal memadam peranan.';
         notify.error(msg);
         showDeleteDialog.value = false;
     }

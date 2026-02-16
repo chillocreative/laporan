@@ -17,7 +17,7 @@ class ReportAttachmentController extends Controller
     {
         // Verify signed URL
         if (! $request->hasValidSignature()) {
-            abort(403, 'Invalid or expired download link.');
+            abort(403, 'Pautan muat turun tidak sah atau telah tamat tempoh.');
         }
 
         // Verify user can view the parent report
@@ -32,7 +32,7 @@ class ReportAttachmentController extends Controller
     public function view(Request $request, ReportAttachment $attachment): StreamedResponse
     {
         if (! $request->hasValidSignature()) {
-            abort(403, 'Invalid or expired link.');
+            abort(403, 'Pautan tidak sah atau telah tamat tempoh.');
         }
 
         $this->authorize('view', $attachment->report);
@@ -50,6 +50,6 @@ class ReportAttachmentController extends Controller
 
         $this->fileUploadService->deleteAttachment($attachment);
 
-        return response()->json(['message' => 'Attachment deleted successfully.']);
+        return response()->json(['message' => 'Lampiran berjaya dipadam.']);
     }
 }

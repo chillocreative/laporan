@@ -54,7 +54,7 @@ class ReportController extends Controller
         }
 
         return response()->json([
-            'message' => 'Report created successfully.',
+            'message' => 'Laporan berjaya dicipta.',
             'data' => new ReportResource($report),
         ], 201);
     }
@@ -79,7 +79,7 @@ class ReportController extends Controller
         );
 
         return response()->json([
-            'message' => 'Report updated successfully.',
+            'message' => 'Laporan berjaya dikemas kini.',
             'data' => new ReportResource($report),
         ]);
     }
@@ -90,7 +90,7 @@ class ReportController extends Controller
 
         $this->reportService->delete($report);
 
-        return response()->json(['message' => 'Report deleted successfully.']);
+        return response()->json(['message' => 'Laporan berjaya dipadam.']);
     }
 
     public function updateStatus(Request $request, Report $report): JsonResponse
@@ -104,7 +104,7 @@ class ReportController extends Controller
         $report = $this->reportService->updateStatus($report, $request->input('status'));
 
         return response()->json([
-            'message' => 'Report status updated.',
+            'message' => 'Status laporan dikemas kini.',
             'data' => new ReportResource($report),
         ]);
     }
@@ -114,12 +114,12 @@ class ReportController extends Controller
         $user = $request->user();
 
         if (! $user->hasPermission('ai.trigger')) {
-            abort(403, 'You do not have permission to trigger AI analysis.');
+            abort(403, 'Anda tidak mempunyai kebenaran untuk mencetuskan analisis AI.');
         }
 
         if (! $this->openAIService->isEnabled()) {
             return response()->json([
-                'message' => 'AI analysis is currently disabled. Enable it in Settings.',
+                'message' => 'Analisis AI tidak aktif pada masa ini. Aktifkan di Tetapan.',
             ], 422);
         }
 
@@ -127,14 +127,14 @@ class ReportController extends Controller
 
         if ($result) {
             return response()->json([
-                'message' => 'AI analysis completed.',
+                'message' => 'Analisis AI selesai.',
                 'status' => 'completed',
                 'data' => new ReportResource($report->fresh()),
             ]);
         }
 
         return response()->json([
-            'message' => 'AI analysis failed. Check the AI logs for details.',
+            'message' => 'Analisis AI gagal. Semak log AI untuk butiran lanjut.',
             'status' => 'failed',
         ], 500);
     }

@@ -1,8 +1,8 @@
 <template>
     <div>
         <div class="mb-6">
-            <h1 class="page-title">Security Logs</h1>
-            <p class="page-subtitle">Monitor security events and potential threats</p>
+            <h1 class="page-title">Log Keselamatan</h1>
+            <p class="page-subtitle">Pantau peristiwa keselamatan dan potensi ancaman</p>
         </div>
 
         <!-- Filters -->
@@ -10,11 +10,11 @@
             <div class="card-body">
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                     <select v-model="filters.event_type" @change="fetchLogs" class="input-field">
-                        <option value="">All Event Types</option>
+                        <option value="">Semua Jenis Peristiwa</option>
                         <option v-for="type in eventTypes" :key="type" :value="type">{{ type }}</option>
                     </select>
                     <select v-model="filters.severity" @change="fetchLogs" class="input-field">
-                        <option value="">All Severities</option>
+                        <option value="">Semua Tahap Keterukan</option>
                         <option v-for="s in severityLevels" :key="s.value" :value="s.value">{{ s.label }}</option>
                     </select>
                     <input
@@ -91,18 +91,18 @@ const eventTypes = [
 ];
 
 const severityLevels = [
-    { value: 'low', label: 'Low' },
-    { value: 'medium', label: 'Medium' },
-    { value: 'high', label: 'High' },
-    { value: 'critical', label: 'Critical' },
+    { value: 'low', label: 'Rendah' },
+    { value: 'medium', label: 'Sederhana' },
+    { value: 'high', label: 'Tinggi' },
+    { value: 'critical', label: 'Kritikal' },
 ];
 
 const columns = [
-    { key: 'event_type', label: 'Event Type' },
-    { key: 'severity', label: 'Severity' },
-    { key: 'ip_address', label: 'IP Address' },
-    { key: 'description', label: 'Description' },
-    { key: 'created_at', label: 'Date' },
+    { key: 'event_type', label: 'Jenis Peristiwa' },
+    { key: 'severity', label: 'Keterukan' },
+    { key: 'ip_address', label: 'Alamat IP' },
+    { key: 'description', label: 'Penerangan' },
+    { key: 'created_at', label: 'Tarikh' },
 ];
 
 function severityColor(severity) {

@@ -24,7 +24,7 @@ class RegisterRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'recaptcha_token.required' => 'Please complete the CAPTCHA verification.',
+            'recaptcha_token.required' => 'Sila lengkapkan pengesahan CAPTCHA.',
         ];
     }
 }

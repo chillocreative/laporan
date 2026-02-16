@@ -1,8 +1,8 @@
 <template>
     <div>
         <div class="mb-6">
-            <h1 class="page-title">Activity Logs</h1>
-            <p class="page-subtitle">Track all user activities across the system</p>
+            <h1 class="page-title">Log Aktiviti</h1>
+            <p class="page-subtitle">Jejaki semua aktiviti pengguna dalam sistem</p>
         </div>
 
         <!-- Filters -->
@@ -13,14 +13,14 @@
                         v-model="filters.search"
                         @input="debouncedFetch"
                         type="text"
-                        placeholder="Search by description..."
+                        placeholder="Cari mengikut penerangan..."
                         class="input-field"
                     />
                     <input
                         v-model="filters.user"
                         @input="debouncedFetch"
                         type="text"
-                        placeholder="Filter by user..."
+                        placeholder="Tapis mengikut pengguna..."
                         class="input-field"
                     />
                     <input
@@ -92,11 +92,11 @@ const debouncedFetch = () => {
 };
 
 const columns = [
-    { key: 'user_name', label: 'User' },
-    { key: 'action', label: 'Action' },
-    { key: 'description', label: 'Description' },
-    { key: 'ip_address', label: 'IP Address' },
-    { key: 'created_at', label: 'Date' },
+    { key: 'user_name', label: 'Pengguna' },
+    { key: 'action', label: 'Tindakan' },
+    { key: 'description', label: 'Penerangan' },
+    { key: 'ip_address', label: 'Alamat IP' },
+    { key: 'created_at', label: 'Tarikh' },
 ];
 
 function actionColor(action) {

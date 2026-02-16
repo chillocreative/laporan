@@ -21,7 +21,7 @@ class UserApprovedMail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Your Account Has Been Approved',
+            subject: 'Akaun Anda Telah Diluluskan',
         );
     }
 

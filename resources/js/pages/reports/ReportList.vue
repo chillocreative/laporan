@@ -2,11 +2,11 @@
     <div>
         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6 gap-4">
             <div>
-                <h1 class="page-title">Reports</h1>
-                <p class="page-subtitle">Manage and track all reports</p>
+                <h1 class="page-title">Laporan</h1>
+                <p class="page-subtitle">Urus dan jejaki semua laporan</p>
             </div>
             <router-link v-if="auth.hasPermission('reports.create')" :to="{ name: 'reports.create' }" class="btn-primary">
-                + New Report
+                + Laporan Baru
             </router-link>
         </div>
 
@@ -14,21 +14,21 @@
         <div class="card mb-6">
             <div class="card-body">
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
-                    <input v-model="filters.search" @input="debouncedFetch" type="text" placeholder="Search reports..." class="input-field" />
+                    <input v-model="filters.search" @input="debouncedFetch" type="text" placeholder="Cari laporan..." class="input-field" />
                     <select v-model="filters.category" @change="fetchReports" class="input-field">
-                        <option value="">All Categories</option>
+                        <option value="">Semua Kategori</option>
                         <option v-for="c in categoryOptions" :key="c" :value="c">{{ c }}</option>
                     </select>
                     <select v-model="filters.risk_level" @change="fetchReports" class="input-field">
-                        <option value="">All Risk Levels</option>
+                        <option value="">Semua Tahap Risiko</option>
                         <option v-for="r in RISK_LEVELS" :key="r.value" :value="r.value">{{ r.label }}</option>
                     </select>
                     <select v-if="auth.hasPermission('users.view-all')" v-model="filters.user_id" @change="fetchReports" class="input-field">
-                        <option value="">All Users</option>
+                        <option value="">Semua Pengguna</option>
                         <option v-for="user in userOptions" :key="user.id" :value="user.id">{{ user.name }}</option>
                     </select>
                     <select v-if="auth.hasPermission('users.view-all') || auth.hasPermission('roles.view')" v-model="filters.role" @change="fetchReports" class="input-field">
-                        <option value="">All Roles</option>
+                        <option value="">Semua Peranan</option>
                         <option v-for="role in filteredRoleOptions" :key="role.id" :value="role.name">{{ role.name }}</option>
                     </select>
                 </div>
@@ -48,7 +48,7 @@
                 </template>
                 <template #cell-ai_analysis="{ item }">
                     <Badge v-if="item.ai_analysis" :color="item.ai_analysis.risk_level?.color">{{ item.ai_analysis.risk_level?.label }}</Badge>
-                    <span v-else class="text-xs text-gray-400">Pending</span>
+                    <span v-else class="text-xs text-gray-400">Menunggu</span>
                 </template>
                 <template #cell-incident_date="{ item }">
                     <span class="text-xs text-gray-500">{{ formatDate(item.incident_date) }}</span>
@@ -104,11 +104,11 @@ const debouncedFetch = () => {
 };
 
 const columns = [
-    { key: 'title', label: 'Title' },
-    { key: 'category', label: 'Category' },
-    { key: 'user', label: 'User' },
-    { key: 'ai_analysis', label: 'Risk' },
-    { key: 'incident_date', label: 'Date' },
+    { key: 'title', label: 'Tajuk' },
+    { key: 'category', label: 'Kategori' },
+    { key: 'user', label: 'Pengguna' },
+    { key: 'ai_analysis', label: 'Risiko' },
+    { key: 'incident_date', label: 'Tarikh' },
 ];
 
 async function fetchReports(page = 1) {

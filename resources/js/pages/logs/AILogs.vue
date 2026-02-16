@@ -1,26 +1,26 @@
 <template>
     <div>
         <div class="mb-6">
-            <h1 class="page-title">AI Logs</h1>
-            <p class="page-subtitle">Monitor OpenAI API usage and costs</p>
+            <h1 class="page-title">Log AI</h1>
+            <p class="page-subtitle">Pantau penggunaan dan kos API OpenAI</p>
         </div>
 
         <!-- Today's Usage Stats -->
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
             <StatCard
-                title="Today's Requests"
+                title="Permintaan Hari Ini"
                 :value="usageStats.total_requests ?? '-'"
                 :icon="iconPaths.requests"
                 color="blue"
             />
             <StatCard
-                title="Today's Total Tokens"
+                title="Jumlah Token Hari Ini"
                 :value="usageStats.total_tokens != null ? usageStats.total_tokens.toLocaleString() : '-'"
                 :icon="iconPaths.tokens"
                 color="indigo"
             />
             <StatCard
-                title="Today's Estimated Cost"
+                title="Anggaran Kos Hari Ini"
                 :value="usageStats.estimated_cost != null ? formatCurrency(usageStats.estimated_cost) : '-'"
                 :icon="iconPaths.cost"
                 color="green"
@@ -32,9 +32,9 @@
             <div class="card-body">
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                     <select v-model="filters.status" @change="fetchLogs" class="input-field">
-                        <option value="">All Statuses</option>
-                        <option value="success">Success</option>
-                        <option value="failed">Failed</option>
+                        <option value="">Semua Status</option>
+                        <option value="success">Berjaya</option>
+                        <option value="failed">Gagal</option>
                     </select>
                     <input
                         v-model="filters.date_from"
@@ -120,15 +120,15 @@ const iconPaths = {
 };
 
 const columns = [
-    { key: 'report_id', label: 'Report ID' },
+    { key: 'report_id', label: 'ID Laporan' },
     { key: 'model', label: 'Model' },
     { key: 'prompt_tokens', label: 'Prompt' },
-    { key: 'completion_tokens', label: 'Completion' },
-    { key: 'total_tokens', label: 'Total Tokens' },
-    { key: 'estimated_cost', label: 'Cost' },
-    { key: 'response_time', label: 'Response Time' },
+    { key: 'completion_tokens', label: 'Pelengkapan' },
+    { key: 'total_tokens', label: 'Jumlah Token' },
+    { key: 'estimated_cost', label: 'Kos' },
+    { key: 'response_time', label: 'Masa Respons' },
     { key: 'status', label: 'Status' },
-    { key: 'created_at', label: 'Date' },
+    { key: 'created_at', label: 'Tarikh' },
 ];
 
 async function fetchUsageStats() {

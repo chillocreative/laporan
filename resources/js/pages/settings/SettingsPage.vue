@@ -1,11 +1,11 @@
 <template>
     <div>
         <div class="mb-6">
-            <h1 class="page-title">Settings</h1>
-            <p class="page-subtitle">Manage system configuration</p>
+            <h1 class="page-title">Tetapan</h1>
+            <p class="page-subtitle">Urus konfigurasi sistem</p>
         </div>
 
-        <LoadingSpinner v-if="loading" full-page text="Loading settings..." />
+        <LoadingSpinner v-if="loading" full-page text="Memuatkan tetapan..." />
 
         <template v-else>
             <!-- Tab Navigation -->
@@ -34,12 +34,12 @@
 
                     <div class="space-y-4">
                         <div>
-                            <label class="label-text">System Name</label>
+                            <label class="label-text">Nama Sistem</label>
                             <input
                                 v-model="forms.general.system_name"
                                 type="text"
                                 class="input-field"
-                                placeholder="Enter system name"
+                                placeholder="Masukkan nama sistem"
                             />
                         </div>
                     </div>
@@ -50,8 +50,8 @@
                             :disabled="saving.general"
                             class="btn-primary"
                         >
-                            <span v-if="saving.general">Saving...</span>
-                            <span v-else>Save General Settings</span>
+                            <span v-if="saving.general">Menyimpan...</span>
+                            <span v-else>Simpan Tetapan Umum</span>
                         </button>
                     </div>
                 </div>
@@ -66,11 +66,11 @@
 
                     <div class="space-y-4">
                         <div>
-                            <label class="label-text">System Logo</label>
+                            <label class="label-text">Logo Sistem</label>
 
                             <!-- Current logo preview -->
                             <div v-if="logoPreview" class="mt-2 mb-3">
-                                <p class="text-xs text-gray-500 mb-1">Current logo:</p>
+                                <p class="text-xs text-gray-500 mb-1">Logo semasa:</p>
                                 <img
                                     :src="logoPreview"
                                     alt="System logo"
@@ -85,7 +85,7 @@
                                 class="input-field"
                                 @change="onLogoChange"
                             />
-                            <p class="mt-1 text-xs text-gray-500">Accepted formats: JPG, PNG, SVG. Max 2MB recommended.</p>
+                            <p class="mt-1 text-xs text-gray-500">Format diterima: JPG, PNG, SVG. Maksimum 2MB disyorkan.</p>
                         </div>
                     </div>
 
@@ -95,8 +95,8 @@
                             :disabled="saving.branding || !forms.branding.logo"
                             class="btn-primary"
                         >
-                            <span v-if="saving.branding">Uploading...</span>
-                            <span v-else>Save Branding</span>
+                            <span v-if="saving.branding">Memuat naik...</span>
+                            <span v-else>Simpan Penjenamaan</span>
                         </button>
                     </div>
                 </div>
@@ -112,7 +112,7 @@
                     <div class="space-y-4">
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <div>
-                                <label class="label-text">SMTP Host</label>
+                                <label class="label-text">Hos SMTP</label>
                                 <input
                                     v-model="forms.smtp.smtp_host"
                                     type="text"
@@ -121,7 +121,7 @@
                                 />
                             </div>
                             <div>
-                                <label class="label-text">SMTP Port</label>
+                                <label class="label-text">Port SMTP</label>
                                 <input
                                     v-model.number="forms.smtp.smtp_port"
                                     type="number"
@@ -133,7 +133,7 @@
 
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <div>
-                                <label class="label-text">Username</label>
+                                <label class="label-text">Nama Pengguna</label>
                                 <input
                                     v-model="forms.smtp.smtp_username"
                                     type="text"
@@ -142,19 +142,19 @@
                                 />
                             </div>
                             <div>
-                                <label class="label-text">Password</label>
+                                <label class="label-text">Kata Laluan</label>
                                 <input
                                     v-model="forms.smtp.smtp_password"
                                     type="password"
                                     class="input-field"
-                                    placeholder="Enter SMTP password"
+                                    placeholder="Masukkan kata laluan SMTP"
                                 />
-                                <p class="mt-1 text-xs text-gray-500">Stored encrypted on the server.</p>
+                                <p class="mt-1 text-xs text-gray-500">Disimpan secara disulitkan di pelayan.</p>
                             </div>
                         </div>
 
                         <div>
-                            <label class="label-text">Encryption</label>
+                            <label class="label-text">Penyulitan</label>
                             <select v-model="forms.smtp.smtp_encryption" class="input-field">
                                 <option value="tls">TLS</option>
                                 <option value="ssl">SSL</option>
@@ -164,7 +164,7 @@
 
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <div>
-                                <label class="label-text">From Address</label>
+                                <label class="label-text">Alamat Pengirim</label>
                                 <input
                                     v-model="forms.smtp.smtp_from_address"
                                     type="email"
@@ -173,7 +173,7 @@
                                 />
                             </div>
                             <div>
-                                <label class="label-text">From Name</label>
+                                <label class="label-text">Nama Pengirim</label>
                                 <input
                                     v-model="forms.smtp.smtp_from_name"
                                     type="text"
@@ -190,8 +190,8 @@
                             :disabled="saving.smtp"
                             class="btn-primary"
                         >
-                            <span v-if="saving.smtp">Saving...</span>
-                            <span v-else>Save SMTP Settings</span>
+                            <span v-if="saving.smtp">Menyimpan...</span>
+                            <span v-else>Simpan Tetapan SMTP</span>
                         </button>
                     </div>
                 </div>
@@ -208,8 +208,8 @@
                         <!-- Enabled toggle -->
                         <div class="flex items-center justify-between">
                             <div>
-                                <label class="label-text">Enable OpenAI Integration</label>
-                                <p class="text-xs text-gray-500">Allow AI-powered analysis of reports</p>
+                                <label class="label-text">Aktifkan Integrasi OpenAI</label>
+                                <p class="text-xs text-gray-500">Benarkan analisis laporan berkuasa AI</p>
                             </div>
                             <label class="relative inline-flex items-center cursor-pointer">
                                 <input
@@ -225,21 +225,21 @@
 
                         <!-- API Key -->
                         <div>
-                            <label class="label-text">API Key</label>
+                            <label class="label-text">Kunci API</label>
                             <input
                                 v-model="forms.openai.openai_api_key"
                                 type="password"
                                 class="input-field"
                                 placeholder="sk-..."
                             />
-                            <p class="mt-1 text-xs text-gray-500">Your OpenAI API key. Stored encrypted on the server.</p>
+                            <p class="mt-1 text-xs text-gray-500">Kunci API OpenAI anda. Disimpan secara disulitkan di pelayan.</p>
                         </div>
 
                         <!-- Model -->
                         <div>
                             <label class="label-text">Model</label>
                             <select v-model="forms.openai.openai_model" class="input-field">
-                                <option value="" disabled>Select a model</option>
+                                <option value="" disabled>Pilih model</option>
                                 <option
                                     v-for="model in OPENAI_MODELS"
                                     :key="model.value"
@@ -252,7 +252,7 @@
 
                         <!-- Temperature -->
                         <div>
-                            <label class="label-text">Temperature</label>
+                            <label class="label-text">Suhu</label>
                             <input
                                 v-model.number="forms.openai.openai_temperature"
                                 type="number"
@@ -262,12 +262,12 @@
                                 class="input-field"
                                 placeholder="0.7"
                             />
-                            <p class="mt-1 text-xs text-gray-500">Controls randomness. Lower values are more focused, higher values more creative (0-2).</p>
+                            <p class="mt-1 text-xs text-gray-500">Mengawal tahap rawak. Nilai rendah lebih fokus, nilai tinggi lebih kreatif (0-2).</p>
                         </div>
 
                         <!-- Max Tokens -->
                         <div>
-                            <label class="label-text">Max Tokens</label>
+                            <label class="label-text">Token Maksimum</label>
                             <input
                                 v-model.number="forms.openai.openai_max_tokens"
                                 type="number"
@@ -276,14 +276,14 @@
                                 class="input-field"
                                 placeholder="1000"
                             />
-                            <p class="mt-1 text-xs text-gray-500">Maximum number of tokens in the response (100-4000).</p>
+                            <p class="mt-1 text-xs text-gray-500">Bilangan maksimum token dalam respons (100-4000).</p>
                         </div>
 
                         <!-- Queue Enabled toggle -->
                         <div class="flex items-center justify-between">
                             <div>
-                                <label class="label-text">Queue AI Requests</label>
-                                <p class="text-xs text-gray-500">Process AI requests asynchronously via queue</p>
+                                <label class="label-text">Gilirkan Permintaan AI</label>
+                                <p class="text-xs text-gray-500">Proses permintaan AI secara tidak segerak melalui baris gilir</p>
                             </div>
                             <label class="relative inline-flex items-center cursor-pointer">
                                 <input
@@ -299,7 +299,7 @@
 
                         <!-- Daily Limit -->
                         <div>
-                            <label class="label-text">Daily Request Limit</label>
+                            <label class="label-text">Had Permintaan Harian</label>
                             <input
                                 v-model.number="forms.openai.openai_daily_limit"
                                 type="number"
@@ -307,7 +307,7 @@
                                 class="input-field"
                                 placeholder="100"
                             />
-                            <p class="mt-1 text-xs text-gray-500">Maximum AI requests per day. Set 0 for unlimited.</p>
+                            <p class="mt-1 text-xs text-gray-500">Permintaan AI maksimum setiap hari. Tetapkan 0 untuk tanpa had.</p>
                         </div>
                     </div>
 
@@ -317,8 +317,8 @@
                             :disabled="saving.openai"
                             class="btn-primary"
                         >
-                            <span v-if="saving.openai">Saving...</span>
-                            <span v-else>Save OpenAI Settings</span>
+                            <span v-if="saving.openai">Menyimpan...</span>
+                            <span v-else>Simpan Tetapan OpenAI</span>
                         </button>
                     </div>
                 </div>
@@ -333,7 +333,7 @@
 
                     <div class="space-y-4">
                         <div>
-                            <label class="label-text">reCAPTCHA Site Key</label>
+                            <label class="label-text">Kunci Tapak reCAPTCHA</label>
                             <input
                                 v-model="forms.captcha.recaptcha_site_key"
                                 type="text"
@@ -343,14 +343,14 @@
                         </div>
 
                         <div>
-                            <label class="label-text">reCAPTCHA Secret Key</label>
+                            <label class="label-text">Kunci Rahsia reCAPTCHA</label>
                             <input
                                 v-model="forms.captcha.recaptcha_secret_key"
                                 type="password"
                                 class="input-field"
                                 placeholder="6Lc..."
                             />
-                            <p class="mt-1 text-xs text-gray-500">Your Google reCAPTCHA v2/v3 secret key. Stored encrypted on the server.</p>
+                            <p class="mt-1 text-xs text-gray-500">Kunci rahsia Google reCAPTCHA v2/v3 anda. Disimpan secara disulitkan di pelayan.</p>
                         </div>
                     </div>
 
@@ -360,8 +360,8 @@
                             :disabled="saving.captcha"
                             class="btn-primary"
                         >
-                            <span v-if="saving.captcha">Saving...</span>
-                            <span v-else>Save Captcha Settings</span>
+                            <span v-if="saving.captcha">Menyimpan...</span>
+                            <span v-else>Simpan Tetapan Captcha</span>
                         </button>
                     </div>
                 </div>
@@ -384,9 +384,9 @@ const loading = ref(true);
 const activeTab = ref('general');
 
 const tabs = [
-    { key: 'general', label: 'General' },
-    { key: 'branding', label: 'Branding' },
-    { key: 'smtp', label: 'SMTP / Email' },
+    { key: 'general', label: 'Umum' },
+    { key: 'branding', label: 'Penjenamaan' },
+    { key: 'smtp', label: 'SMTP / E-mel' },
     { key: 'openai', label: 'OpenAI' },
     { key: 'captcha', label: 'Captcha' },
 ];
@@ -504,10 +504,10 @@ async function saveGroup(group) {
     try {
         await settingsApi.updateGroup(group, forms[group]);
         alerts[group].type = 'success';
-        alerts[group].message = 'Settings saved successfully.';
-        notification.success('Settings saved successfully.');
+        alerts[group].message = 'Tetapan berjaya disimpan.';
+        notification.success('Tetapan berjaya disimpan.');
     } catch (error) {
-        const message = error.response?.data?.message || 'Failed to save settings. Please try again.';
+        const message = error.response?.data?.message || 'Gagal menyimpan tetapan. Sila cuba lagi.';
         alerts[group].type = 'error';
         alerts[group].message = message;
         notification.error(message);
@@ -521,7 +521,7 @@ onMounted(async () => {
         const { data } = await settingsApi.getAll();
         distributeSettings(data.data || data);
     } catch {
-        notification.error('Failed to load settings.');
+        notification.error('Gagal memuatkan tetapan.');
     }
     loading.value = false;
 });

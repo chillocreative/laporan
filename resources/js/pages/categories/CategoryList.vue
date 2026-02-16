@@ -2,10 +2,10 @@
     <div>
         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6 gap-4">
             <div>
-                <h1 class="page-title">Categories</h1>
-                <p class="page-subtitle">Manage report categories</p>
+                <h1 class="page-title">Kategori</h1>
+                <p class="page-subtitle">Urus kategori laporan</p>
             </div>
-            <button @click="openCreate" class="btn-primary">+ New Category</button>
+            <button @click="openCreate" class="btn-primary">+ Kategori Baru</button>
         </div>
 
         <Alert v-if="alertMsg" :type="alertType" class="mb-4">{{ alertMsg }}</Alert>
@@ -16,7 +16,7 @@
                     <span class="font-medium text-gray-900">{{ item.name }}</span>
                 </template>
                 <template #cell-is_active="{ item }">
-                    <Badge :color="item.is_active ? 'green' : 'red'">{{ item.is_active ? 'Active' : 'Inactive' }}</Badge>
+                    <Badge :color="item.is_active ? 'green' : 'red'">{{ item.is_active ? 'Aktif' : 'Tidak Aktif' }}</Badge>
                 </template>
                 <template #cell-sort_order="{ item }">
                     <span class="text-sm text-gray-500">{{ item.sort_order }}</span>
@@ -38,29 +38,29 @@
         <div v-if="showModal" class="fixed inset-0 z-50 flex items-center justify-center p-4">
             <div class="fixed inset-0 bg-black/50" @click="showModal = false"></div>
             <div class="relative bg-white rounded-xl shadow-xl w-full max-w-md p-6">
-                <h3 class="text-lg font-semibold text-gray-900 mb-4">{{ editingCategory ? 'Edit Category' : 'New Category' }}</h3>
+                <h3 class="text-lg font-semibold text-gray-900 mb-4">{{ editingCategory ? 'Edit Kategori' : 'Kategori Baru' }}</h3>
                 <form @submit.prevent="handleSave" class="space-y-4">
                     <div>
-                        <label class="label-text">Name *</label>
-                        <input v-model="form.name" type="text" required class="input-field" placeholder="Category name" />
+                        <label class="label-text">Nama *</label>
+                        <input v-model="form.name" type="text" required class="input-field" placeholder="Nama kategori" />
                     </div>
                     <div class="grid grid-cols-2 gap-4">
                         <div>
-                            <label class="label-text">Sort Order</label>
+                            <label class="label-text">Susunan</label>
                             <input v-model.number="form.sort_order" type="number" min="0" class="input-field" />
                         </div>
                         <div v-if="editingCategory" class="flex items-end">
                             <label class="flex items-center gap-2 cursor-pointer">
                                 <input v-model="form.is_active" type="checkbox" class="rounded border-gray-300 text-primary-600 focus:ring-primary-500" />
-                                <span class="text-sm text-gray-700">Active</span>
+                                <span class="text-sm text-gray-700">Aktif</span>
                             </label>
                         </div>
                     </div>
                     <div v-if="formError" class="text-sm text-red-600">{{ formError }}</div>
                     <div class="flex justify-end gap-3 pt-2">
-                        <button type="button" @click="showModal = false" class="btn-secondary">Cancel</button>
+                        <button type="button" @click="showModal = false" class="btn-secondary">Batal</button>
                         <button type="submit" :disabled="saving" class="btn-primary">
-                            {{ saving ? 'Saving...' : 'Save' }}
+                            {{ saving ? 'Menyimpan...' : 'Simpan' }}
                         </button>
                     </div>
                 </form>
@@ -69,9 +69,9 @@
 
         <ConfirmDialog
             v-model="showDeleteDialog"
-            title="Delete Category"
-            :message="`Are you sure you want to delete '${deleteTarget?.name}'?`"
-            confirm-text="Delete"
+            title="Padam Kategori"
+            :message="`Adakah anda pasti mahu memadam '${deleteTarget?.name}'?`"
+            confirm-text="Padam"
             :danger="true"
             @confirm="handleDelete"
         />
@@ -101,9 +101,9 @@ const alertMsg = ref('');
 const alertType = ref('success');
 
 const columns = [
-    { key: 'name', label: 'Name' },
+    { key: 'name', label: 'Nama' },
     { key: 'is_active', label: 'Status' },
-    { key: 'sort_order', label: 'Order' },
+    { key: 'sort_order', label: 'Susunan' },
 ];
 
 async function fetchCategories() {
@@ -112,7 +112,7 @@ async function fetchCategories() {
         const { data } = await categoriesApi.list();
         categories.value = data.data;
     } catch {
-        showAlert('error', 'Failed to load categories.');
+        showAlert('error', 'Gagal memuatkan kategori.');
     }
     loading.value = false;
 }
@@ -137,16 +137,16 @@ async function handleSave() {
     try {
         if (editingCategory.value) {
             await categoriesApi.update(editingCategory.value.id, form.value);
-            showAlert('success', 'Category updated.');
+            showAlert('success', 'Kategori dikemas kini.');
         } else {
             await categoriesApi.store(form.value);
-            showAlert('success', 'Category created.');
+            showAlert('success', 'Kategori dicipta.');
         }
         showModal.value = false;
         fetchCategories();
     } catch (e) {
         const errors = e.response?.data?.errors;
-        formError.value = errors ? Object.values(errors).flat()[0] : 'Failed to save category.';
+        formError.value = errors ? Object.values(errors).flat()[0] : 'Gagal menyimpan kategori.';
     }
     saving.value = false;
 }
@@ -160,10 +160,10 @@ async function handleDelete() {
     showDeleteDialog.value = false;
     try {
         await categoriesApi.delete(deleteTarget.value.id);
-        showAlert('success', `Category '${deleteTarget.value.name}' deleted.`);
+        showAlert('success', `Kategori '${deleteTarget.value.name}' dipadam.`);
         fetchCategories();
     } catch {
-        showAlert('error', 'Failed to delete category.');
+        showAlert('error', 'Gagal memadam kategori.');
     }
     deleteTarget.value = null;
 }

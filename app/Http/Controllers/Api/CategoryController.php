@@ -35,7 +35,7 @@ class CategoryController extends Controller
         $category = Category::create($validated);
 
         return response()->json([
-            'message' => 'Category created successfully.',
+            'message' => 'Kategori berjaya dicipta.',
             'data' => $category,
         ], 201);
     }
@@ -51,7 +51,7 @@ class CategoryController extends Controller
         $category->update($validated);
 
         return response()->json([
-            'message' => 'Category updated successfully.',
+            'message' => 'Kategori berjaya dikemas kini.',
             'data' => $category,
         ]);
     }
@@ -60,6 +60,6 @@ class CategoryController extends Controller
     {
         $category->delete();
 
-        return response()->json(['message' => 'Category deleted successfully.']);
+        return response()->json(['message' => 'Kategori berjaya dipadam.']);
     }
 }

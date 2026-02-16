@@ -1,9 +1,9 @@
 <template>
     <div class="max-w-3xl mx-auto">
         <div class="mb-6">
-            <router-link :to="{ name: 'roles.index' }" class="text-sm text-gray-500 hover:text-primary-600 mb-1 inline-block">&larr; Back to Roles</router-link>
-            <h1 class="page-title">Create New Role</h1>
-            <p class="page-subtitle">Define a new role with specific permissions</p>
+            <router-link :to="{ name: 'roles.index' }" class="text-sm text-gray-500 hover:text-primary-600 mb-1 inline-block">&larr; Kembali ke Peranan</router-link>
+            <h1 class="page-title">Cipta Peranan Baru</h1>
+            <p class="page-subtitle">Tentukan peranan baru dengan kebenaran khusus</p>
         </div>
 
         <LoadingSpinner v-if="loadingPermissions" full-page />
@@ -16,7 +16,7 @@
 
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <div>
-                                <label class="label-text">Role Name *</label>
+                                <label class="label-text">Nama Peranan *</label>
                                 <input v-model="form.name" @input="generateSlug" type="text" required class="input-field" placeholder="e.g. Content Manager" />
                             </div>
                             <div>
@@ -27,7 +27,7 @@
 
                         <!-- Permissions -->
                         <div>
-                            <label class="label-text mb-3">Permissions</label>
+                            <label class="label-text mb-3">Kebenaran</label>
                             <div class="space-y-4">
                                 <div v-for="(perms, groupName) in groupedPermissions" :key="groupName" class="border border-gray-200 rounded-lg p-4">
                                     <div class="flex items-center gap-3 mb-3">
@@ -59,13 +59,13 @@
                                     </div>
                                 </div>
                             </div>
-                            <p v-if="!Object.keys(groupedPermissions).length" class="text-sm text-gray-400 mt-2">No permissions available.</p>
+                            <p v-if="!Object.keys(groupedPermissions).length" class="text-sm text-gray-400 mt-2">Tiada kebenaran tersedia.</p>
                         </div>
 
                         <div class="flex items-center justify-end gap-3 pt-4 border-t border-gray-100">
-                            <router-link :to="{ name: 'roles.index' }" class="btn-secondary">Cancel</router-link>
+                            <router-link :to="{ name: 'roles.index' }" class="btn-secondary">Batal</router-link>
                             <button type="submit" :disabled="submitting" class="btn-primary">
-                                {{ submitting ? 'Creating...' : 'Create Role' }}
+                                {{ submitting ? 'Mencipta...' : 'Cipta Peranan' }}
                             </button>
                         </div>
                     </form>
@@ -134,7 +134,7 @@ async function fetchPermissions() {
         const { data } = await rolesApi.permissions();
         groupedPermissions.value = data.data;
     } catch {
-        errorMsg.value = 'Failed to load permissions.';
+        errorMsg.value = 'Gagal memuatkan kebenaran.';
     }
     loadingPermissions.value = false;
 }
@@ -148,11 +148,11 @@ async function handleSubmit() {
             slug: form.value.slug,
             permissions: form.value.permissions,
         });
-        notify.success('Role created successfully!');
+        notify.success('Peranan berjaya dicipta!');
         router.push({ name: 'roles.index' });
     } catch (e) {
         const errors = e.response?.data?.errors;
-        errorMsg.value = errors ? Object.values(errors).flat()[0] : 'Failed to create role.';
+        errorMsg.value = errors ? Object.values(errors).flat()[0] : 'Gagal mencipta peranan.';
     } finally {
         submitting.value = false;
     }

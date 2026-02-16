@@ -6,7 +6,7 @@
                     <img src="/jata.png" alt="Logo" class="h-20 w-auto mx-auto drop-shadow-lg" />
                 </div>
                 <h1 class="text-2xl font-bold text-white">{{ settingsStore.systemName }}</h1>
-                <p class="mt-1 text-primary-200 text-sm">Set your new password</p>
+                <p class="mt-1 text-primary-200 text-sm">Tetapkan kata laluan baru anda</p>
             </div>
 
             <div class="bg-white rounded-2xl shadow-xl p-8">
@@ -16,9 +16,9 @@
                             <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                         </svg>
                     </div>
-                    <h2 class="text-lg font-semibold text-gray-900 mb-2">Password Reset</h2>
-                    <p class="text-sm text-gray-600 mb-6">Your password has been reset successfully. You can now log in with your new password.</p>
-                    <router-link :to="{ name: 'login' }" class="btn-primary inline-block">Back to Login</router-link>
+                    <h2 class="text-lg font-semibold text-gray-900 mb-2">Kata Laluan Ditetapkan Semula</h2>
+                    <p class="text-sm text-gray-600 mb-6">Kata laluan anda telah berjaya ditetapkan semula. Anda kini boleh log masuk dengan kata laluan baru anda.</p>
+                    <router-link :to="{ name: 'login' }" class="btn-primary inline-block">Kembali ke Log Masuk</router-link>
                 </div>
 
                 <template v-else>
@@ -26,22 +26,22 @@
                         <div v-if="errorMsg" class="rounded-lg bg-red-50 p-3 text-sm text-red-700">{{ errorMsg }}</div>
 
                         <div>
-                            <label class="label-text">Email</label>
+                            <label class="label-text">E-mel</label>
                             <input v-model="form.email" type="email" required class="input-field" />
                         </div>
 
                         <div>
-                            <label class="label-text">New Password</label>
-                            <input v-model="form.password" type="password" required class="input-field" placeholder="Minimum 8 characters" />
+                            <label class="label-text">Kata Laluan Baru</label>
+                            <input v-model="form.password" type="password" required class="input-field" placeholder="Minimum 8 aksara" />
                         </div>
 
                         <div>
-                            <label class="label-text">Confirm Password</label>
+                            <label class="label-text">Sahkan Kata Laluan</label>
                             <input v-model="form.password_confirmation" type="password" required class="input-field" />
                         </div>
 
                         <button type="submit" :disabled="loading" class="btn-primary w-full">
-                            {{ loading ? 'Resetting...' : 'Reset Password' }}
+                            {{ loading ? 'Menetapkan semula...' : 'Tetapkan Semula Kata Laluan' }}
                         </button>
                     </form>
                 </template>
@@ -82,7 +82,7 @@ async function handleSubmit() {
         await authApi.resetPassword(form.value);
         success.value = true;
     } catch (e) {
-        errorMsg.value = e.response?.data?.errors?.email?.[0] || e.response?.data?.message || 'Failed to reset password.';
+        errorMsg.value = e.response?.data?.errors?.email?.[0] || e.response?.data?.message || 'Gagal menetapkan semula kata laluan.';
     } finally {
         loading.value = false;
     }

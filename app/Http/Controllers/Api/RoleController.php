@@ -45,7 +45,7 @@ class RoleController extends Controller
         $this->activityLogService->log('role_created', $role, "Role created: {$role->name}");
 
         return response()->json([
-            'message' => 'Role created successfully.',
+            'message' => 'Peranan berjaya dicipta.',
             'data' => new RoleResource($role->load('permissions')),
         ], 201);
     }
@@ -74,7 +74,7 @@ class RoleController extends Controller
         $this->activityLogService->log('role_updated', $role, "Role updated: {$role->name}");
 
         return response()->json([
-            'message' => 'Role updated successfully.',
+            'message' => 'Peranan berjaya dikemas kini.',
             'data' => new RoleResource($role->load('permissions')),
         ]);
     }
@@ -87,7 +87,7 @@ class RoleController extends Controller
 
         $role->delete();
 
-        return response()->json(['message' => 'Role deleted successfully.']);
+        return response()->json(['message' => 'Peranan berjaya dipadam.']);
     }
 
     public function permissions(): JsonResponse

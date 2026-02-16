@@ -2,11 +2,11 @@
     <div>
         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6 gap-4">
             <div>
-                <h1 class="page-title">Users</h1>
-                <p class="page-subtitle">Manage user accounts and roles</p>
+                <h1 class="page-title">Pengguna</h1>
+                <p class="page-subtitle">Urus akaun pengguna dan peranan</p>
             </div>
             <router-link v-if="auth.hasPermission('users.create')" :to="{ name: 'users.create' }" class="btn-primary">
-                + New User
+                + Pengguna Baru
             </router-link>
         </div>
 
@@ -17,15 +17,15 @@
         <div class="card mb-6">
             <div class="card-body">
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                    <input v-model="filters.search" @input="debouncedFetch" type="text" placeholder="Search by name or email..." class="input-field" />
+                    <input v-model="filters.search" @input="debouncedFetch" type="text" placeholder="Cari mengikut nama atau e-mel..." class="input-field" />
                     <select v-model="filters.role" @change="fetchUsers" class="input-field">
-                        <option value="">All Roles</option>
+                        <option value="">Semua Peranan</option>
                         <option v-for="r in roles" :key="r.id" :value="r.slug">{{ r.name }}</option>
                     </select>
                     <select v-model="filters.is_active" @change="fetchUsers" class="input-field">
-                        <option value="">All Statuses</option>
-                        <option value="1">Active</option>
-                        <option value="0">Inactive</option>
+                        <option value="">Semua Status</option>
+                        <option value="1">Aktif</option>
+                        <option value="0">Tidak Aktif</option>
                     </select>
                 </div>
             </div>
@@ -43,16 +43,16 @@
                     </div>
                 </template>
                 <template #cell-is_active="{ item }">
-                    <Badge v-if="isPending(item)" color="yellow">Pending</Badge>
-                    <Badge v-else :color="item.is_active ? 'green' : 'red'">{{ item.is_active ? 'Active' : 'Inactive' }}</Badge>
+                    <Badge v-if="isPending(item)" color="yellow">Menunggu</Badge>
+                    <Badge v-else :color="item.is_active ? 'green' : 'red'">{{ item.is_active ? 'Aktif' : 'Tidak Aktif' }}</Badge>
                 </template>
                 <template #cell-created_at="{ item }">
                     <span class="text-xs text-gray-500">{{ formatDate(item.created_at) }}</span>
                 </template>
                 <template #actions="{ item }">
                     <div class="flex items-center gap-2 justify-end">
-                        <button v-if="isPending(item)" @click="openApprove(item)" class="text-xs bg-green-600 hover:bg-green-700 text-white px-2.5 py-1 rounded-md font-medium" title="Approve">
-                            Approve
+                        <button v-if="isPending(item)" @click="openApprove(item)" class="text-xs bg-green-600 hover:bg-green-700 text-white px-2.5 py-1 rounded-md font-medium" title="Luluskan">
+                            Luluskan
                         </button>
                         <router-link v-if="auth.hasPermission('users.edit')" :to="{ name: 'users.edit', params: { id: item.id } }" class="text-gray-400 hover:text-primary-600" title="Edit">
                             <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125" /></svg>
@@ -75,16 +75,16 @@
         <div v-if="showApproveModal" class="fixed inset-0 z-50 flex items-center justify-center p-4">
             <div class="fixed inset-0 bg-black/50" @click="showApproveModal = false"></div>
             <div class="relative bg-white rounded-xl shadow-xl w-full max-w-md p-6">
-                <h3 class="text-lg font-semibold text-gray-900 mb-4">Approve User</h3>
-                <p class="text-sm text-gray-600 mb-4">Approve <strong>{{ approveTarget?.name }}</strong> and assign a role:</p>
+                <h3 class="text-lg font-semibold text-gray-900 mb-4">Luluskan Pengguna</h3>
+                <p class="text-sm text-gray-600 mb-4">Luluskan <strong>{{ approveTarget?.name }}</strong> dan tetapkan peranan:</p>
                 <select v-model="approveRoleId" class="input-field mb-4">
-                    <option value="">Select role</option>
+                    <option value="">Pilih peranan</option>
                     <option v-for="r in roles" :key="r.id" :value="r.id">{{ r.name }}</option>
                 </select>
                 <div class="flex justify-end gap-3">
-                    <button @click="showApproveModal = false" class="btn-secondary">Cancel</button>
+                    <button @click="showApproveModal = false" class="btn-secondary">Batal</button>
                     <button @click="handleApprove" :disabled="!approveRoleId || approving" class="btn-primary">
-                        {{ approving ? 'Approving...' : 'Approve' }}
+                        {{ approving ? 'Meluluskan...' : 'Luluskan' }}
                     </button>
                 </div>
             </div>
@@ -93,9 +93,9 @@
         <!-- Delete Confirm -->
         <ConfirmDialog
             v-model="showDeleteDialog"
-            title="Delete User"
-            :message="`Are you sure you want to delete '${deleteTarget?.name}'? This action cannot be undone.`"
-            confirm-text="Delete"
+            title="Padam Pengguna"
+            :message="`Adakah anda pasti mahu memadam '${deleteTarget?.name}'? Tindakan ini tidak boleh dibatalkan.`"
+            confirm-text="Padam"
             :danger="true"
             @confirm="handleDelete"
         />
@@ -148,7 +148,7 @@ async function handleApprove() {
         showApproveModal.value = false;
         fetchUsers(pagination.currentPage);
     } catch (e) {
-        showAlert('error', e.response?.data?.message || 'Failed to approve user.');
+        showAlert('error', e.response?.data?.message || 'Gagal meluluskan pengguna.');
     }
     approving.value = false;
 }
@@ -160,11 +160,11 @@ const debouncedFetch = () => {
 };
 
 const columns = [
-    { key: 'name', label: 'Name' },
-    { key: 'email', label: 'Email' },
-    { key: 'roles', label: 'Roles' },
+    { key: 'name', label: 'Nama' },
+    { key: 'email', label: 'E-mel' },
+    { key: 'roles', label: 'Peranan' },
     { key: 'is_active', label: 'Status' },
-    { key: 'created_at', label: 'Created' },
+    { key: 'created_at', label: 'Dicipta' },
 ];
 
 async function fetchUsers(page = 1) {
@@ -178,7 +178,7 @@ async function fetchUsers(page = 1) {
         pagination.lastPage = data.meta?.last_page || 1;
         pagination.total = data.meta?.total || 0;
     } catch {
-        showAlert('error', 'Failed to load users.');
+        showAlert('error', 'Gagal memuatkan pengguna.');
     }
     loading.value = false;
 }
@@ -198,9 +198,9 @@ async function handleToggleActive(user) {
     try {
         await usersApi.toggleActive(user.id);
         user.is_active = !user.is_active;
-        showAlert('success', `User '${user.name}' has been ${user.is_active ? 'activated' : 'deactivated'}.`);
+        showAlert('success', `Pengguna '${user.name}' telah ${user.is_active ? 'diaktifkan' : 'dinyahaktifkan'}.`);
     } catch {
-        showAlert('error', 'Failed to update user status.');
+        showAlert('error', 'Gagal mengemas kini status pengguna.');
     }
 }
 
@@ -213,10 +213,10 @@ async function handleDelete() {
     showDeleteDialog.value = false;
     try {
         await usersApi.delete(deleteTarget.value.id);
-        showAlert('success', `User '${deleteTarget.value.name}' has been deleted.`);
+        showAlert('success', `Pengguna '${deleteTarget.value.name}' telah dipadam.`);
         fetchUsers(pagination.currentPage);
     } catch {
-        showAlert('error', 'Failed to delete user.');
+        showAlert('error', 'Gagal memadam pengguna.');
     }
     deleteTarget.value = null;
 }

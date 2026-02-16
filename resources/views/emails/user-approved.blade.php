@@ -1,16 +1,16 @@
 <x-mail::message>
-# Account Approved
+# Akaun Diluluskan
 
-Hello {{ $user->name }},
+Salam {{ $user->name }},
 
-Your account has been approved. You have been assigned the role of **{{ $roleName }}**.
+Akaun anda telah diluluskan. Anda telah diberikan peranan **{{ $roleName }}**.
 
-You can now log in and start using the system.
+Anda kini boleh log masuk dan mula menggunakan sistem.
 
 <x-mail::button :url="config('app.url')">
-Log In
+Log Masuk
 </x-mail::button>
 
-Thank you,<br>
+Terima kasih,<br>
 {{ config('app.name') }}
 </x-mail::message>

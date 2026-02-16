@@ -13,8 +13,8 @@
                 <svg class="mx-auto h-10 w-10 text-gray-400" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" />
                 </svg>
-                <p class="mt-2 text-sm text-gray-600">Click or drag files here</p>
-                <p class="mt-1 text-xs text-gray-400">Max {{ maxFiles }} files, {{ maxSizeMb }}MB each</p>
+                <p class="mt-2 text-sm text-gray-600">Klik atau seret fail di sini</p>
+                <p class="mt-1 text-xs text-gray-400">Maksimum {{ maxFiles }} fail, {{ maxSizeMb }}MB setiap satu</p>
             </div>
         </div>
         <input ref="fileInput" type="file" :multiple="multiple" :accept="accept" class="hidden" @change="handleSelect" />
@@ -39,7 +39,7 @@
 import { ref } from 'vue';
 
 const props = defineProps({
-    label: { type: String, default: 'Attachments' },
+    label: { type: String, default: 'Lampiran' },
     multiple: { type: Boolean, default: true },
     accept: { type: String, default: '.jpg,.jpeg,.png,.gif,.webp,.pdf,.doc,.docx,.xls,.xlsx' },
     maxFiles: { type: Number, default: 10 },

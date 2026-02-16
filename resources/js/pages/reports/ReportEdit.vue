@@ -1,8 +1,8 @@
 <template>
     <div class="max-w-3xl mx-auto">
         <div class="mb-6">
-            <router-link :to="{ name: 'reports.show', params: { id: reportId } }" class="text-sm text-gray-500 hover:text-primary-600 mb-1 inline-block">&larr; Back</router-link>
-            <h1 class="page-title">Edit Report</h1>
+            <router-link :to="{ name: 'reports.show', params: { id: reportId } }" class="text-sm text-gray-500 hover:text-primary-600 mb-1 inline-block">&larr; Kembali</router-link>
+            <h1 class="page-title">Edit Laporan</h1>
         </div>
 
         <LoadingSpinner v-if="loading" full-page />
@@ -13,34 +13,34 @@
                     <div v-if="errorMsg" class="rounded-lg bg-red-50 p-3 text-sm text-red-700">{{ errorMsg }}</div>
 
                     <div>
-                        <label class="label-text">Title *</label>
+                        <label class="label-text">Tajuk *</label>
                         <input v-model="form.title" type="text" required class="input-field" />
                     </div>
 
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div>
-                            <label class="label-text">Category *</label>
+                            <label class="label-text">Kategori *</label>
                             <select v-model="form.category" required class="input-field">
                                 <option v-for="c in categoryOptions" :key="c" :value="c">{{ c }}</option>
                             </select>
                         </div>
                         <div>
-                            <label class="label-text">Date *</label>
+                            <label class="label-text">Tarikh *</label>
                             <input v-model="form.incident_date" type="date" required class="input-field" />
                         </div>
                     </div>
 
                     <div>
-                        <label class="label-text">Report *</label>
+                        <label class="label-text">Laporan *</label>
                         <RichTextEditor v-model="form.description" />
                     </div>
 
-                    <FileUpload v-model="newAttachments" label="Add More Attachments" />
+                    <FileUpload v-model="newAttachments" label="Tambah Lampiran Lagi" />
 
                     <div class="flex items-center justify-end gap-3 pt-4 border-t border-gray-100">
-                        <router-link :to="{ name: 'reports.show', params: { id: reportId } }" class="btn-secondary">Cancel</router-link>
+                        <router-link :to="{ name: 'reports.show', params: { id: reportId } }" class="btn-secondary">Batal</router-link>
                         <button type="submit" :disabled="submitting" class="btn-primary">
-                            {{ submitting ? 'Saving...' : 'Save Changes' }}
+                            {{ submitting ? 'Menyimpan...' : 'Simpan Perubahan' }}
                         </button>
                     </div>
                 </form>
@@ -93,11 +93,11 @@ async function handleSubmit() {
         Object.entries(form.value).forEach(([key, val]) => formData.append(key, val));
         newAttachments.value.forEach((file) => formData.append('attachments[]', file));
         await reportsApi.update(reportId.value, formData);
-        notify.success('Report updated!');
+        notify.success('Laporan dikemas kini!');
         router.push({ name: 'reports.show', params: { id: reportId.value } });
     } catch (e) {
         const errors = e.response?.data?.errors;
-        errorMsg.value = errors ? Object.values(errors).flat()[0] : 'Failed to update.';
+        errorMsg.value = errors ? Object.values(errors).flat()[0] : 'Gagal mengemas kini.';
     } finally { submitting.value = false; }
 }
 </script>

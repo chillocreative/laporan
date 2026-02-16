@@ -28,11 +28,11 @@ class SettingsController extends Controller
             'captcha' => $this->settingsService->updateCaptcha($request->validated()),
             'smtp' => $this->settingsService->updateSmtp($request->validated()),
             'branding' => $this->settingsService->updateLogo($request->file('logo')),
-            default => abort(404, 'Settings group not found.'),
+            default => abort(404, 'Kumpulan tetapan tidak ditemui.'),
         };
 
         return response()->json([
-            'message' => 'Settings updated successfully.',
+            'message' => 'Tetapan berjaya dikemas kini.',
             'data' => $this->settingsService->getAllSettings(),
         ]);
     }

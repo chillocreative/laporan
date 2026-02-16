@@ -38,7 +38,7 @@ class AuthService
             $this->securityLogService->logFailedLogin($credentials['email']);
 
             throw ValidationException::withMessages([
-                'email' => ['The provided credentials are incorrect.'],
+                'email' => ['Maklumat log masuk yang diberikan tidak tepat.'],
             ]);
         }
 
@@ -46,8 +46,8 @@ class AuthService
             $hasRoles = $user->roles()->exists();
             throw ValidationException::withMessages([
                 'email' => [$hasRoles
-                    ? 'Your account has been deactivated.'
-                    : 'Your account is pending approval from an administrator.'],
+                    ? 'Akaun anda telah dinyahaktifkan.'
+                    : 'Akaun anda sedang menunggu kelulusan daripada pentadbir.'],
             ]);
         }
 

@@ -6,7 +6,7 @@
                     <img src="/jata.png" alt="Logo" class="h-20 w-auto mx-auto drop-shadow-lg" />
                 </div>
                 <h1 class="text-2xl font-bold text-white">{{ settingsStore.systemName }}</h1>
-                <p class="mt-1 text-primary-200 text-sm">Reset your password</p>
+                <p class="mt-1 text-primary-200 text-sm">Tetapkan semula kata laluan anda</p>
             </div>
 
             <div class="bg-white rounded-2xl shadow-xl p-8">
@@ -16,30 +16,30 @@
                             <path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" />
                         </svg>
                     </div>
-                    <h2 class="text-lg font-semibold text-gray-900 mb-2">Check Your Email</h2>
-                    <p class="text-sm text-gray-600 mb-6">We've sent a password reset link to your email address. Please check your inbox.</p>
-                    <router-link :to="{ name: 'login' }" class="btn-primary inline-block">Back to Login</router-link>
+                    <h2 class="text-lg font-semibold text-gray-900 mb-2">Semak E-mel Anda</h2>
+                    <p class="text-sm text-gray-600 mb-6">Kami telah menghantar pautan tetapan semula kata laluan ke alamat e-mel anda. Sila semak peti masuk anda.</p>
+                    <router-link :to="{ name: 'login' }" class="btn-primary inline-block">Kembali ke Log Masuk</router-link>
                 </div>
 
                 <template v-else>
-                    <p class="text-sm text-gray-600 mb-5">Enter your email address and we'll send you a link to reset your password.</p>
+                    <p class="text-sm text-gray-600 mb-5">Masukkan alamat e-mel anda dan kami akan menghantar pautan untuk menetapkan semula kata laluan anda.</p>
 
                     <form @submit.prevent="handleSubmit" class="space-y-5">
                         <div v-if="errorMsg" class="rounded-lg bg-red-50 p-3 text-sm text-red-700">{{ errorMsg }}</div>
 
                         <div>
-                            <label class="label-text">Email</label>
+                            <label class="label-text">E-mel</label>
                             <input v-model="form.email" type="email" required class="input-field" placeholder="your@email.com" />
                         </div>
 
                         <button type="submit" :disabled="loading" class="btn-primary w-full">
-                            {{ loading ? 'Sending...' : 'Send Reset Link' }}
+                            {{ loading ? 'Menghantar...' : 'Hantar Pautan Tetapan Semula' }}
                         </button>
                     </form>
 
                     <p class="mt-6 text-center text-sm text-gray-500">
-                        Remember your password?
-                        <router-link :to="{ name: 'login' }" class="font-medium text-primary-600 hover:text-primary-500">Sign in</router-link>
+                        Ingat kata laluan anda?
+                        <router-link :to="{ name: 'login' }" class="font-medium text-primary-600 hover:text-primary-500">Log masuk</router-link>
                     </p>
                 </template>
             </div>
@@ -69,7 +69,7 @@ async function handleSubmit() {
         await authApi.forgotPassword(form.value);
         sent.value = true;
     } catch (e) {
-        errorMsg.value = e.response?.data?.errors?.email?.[0] || e.response?.data?.message || 'Failed to send reset link.';
+        errorMsg.value = e.response?.data?.errors?.email?.[0] || e.response?.data?.message || 'Gagal menghantar pautan tetapan semula.';
     } finally {
         loading.value = false;
     }

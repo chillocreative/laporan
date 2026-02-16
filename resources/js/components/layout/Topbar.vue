@@ -56,7 +56,7 @@
                         <svg class="h-4 w-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
                         </svg>
-                        Profile
+                        Profil
                     </router-link>
 
                     <div class="border-t border-gray-100">
@@ -67,7 +67,7 @@
                             <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15m3 0l3-3m0 0l-3-3m3 3H9" />
                             </svg>
-                            Logout
+                            Log Keluar
                         </button>
                     </div>
                 </div>
@@ -100,22 +100,22 @@ const initials = computed(() => {
 const pageTitle = computed(() => {
     const titles = {
         'dashboard': 'Dashboard',
-        'reports.index': 'Reports',
-        'reports.create': 'New Report',
-        'reports.show': 'Report Details',
-        'reports.edit': 'Edit Report',
-        'users.index': 'Users',
-        'users.create': 'New User',
-        'users.edit': 'Edit User',
-        'roles.index': 'Roles',
-        'roles.create': 'New Role',
-        'roles.edit': 'Edit Role',
-        'categories.index': 'Categories',
-        'settings': 'Settings',
-        'logs.activity': 'Activity Logs',
-        'logs.security': 'Security Logs',
-        'logs.ai': 'AI Logs',
-        'profile': 'Profile',
+        'reports.index': 'Laporan',
+        'reports.create': 'Laporan Baru',
+        'reports.show': 'Butiran Laporan',
+        'reports.edit': 'Edit Laporan',
+        'users.index': 'Pengguna',
+        'users.create': 'Pengguna Baru',
+        'users.edit': 'Edit Pengguna',
+        'roles.index': 'Peranan',
+        'roles.create': 'Peranan Baru',
+        'roles.edit': 'Edit Peranan',
+        'categories.index': 'Kategori',
+        'settings': 'Tetapan',
+        'logs.activity': 'Log Aktiviti',
+        'logs.security': 'Log Keselamatan',
+        'logs.ai': 'Log AI',
+        'profile': 'Profil',
     };
     return titles[route.name] || 'Sistem Pelaporan';
 });

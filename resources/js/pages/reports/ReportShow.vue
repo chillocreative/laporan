@@ -4,12 +4,12 @@
         <template v-else-if="report">
             <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6 gap-4">
                 <div>
-                    <router-link :to="{ name: 'reports.index' }" class="text-sm text-gray-500 hover:text-primary-600 mb-1 inline-block">&larr; Back to Reports</router-link>
+                    <router-link :to="{ name: 'reports.index' }" class="text-sm text-gray-500 hover:text-primary-600 mb-1 inline-block">&larr; Kembali ke Laporan</router-link>
                     <h1 class="page-title">{{ report.title }}</h1>
                 </div>
                 <div class="flex gap-2">
                     <router-link v-if="canEdit" :to="{ name: 'reports.edit', params: { id: report.id } }" class="btn-secondary btn-sm">Edit</router-link>
-                    <button v-if="canDelete" @click="showDeleteDialog = true" class="btn-danger btn-sm">Delete</button>
+                    <button v-if="canDelete" @click="showDeleteDialog = true" class="btn-danger btn-sm">Padam</button>
                 </div>
             </div>
 
@@ -17,14 +17,14 @@
                 <!-- Main content -->
                 <div class="lg:col-span-2 space-y-6">
                     <div class="card">
-                        <div class="card-header"><h3 class="font-semibold text-gray-900">Report Details</h3></div>
+                        <div class="card-header"><h3 class="font-semibold text-gray-900">Butiran Laporan</h3></div>
                         <div class="card-body space-y-4">
                             <div class="grid grid-cols-2 gap-4 text-sm">
-                                <div><span class="text-gray-500">Category:</span><p class="font-medium">{{ report.category }}</p></div>
-                                <div><span class="text-gray-500">Date:</span><p class="font-medium">{{ report.incident_date }}</p></div>
+                                <div><span class="text-gray-500">Kategori:</span><p class="font-medium">{{ report.category }}</p></div>
+                                <div><span class="text-gray-500">Tarikh:</span><p class="font-medium">{{ report.incident_date }}</p></div>
                             </div>
                             <div>
-                                <span class="text-sm text-gray-500">Report:</span>
+                                <span class="text-sm text-gray-500">Laporan:</span>
                                 <div class="mt-1 text-sm text-gray-700 prose prose-sm max-w-none" v-html="report.description"></div>
                             </div>
                         </div>
@@ -32,7 +32,7 @@
 
                     <!-- Attachments -->
                     <div v-if="report.attachments?.length" class="card">
-                        <div class="card-header"><h3 class="font-semibold text-gray-900">Attachments ({{ report.attachments.length }})</h3></div>
+                        <div class="card-header"><h3 class="font-semibold text-gray-900">Lampiran ({{ report.attachments.length }})</h3></div>
                         <div class="card-body">
                             <ul class="divide-y divide-gray-100">
                                 <li v-for="att in report.attachments" :key="att.id" class="flex items-center justify-between py-2.5">
@@ -59,7 +59,7 @@
                         <div class="card-header flex items-center justify-between">
                             <div class="flex items-center gap-2">
                                 <svg class="h-5 w-5 text-indigo-500" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9.75 3.104v5.714a2.25 2.25 0 01-.659 1.591L5 14.5M9.75 3.104c-.251.023-.501.05-.75.082m.75-.082a24.301 24.301 0 014.5 0m0 0v5.714c0 .597.237 1.17.659 1.591L19.8 15.3M14.25 3.104c.251.023.501.05.75.082M19.8 15.3l-1.57.393A9.065 9.065 0 0112 15a9.065 9.065 0 00-6.23.693L5 14.5m14.8.8l1.402 1.402c1.232 1.232.65 3.318-1.067 3.611A48.309 48.309 0 0112 21c-2.773 0-5.491-.235-8.135-.687-1.718-.293-2.3-2.379-1.067-3.61L5 14.5" /></svg>
-                                <h3 class="font-semibold text-gray-900">AI Analysis</h3>
+                                <h3 class="font-semibold text-gray-900">Analisis AI</h3>
                             </div>
                             <button
                                 v-if="auth.hasPermission('ai.trigger')"
@@ -67,36 +67,36 @@
                                 :disabled="analyzingAI"
                                 class="btn-secondary btn-sm text-xs"
                             >
-                                {{ analyzingAI ? 'Analyzing...' : (report.ai_analysis ? 'Re-analyze' : 'Trigger Analysis') }}
+                                {{ analyzingAI ? 'Menganalisis...' : (report.ai_analysis ? 'Analisis Semula' : 'Mulakan Analisis') }}
                             </button>
                         </div>
                         <div v-if="report.ai_analysis" class="card-body space-y-4">
                             <div class="grid grid-cols-2 gap-4">
                                 <div class="text-center p-3 rounded-lg bg-gray-50">
-                                    <p class="text-xs text-gray-500 mb-1">Risk Level</p>
+                                    <p class="text-xs text-gray-500 mb-1">Tahap Risiko</p>
                                     <Badge :color="report.ai_analysis.risk_level?.color">{{ report.ai_analysis.risk_level?.label }}</Badge>
                                 </div>
                                 <div class="text-center p-3 rounded-lg bg-gray-50">
-                                    <p class="text-xs text-gray-500 mb-1">Urgency</p>
+                                    <p class="text-xs text-gray-500 mb-1">Skala Risiko</p>
                                     <p class="text-lg font-bold text-gray-900">{{ report.ai_analysis.urgency_score }}/10</p>
                                 </div>
                             </div>
                             <div>
-                                <p class="text-xs font-medium text-gray-500 mb-1">Summary</p>
+                                <p class="text-xs font-medium text-gray-500 mb-1">Ringkasan</p>
                                 <p class="text-sm text-gray-700">{{ report.ai_analysis.summary }}</p>
                             </div>
                             <div>
-                                <p class="text-xs font-medium text-gray-500 mb-1">Recommended Action</p>
+                                <p class="text-xs font-medium text-gray-500 mb-1">Tindakan Disyorkan</p>
                                 <p class="text-sm text-gray-700">{{ report.ai_analysis.recommended_action }}</p>
                             </div>
                             <div v-if="report.ai_analysis.related_issue">
-                                <p class="text-xs font-medium text-gray-500 mb-1">Related Issue</p>
+                                <p class="text-xs font-medium text-gray-500 mb-1">Isu Berkaitan</p>
                                 <p class="text-sm text-gray-700">{{ report.ai_analysis.related_issue }}</p>
                             </div>
-                            <p class="text-xs text-gray-400">Analyzed {{ formatDateTime(report.ai_analysis.analyzed_at) }}</p>
+                            <p class="text-xs text-gray-400">Dianalisis {{ formatDateTime(report.ai_analysis.analyzed_at) }}</p>
                         </div>
                         <div v-else class="card-body">
-                            <p class="text-sm text-gray-400 text-center py-4">No AI analysis yet. {{ auth.hasPermission('ai.trigger') ? 'Click "Trigger Analysis" to start.' : 'An admin can trigger analysis.' }}</p>
+                            <p class="text-sm text-gray-400 text-center py-4">Tiada analisis AI lagi. {{ auth.hasPermission('ai.trigger') ? 'Klik "Mulakan Analisis" untuk bermula.' : 'Pentadbir boleh memulakan analisis.' }}</p>
                         </div>
                     </div>
                 </div>
@@ -104,11 +104,11 @@
                 <!-- Sidebar -->
                 <div class="space-y-6">
                     <div class="card">
-                        <div class="card-header"><h3 class="font-semibold text-gray-900">Info</h3></div>
+                        <div class="card-header"><h3 class="font-semibold text-gray-900">Maklumat</h3></div>
                         <div class="card-body text-sm space-y-3">
-                            <div><span class="text-gray-500">Submitted by:</span><p class="font-medium">{{ report.user?.name }}</p></div>
-                            <div><span class="text-gray-500">Created:</span><p class="font-medium">{{ formatDateTime(report.created_at) }}</p></div>
-                            <div><span class="text-gray-500">Updated:</span><p class="font-medium">{{ formatDateTime(report.updated_at) }}</p></div>
+                            <div><span class="text-gray-500">Dihantar oleh:</span><p class="font-medium">{{ report.user?.name }}</p></div>
+                            <div><span class="text-gray-500">Dicipta:</span><p class="font-medium">{{ formatDateTime(report.created_at) }}</p></div>
+                            <div><span class="text-gray-500">Dikemas kini:</span><p class="font-medium">{{ formatDateTime(report.updated_at) }}</p></div>
                         </div>
                     </div>
 
@@ -116,7 +116,7 @@
             </div>
         </template>
 
-        <ConfirmDialog v-model="showDeleteDialog" title="Delete Report" message="Are you sure you want to delete this report? This action cannot be undone." confirm-text="Delete" :danger="true" @confirm="handleDelete" />
+        <ConfirmDialog v-model="showDeleteDialog" title="Padam Laporan" message="Adakah anda pasti mahu memadam laporan ini? Tindakan ini tidak boleh dibatalkan." confirm-text="Padam" :danger="true" @confirm="handleDelete" />
     </div>
 </template>
 
@@ -166,9 +166,9 @@ async function fetchReport() {
 async function handleDelete() {
     try {
         await reportsApi.delete(reportId.value);
-        notify.success('Report deleted.');
+        notify.success('Laporan dipadam.');
         router.push({ name: 'reports.index' });
-    } catch { notify.error('Failed to delete report.'); }
+    } catch { notify.error('Gagal memadam laporan.'); }
     showDeleteDialog.value = false;
 }
 
@@ -183,7 +183,7 @@ async function triggerAI() {
             notify.error(data.message || 'AI analysis failed.');
         }
     } catch (e) {
-        notify.error(e.response?.data?.message || 'Failed to trigger AI analysis.');
+        notify.error(e.response?.data?.message || 'Gagal mencetuskan analisis AI.');
     }
     analyzingAI.value = false;
 }

@@ -124,7 +124,7 @@ class OpenAIService
 
     protected function getSystemPrompt(): string
     {
-        return 'You are a public issue analysis assistant specialized in Malaysian local governance, community reports, infrastructure issues, safety, and viral public matters. You analyze reports objectively and provide structured risk assessment. You must respond with valid JSON only.';
+        return 'You are a public issue analysis assistant specialized in Malaysian local governance, community reports, infrastructure issues, safety, and viral public matters. You analyze reports objectively and provide structured risk assessment. You must respond with valid JSON only. IMPORTANT: All text values in your response (summary, recommended_action, related_current_issue) MUST be written in Bahasa Malaysia (Malay language).';
     }
 
     protected function buildUserPayload(Report $report): string

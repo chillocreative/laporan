@@ -19,7 +19,7 @@
                         {{ col.label }}
                     </th>
                     <th v-if="$slots.actions" class="px-4 py-3 text-right text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                        Actions
+                        Tindakan
                     </th>
                 </tr>
             </thead>
@@ -57,7 +57,7 @@ defineProps({
     columns: { type: Array, required: true },
     items: { type: Array, default: () => [] },
     loading: { type: Boolean, default: false },
-    emptyText: { type: String, default: 'No records found.' },
+    emptyText: { type: String, default: 'Tiada rekod ditemui.' },
 });
 
 function getNestedValue(obj, path) {

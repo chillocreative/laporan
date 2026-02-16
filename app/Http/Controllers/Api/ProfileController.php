@@ -22,7 +22,7 @@ class ProfileController extends Controller
 
         $user->update($validated);
 
-        return response()->json(['message' => 'Profile updated successfully.']);
+        return response()->json(['message' => 'Profil berjaya dikemas kini.']);
     }
 
     public function updatePassword(Request $request): JsonResponse
@@ -36,6 +36,6 @@ class ProfileController extends Controller
             'password' => Hash::make($validated['password']),
         ]);
 
-        return response()->json(['message' => 'Password updated successfully.']);
+        return response()->json(['message' => 'Kata laluan berjaya dikemas kini.']);
     }
 }

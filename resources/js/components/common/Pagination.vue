@@ -1,15 +1,15 @@
 <template>
     <div v-if="lastPage > 1" class="flex items-center justify-between px-2 py-3">
         <p class="text-sm text-gray-500">
-            Showing page <span class="font-medium">{{ currentPage }}</span> of <span class="font-medium">{{ lastPage }}</span>
-            <span class="hidden sm:inline"> ({{ total }} total)</span>
+            Halaman <span class="font-medium">{{ currentPage }}</span> daripada <span class="font-medium">{{ lastPage }}</span>
+            <span class="hidden sm:inline"> ({{ total }} jumlah)</span>
         </p>
         <nav class="flex gap-1">
             <button
                 @click="$emit('page-change', currentPage - 1)"
                 :disabled="currentPage <= 1"
                 class="px-3 py-1.5 text-sm rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed"
-            >Prev</button>
+            >Sebelum</button>
             <template v-for="page in visiblePages" :key="page">
                 <span v-if="page === '...'" class="px-2 py-1.5 text-sm text-gray-400">...</span>
                 <button
@@ -23,7 +23,7 @@
                 @click="$emit('page-change', currentPage + 1)"
                 :disabled="currentPage >= lastPage"
                 class="px-3 py-1.5 text-sm rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed"
-            >Next</button>
+            >Seterusnya</button>
         </nav>
     </div>
 </template>

@@ -39,9 +39,9 @@ class StoreReportRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'attachments.max' => 'You can upload a maximum of 10 files.',
-            'attachments.*.max' => 'Each file must be less than 5MB.',
-            'attachments.*.mimes' => 'Only images, PDFs, and Office documents are allowed.',
+            'attachments.max' => 'Anda boleh memuat naik maksimum 10 fail.',
+            'attachments.*.max' => 'Setiap fail mestilah kurang daripada 5MB.',
+            'attachments.*.mimes' => 'Hanya imej, PDF, dan dokumen Office dibenarkan.',
         ];
     }
 }

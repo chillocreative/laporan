@@ -3,7 +3,7 @@
         <p class="text-sm text-gray-600">{{ message }}</p>
         <template #footer>
             <div class="flex justify-end gap-3">
-                <button class="btn-secondary btn-sm" @click="$emit('update:modelValue', false)">Cancel</button>
+                <button class="btn-secondary btn-sm" @click="$emit('update:modelValue', false)">Batal</button>
                 <button :class="confirmClass" class="btn-sm" @click="$emit('confirm')">{{ confirmText }}</button>
             </div>
         </template>
@@ -16,9 +16,9 @@ import Modal from './Modal.vue';
 
 const props = defineProps({
     modelValue: Boolean,
-    title: { type: String, default: 'Confirm Action' },
-    message: { type: String, default: 'Are you sure?' },
-    confirmText: { type: String, default: 'Confirm' },
+    title: { type: String, default: 'Sahkan Tindakan' },
+    message: { type: String, default: 'Adakah anda pasti?' },
+    confirmText: { type: String, default: 'Sahkan' },
     danger: { type: Boolean, default: false },
 });
 

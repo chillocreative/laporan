@@ -1,15 +1,15 @@
 <template>
     <div class="max-w-3xl mx-auto">
         <div class="mb-6">
-            <router-link :to="{ name: 'roles.index' }" class="text-sm text-gray-500 hover:text-primary-600 mb-1 inline-block">&larr; Back to Roles</router-link>
-            <h1 class="page-title">Edit Role</h1>
+            <router-link :to="{ name: 'roles.index' }" class="text-sm text-gray-500 hover:text-primary-600 mb-1 inline-block">&larr; Kembali ke Peranan</router-link>
+            <h1 class="page-title">Edit Peranan</h1>
         </div>
 
         <LoadingSpinner v-if="loading" full-page />
 
         <template v-else>
             <Alert v-if="role?.is_system" type="warning" class="mb-6">
-                This is a system role. Changes may affect core application functionality. Proceed with caution.
+                Ini adalah peranan sistem. Perubahan mungkin menjejaskan fungsi teras aplikasi. Teruskan dengan berhati-hati.
             </Alert>
 
             <div class="card">
@@ -19,7 +19,7 @@
 
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <div>
-                                <label class="label-text">Role Name *</label>
+                                <label class="label-text">Nama Peranan *</label>
                                 <input v-model="form.name" @input="generateSlug" type="text" required class="input-field" placeholder="e.g. Content Manager" />
                             </div>
                             <div>
@@ -30,7 +30,7 @@
 
                         <!-- Permissions -->
                         <div>
-                            <label class="label-text mb-3">Permissions</label>
+                            <label class="label-text mb-3">Kebenaran</label>
                             <div class="space-y-4">
                                 <div v-for="(perms, groupName) in groupedPermissions" :key="groupName" class="border border-gray-200 rounded-lg p-4">
                                     <div class="flex items-center gap-3 mb-3">
@@ -62,13 +62,13 @@
                                     </div>
                                 </div>
                             </div>
-                            <p v-if="!Object.keys(groupedPermissions).length" class="text-sm text-gray-400 mt-2">No permissions available.</p>
+                            <p v-if="!Object.keys(groupedPermissions).length" class="text-sm text-gray-400 mt-2">Tiada kebenaran tersedia.</p>
                         </div>
 
                         <div class="flex items-center justify-end gap-3 pt-4 border-t border-gray-100">
-                            <router-link :to="{ name: 'roles.index' }" class="btn-secondary">Cancel</router-link>
+                            <router-link :to="{ name: 'roles.index' }" class="btn-secondary">Batal</router-link>
                             <button type="submit" :disabled="submitting" class="btn-primary">
-                                {{ submitting ? 'Saving...' : 'Save Changes' }}
+                                {{ submitting ? 'Menyimpan...' : 'Simpan Perubahan' }}
                             </button>
                         </div>
                     </form>
@@ -153,7 +153,7 @@ async function loadData() {
             permissions: (role.value.permissions || []).map(p => p.id),
         };
     } catch {
-        notify.error('Failed to load role data.');
+        notify.error('Gagal memuatkan data peranan.');
         router.push({ name: 'roles.index' });
     }
     loading.value = false;
@@ -168,11 +168,11 @@ async function handleSubmit() {
             slug: form.value.slug,
             permissions: form.value.permissions,
         });
-        notify.success('Role updated successfully!');
+        notify.success('Peranan berjaya dikemas kini!');
         router.push({ name: 'roles.index' });
     } catch (e) {
         const errors = e.response?.data?.errors;
-        errorMsg.value = errors ? Object.values(errors).flat()[0] : 'Failed to update role.';
+        errorMsg.value = errors ? Object.values(errors).flat()[0] : 'Gagal mengemas kini peranan.';
     } finally {
         submitting.value = false;
     }

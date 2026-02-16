@@ -78,7 +78,7 @@ class FileUploadService
 
         if (! in_array($realMimeType, $this->allowedMimeTypes)) {
             throw new \InvalidArgumentException(
-                "File type '{$realMimeType}' is not allowed."
+                "Jenis fail '{$realMimeType}' tidak dibenarkan."
             );
         }
 
@@ -89,7 +89,7 @@ class FileUploadService
         if ($file->getSize() > $maxSize) {
             $maxMb = $maxSize / 1024 / 1024;
             throw new \InvalidArgumentException(
-                "File size exceeds the maximum allowed size of {$maxMb}MB."
+                "Saiz fail melebihi had maksimum {$maxMb}MB."
             );
         }
     }
