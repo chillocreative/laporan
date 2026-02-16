@@ -90,18 +90,26 @@ class PermissionSeeder extends Seeder
             $admin->permissions()->sync($adminPerms);
         }
 
-        // User permissions
+        // Regular user permissions (same for User role and all other roles)
+        $userPerms = Permission::whereIn('slug', [
+            'reports.view-own',
+            'reports.create',
+            'reports.edit-own',
+            'reports.delete-own',
+            'monitoring.dashboard-own',
+            'ai.view-results',
+        ])->pluck('id');
+
+        // Assign to User role
         $user = Role::where('slug', 'user')->first();
         if ($user) {
-            $userPerms = Permission::whereIn('slug', [
-                'reports.view-own',
-                'reports.create',
-                'reports.edit-own',
-                'reports.delete-own',
-                'monitoring.dashboard-own',
-                'ai.view-results',
-            ])->pluck('id');
             $user->permissions()->sync($userPerms);
+        }
+
+        // Assign same permissions to ALL other roles (except super-admin and admin)
+        $otherRoles = Role::whereNotIn('slug', ['super-admin', 'admin'])->get();
+        foreach ($otherRoles as $role) {
+            $role->permissions()->sync($userPerms);
         }
     }
 }
