@@ -1,0 +1,1 @@
+import{D as r}from"./app-ClAtGGNd.js";const o={list(){return r.get("/roles")},get(e){return r.get(`/roles/${e}`)},create(e){return r.post("/roles",e)},update(e,s){return r.put(`/roles/${e}`,s)},delete(e){return r.delete(`/roles/${e}`)},permissions(){return r.get("/permissions")},assignable(){return r.get("/roles/assignable")}};export{o as r};
