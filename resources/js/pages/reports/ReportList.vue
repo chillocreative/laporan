@@ -133,7 +133,7 @@ onMounted(() => {
     fetchReports();
     categoriesApi.active().then(({ data }) => { categoryOptions.value = data.data; }).catch(() => {});
     if (auth.hasPermission('users.view-all')) {
-        usersApi.list({ per_page: 1000 }).then(({ data }) => { userOptions.value = data.data; }).catch(() => {});
+        usersApi.list({ per_page: 1000, exclude_admin_roles: true }).then(({ data }) => { userOptions.value = data.data; }).catch(() => {});
     }
     if (auth.hasPermission('users.view-all') || auth.hasPermission('roles.view')) {
         rolesApi.list({ per_page: 100 }).then(({ data }) => { roleOptions.value = data.data; }).catch(() => {});

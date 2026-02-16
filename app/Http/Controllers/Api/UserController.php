@@ -27,6 +27,13 @@ class UserController extends Controller
 
         $users = $this->userRepository->getWithRoles($request->integer('per_page', 15));
 
+        // Exclude admin/super-admin users if requested (for filter dropdowns)
+        if ($request->boolean('exclude_admin_roles')) {
+            $users = $users->filter(function ($user) {
+                return ! $user->hasAnyRole(['super-admin', 'admin']);
+            });
+        }
+
         return response()->json(UserResource::collection($users)->response()->getData(true));
     }
 
