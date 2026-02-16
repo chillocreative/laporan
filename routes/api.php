@@ -83,13 +83,24 @@ Route::middleware('auth:sanctum')->group(function () {
 
     /*
     |----------------------------------------------------------------------
+    | Admin & Super Admin Routes
+    |----------------------------------------------------------------------
+    */
+
+    // Roles (read-only for Admins, full CRUD for Super Admins)
+    Route::middleware('role:super-admin,admin')->group(function () {
+        Route::get('/roles', [RoleController::class, 'index']);
+    });
+
+    /*
+    |----------------------------------------------------------------------
     | Super Admin Routes
     |----------------------------------------------------------------------
     */
 
     Route::middleware('role:super-admin')->group(function () {
-        // Roles & Permissions
-        Route::apiResource('roles', RoleController::class);
+        // Roles & Permissions (management - Super Admin only)
+        Route::apiResource('roles', RoleController::class)->except(['index']);
         Route::get('/permissions', [RoleController::class, 'permissions']);
 
         // Settings
