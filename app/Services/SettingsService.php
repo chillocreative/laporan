@@ -148,13 +148,21 @@ class SettingsService
         $smtp = $this->getByGroup('smtp');
 
         if (! empty($smtp['smtp_host'])) {
+            // Map encryption setting to Laravel 11 / Symfony Mailer scheme
+            $encryption = $smtp['smtp_encryption'] ?? 'tls';
+            $scheme = match ($encryption) {
+                'ssl' => 'smtps',
+                'none' => 'smtp',
+                default => null, // tls: Symfony auto-negotiates STARTTLS
+            };
+
             config([
                 'mail.default' => 'smtp',
+                'mail.mailers.smtp.scheme' => $scheme,
                 'mail.mailers.smtp.host' => $smtp['smtp_host'],
                 'mail.mailers.smtp.port' => (int) ($smtp['smtp_port'] ?? 587),
                 'mail.mailers.smtp.username' => $smtp['smtp_username'] ?? null,
                 'mail.mailers.smtp.password' => $smtp['smtp_password'] ?? null,
-                'mail.mailers.smtp.encryption' => $smtp['smtp_encryption'] ?? 'tls',
                 'mail.from.address' => $smtp['smtp_from_address'] ?? config('mail.from.address'),
                 'mail.from.name' => $smtp['smtp_from_name'] ?? config('mail.from.name'),
             ]);
