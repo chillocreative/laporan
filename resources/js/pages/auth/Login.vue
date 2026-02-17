@@ -40,6 +40,10 @@
                     <router-link :to="{ name: 'register' }" class="font-medium text-primary-600 hover:text-primary-500">Daftar</router-link>
                 </p>
             </div>
+
+            <div class="mt-6 text-center">
+                <p class="text-[11px] text-primary-200/60">&copy; {{ settingsStore.systemName }} {{ new Date().getFullYear() }} &middot; Build &amp; Design by: <a href="https://www.chillocreative.com" target="_blank" class="text-primary-200/80 hover:text-white transition-colors">Chillo Creative</a></p>
+            </div>
         </div>
     </div>
 </template>
