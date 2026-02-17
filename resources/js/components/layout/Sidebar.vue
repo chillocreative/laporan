@@ -36,6 +36,15 @@
             </template>
         </nav>
 
+        <!-- Copyright -->
+        <div class="px-4 py-3 border-t border-white/10">
+            <p class="text-[10px] text-primary-300/70 text-center leading-relaxed">
+                &copy; {{ settingsStore.systemName }} {{ new Date().getFullYear() }}
+            </p>
+            <p class="text-[10px] text-primary-300/50 text-center">
+                Build &amp; Design by: <a href="https://www.chillocreative.com" target="_blank" class="text-primary-200/70 hover:text-white transition-colors">Chillo Creative</a>
+            </p>
+        </div>
     </div>
 </template>
 
