@@ -1,0 +1,1 @@
+import{D as t}from"./app-D7nogW7V.js";const i={list(){return t.get("/categories")},active(){return t.get("/categories/active")},store(e){return t.post("/categories",e)},update(e,r){return t.put(`/categories/${e}`,r)},delete(e){return t.delete(`/categories/${e}`)}};export{i as c};

@@ -166,7 +166,7 @@ async function handleSubmit() {
         await rolesApi.update(roleId.value, {
             name: form.value.name,
             slug: form.value.slug,
-            permissions: form.value.permissions,
+            permission_ids: form.value.permissions,
         });
         notify.success('Peranan berjaya dikemas kini!');
         router.push({ name: 'roles.index' });

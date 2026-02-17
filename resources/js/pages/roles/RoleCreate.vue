@@ -146,7 +146,7 @@ async function handleSubmit() {
         await rolesApi.create({
             name: form.value.name,
             slug: form.value.slug,
-            permissions: form.value.permissions,
+            permission_ids: form.value.permissions,
         });
         notify.success('Peranan berjaya dicipta!');
         router.push({ name: 'roles.index' });
