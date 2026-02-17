@@ -68,15 +68,25 @@ class AuthController extends Controller
             'email' => ['required', 'email'],
         ]);
 
-        $status = Password::sendResetLink($request->only('email'));
+        try {
+            $status = Password::sendResetLink($request->only('email'));
 
-        if ($status === Password::RESET_LINK_SENT) {
-            return response()->json(['message' => 'Pautan tetapan semula kata laluan telah dihantar ke e-mel anda.']);
+            if ($status === Password::RESET_LINK_SENT) {
+                return response()->json(['message' => 'Pautan tetapan semula kata laluan telah dihantar ke e-mel anda.']);
+            }
+
+            throw ValidationException::withMessages([
+                'email' => [__($status)],
+            ]);
+        } catch (ValidationException $e) {
+            throw $e;
+        } catch (\Throwable $e) {
+            \Illuminate\Support\Facades\Log::error("Forgot password failed: {$e->getMessage()}");
+
+            return response()->json([
+                'message' => 'Gagal menghantar e-mel tetapan semula. Sila hubungi pentadbir.',
+            ], 500);
         }
-
-        throw ValidationException::withMessages([
-            'email' => [__($status)],
-        ]);
     }
 
     public function resetPassword(Request $request): JsonResponse

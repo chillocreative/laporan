@@ -22,7 +22,7 @@ class SecurityHeaders
             $response->headers->set('Strict-Transport-Security', 'max-age=31536000; includeSubDomains');
             $response->headers->set(
                 'Content-Security-Policy',
-                "default-src 'self'; script-src 'self' https://www.google.com https://www.gstatic.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; frame-src https://www.google.com;"
+                "default-src 'self'; script-src 'self' https://www.google.com https://www.gstatic.com https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline'; font-src 'self' data:; img-src 'self' data: https:; connect-src 'self' https://static.cloudflareinsights.com; frame-src https://www.google.com;"
             );
         }
 
