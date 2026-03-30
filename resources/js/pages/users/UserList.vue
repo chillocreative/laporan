@@ -54,10 +54,10 @@
                         <button v-if="isPending(item)" @click="openApprove(item)" class="text-xs bg-green-600 hover:bg-green-700 text-white px-2.5 py-1 rounded-md font-medium" title="Luluskan">
                             Luluskan
                         </button>
-                        <router-link v-if="auth.hasPermission('users.edit')" :to="{ name: 'users.edit', params: { id: item.id } }" class="text-gray-400 hover:text-primary-600" title="Edit">
+                        <router-link v-if="auth.hasPermission('users.edit-any')" :to="{ name: 'users.edit', params: { id: item.id } }" class="text-gray-400 hover:text-primary-600" title="Edit">
                             <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125" /></svg>
                         </router-link>
-                        <button v-if="auth.hasPermission('users.edit') && !isPending(item)" @click="handleToggleActive(item)" class="text-gray-400 hover:text-yellow-600" :title="item.is_active ? 'Deactivate' : 'Activate'">
+                        <button v-if="auth.hasPermission('users.deactivate') && !isPending(item)" @click="handleToggleActive(item)" class="text-gray-400 hover:text-yellow-600" :title="item.is_active ? 'Deactivate' : 'Activate'">
                             <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M5.636 5.636a9 9 0 1012.728 0M12 3v9" /></svg>
                         </button>
                         <button v-if="auth.hasPermission('users.delete')" @click="confirmDelete(item)" class="text-gray-400 hover:text-red-600" title="Delete">

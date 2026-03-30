@@ -81,6 +81,7 @@ class PermissionSeeder extends Seeder
                 'users.view-all',
                 'users.create',
                 'users.edit-any',
+                'users.delete',
                 'users.deactivate',
                 'monitoring.dashboard-all',
                 'monitoring.dashboard-own',
