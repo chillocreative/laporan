@@ -32,6 +32,11 @@
                     </div>
 
                     <div>
+                        <label class="label-text">Masa *</label>
+                        <input v-model="form.incident_time" type="time" required class="input-field" />
+                    </div>
+
+                    <div>
                         <label class="label-text">Laporan *</label>
                         <RichTextEditor v-model="form.description" />
                     </div>
@@ -67,7 +72,7 @@ const notify = useNotification();
 
 const reportId = computed(() => props.id || route.params.id);
 const categoryOptions = ref([]);
-const form = ref({ title: '', category: '', description: '', incident_date: '' });
+const form = ref({ title: '', category: '', description: '', incident_date: '', incident_time: '' });
 const customCategory = ref('');
 const newAttachments = ref([]);
 const loading = ref(true);
@@ -82,7 +87,7 @@ onMounted(async () => {
     try {
         const { data } = await reportsApi.get(reportId.value);
         const r = data.data;
-        form.value = { title: r.title, category: r.category, description: r.description, incident_date: r.incident_date };
+        form.value = { title: r.title, category: r.category, description: r.description, incident_date: r.incident_date, incident_time: r.incident_time || '' };
         if (!catRes.data.data.includes(r.category)) {
             customCategory.value = r.category;
             form.value.category = 'Lain-lain';

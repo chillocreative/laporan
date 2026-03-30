@@ -24,6 +24,7 @@ class Report extends Model
         'location',
         'description',
         'incident_date',
+        'incident_time',
         'status',
         'ai_summary',
         'ai_risk_level',

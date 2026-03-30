@@ -31,6 +31,11 @@
                     </div>
 
                     <div>
+                        <label class="label-text">Masa *</label>
+                        <input v-model="form.incident_time" type="time" required class="input-field" />
+                    </div>
+
+                    <div>
                         <label class="label-text">Laporan *</label>
                         <RichTextEditor v-model="form.description" placeholder="Terangkan isu secara terperinci..." />
                     </div>
@@ -63,7 +68,7 @@ const notify = useNotification();
 
 const today = computed(() => new Date().toISOString().split('T')[0]);
 const categoryOptions = ref([]);
-const form = ref({ title: '', category: '', description: '', incident_date: '' });
+const form = ref({ title: '', category: '', description: '', incident_date: '', incident_time: '' });
 const customCategory = ref('');
 const attachments = ref([]);
 const submitting = ref(false);

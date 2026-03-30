@@ -16,6 +16,11 @@
                     </div>
 
                     <div>
+                        <label class="label-text">Organisasi</label>
+                        <input :value="auth.user.value?.organization || '-'" type="text" disabled class="input-field bg-gray-50 text-gray-500" />
+                    </div>
+
+                    <div>
                         <label class="label-text">E-mel *</label>
                         <input v-model="profileForm.email" type="email" required class="input-field" />
                         <p v-if="profileErrors.email" class="mt-1 text-xs text-red-600">{{ profileErrors.email }}</p>

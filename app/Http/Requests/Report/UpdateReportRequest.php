@@ -27,6 +27,7 @@ class UpdateReportRequest extends FormRequest
             'category' => ['sometimes', 'required', 'string', 'max:100'],
             'description' => ['sometimes', 'required', 'string', 'max:50000'],
             'incident_date' => ['sometimes', 'required', 'date', 'before_or_equal:today'],
+            'incident_time' => ['sometimes', 'required', 'date_format:H:i'],
             'attachments' => ['nullable', 'array', 'max:10'],
             'attachments.*' => [
                 'file',

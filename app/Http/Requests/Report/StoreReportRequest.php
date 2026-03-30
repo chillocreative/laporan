@@ -27,6 +27,7 @@ class StoreReportRequest extends FormRequest
             'category' => ['required', 'string', 'max:100'],
             'description' => ['required', 'string', 'max:50000'],
             'incident_date' => ['required', 'date', 'before_or_equal:today'],
+            'incident_time' => ['required', 'date_format:H:i'],
             'attachments' => ['nullable', 'array', 'max:10'],
             'attachments.*' => [
                 'file',

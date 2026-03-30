@@ -109,6 +109,7 @@ const columns = [
     { key: 'user', label: 'Pengguna' },
     { key: 'ai_analysis', label: 'Risiko' },
     { key: 'incident_date', label: 'Tarikh' },
+    { key: 'incident_time', label: 'Masa' },
 ];
 
 async function fetchReports(page = 1) {

@@ -16,6 +16,7 @@ class ReportResource extends JsonResource
             'category' => $this->category,
             'description' => $this->description,
             'incident_date' => $this->incident_date?->format('Y-m-d'),
+            'incident_time' => $this->incident_time,
             'attachments' => ReportAttachmentResource::collection($this->whenLoaded('attachments')),
             'ai_analysis' => $this->when($this->ai_analyzed_at !== null, fn () => [
                 'summary' => $this->ai_summary,
