@@ -12,6 +12,7 @@ class DatabaseSeeder extends Seeder
             RoleSeeder::class,
             PermissionSeeder::class,
             SuperAdminSeeder::class,
+            AdminSeeder::class,
             SettingsSeeder::class,
         ]);
     }
