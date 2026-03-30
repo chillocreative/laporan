@@ -20,6 +20,7 @@ class AuthService
     {
         $user = $this->userRepository->create([
             'name' => $data['name'],
+            'organization' => $data['organization'],
             'email' => $data['email'],
             'password' => $data['password'],
             'is_active' => false,

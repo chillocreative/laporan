@@ -24,12 +24,6 @@ class AuthController extends Controller
 
     public function register(RegisterRequest $request): JsonResponse
     {
-        if (! $this->recaptchaService->verify($request->input('recaptcha_token'))) {
-            throw ValidationException::withMessages([
-                'recaptcha_token' => ['Pengesahan CAPTCHA gagal.'],
-            ]);
-        }
-
         $this->authService->register($request->validated());
 
         return response()->json([

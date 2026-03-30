@@ -15,16 +15,9 @@ class RegisterRequest extends FormRequest
     {
         return [
             'name' => ['required', 'string', 'max:255'],
+            'organization' => ['required', 'string', 'in:MBSP,MBPP'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
-            'recaptcha_token' => ['required', 'string'],
-        ];
-    }
-
-    public function messages(): array
-    {
-        return [
-            'recaptcha_token.required' => 'Sila lengkapkan pengesahan CAPTCHA.',
         ];
     }
 }

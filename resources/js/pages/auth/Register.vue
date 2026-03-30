@@ -33,6 +33,15 @@
                         </div>
 
                         <div>
+                            <label class="label-text">Organisasi</label>
+                            <select v-model="form.organization" required class="input-field">
+                                <option value="">Pilih organisasi</option>
+                                <option value="MBSP">MBSP</option>
+                                <option value="MBPP">MBPP</option>
+                            </select>
+                        </div>
+
+                        <div>
                             <label class="label-text">E-mel</label>
                             <input v-model="form.email" type="email" required class="input-field" />
                         </div>
@@ -46,8 +55,6 @@
                             <label class="label-text">Sahkan Kata Laluan</label>
                             <input v-model="form.password_confirmation" type="password" required class="input-field" />
                         </div>
-
-                        <div id="recaptcha-container"></div>
 
                         <button type="submit" :disabled="loading" class="btn-primary w-full">
                             {{ loading ? 'Mencipta akaun...' : 'Daftar' }}
@@ -72,8 +79,7 @@ import authApi from '../../api/auth';
 const settingsStore = useSettingsStore();
 
 const form = ref({
-    name: '', email: '', password: '', password_confirmation: '',
-    recaptcha_token: 'placeholder',
+    name: '', organization: '', email: '', password: '', password_confirmation: '',
 });
 const loading = ref(false);
 const errorMsg = ref('');
@@ -81,29 +87,7 @@ const registered = ref(false);
 
 onMounted(async () => {
     if (!settingsStore.loaded) settingsStore.fetchPublic();
-
-    if (settingsStore.recaptchaSiteKey) {
-        loadRecaptcha(settingsStore.recaptchaSiteKey);
-    }
 });
-
-function loadRecaptcha(siteKey) {
-    if (document.getElementById('recaptcha-script')) return;
-    const script = document.createElement('script');
-    script.id = 'recaptcha-script';
-    script.src = 'https://www.google.com/recaptcha/api.js?render=explicit';
-    script.async = true;
-    script.defer = true;
-    script.onload = () => {
-        window.grecaptcha.ready(() => {
-            window.grecaptcha.render('recaptcha-container', {
-                sitekey: siteKey,
-                callback: (token) => { form.value.recaptcha_token = token; },
-            });
-        });
-    };
-    document.head.appendChild(script);
-}
 
 async function handleRegister() {
     loading.value = true;
