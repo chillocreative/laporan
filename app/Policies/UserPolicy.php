@@ -27,6 +27,11 @@ class UserPolicy
 
     public function update(User $user, User $model): bool
     {
+        // Non-super-admin cannot edit super-admin
+        if (! $user->isSuperAdmin() && $model->isSuperAdmin()) {
+            return false;
+        }
+
         if ($user->hasPermission('users.edit-any')) {
             return true;
         }
@@ -40,12 +45,22 @@ class UserPolicy
             return false;
         }
 
+        // Non-super-admin cannot delete super-admin
+        if (! $user->isSuperAdmin() && $model->isSuperAdmin()) {
+            return false;
+        }
+
         return $user->hasPermission('users.delete');
     }
 
     public function deactivate(User $user, User $model): bool
     {
         if ($user->id === $model->id) {
+            return false;
+        }
+
+        // Non-super-admin cannot deactivate super-admin
+        if (! $user->isSuperAdmin() && $model->isSuperAdmin()) {
             return false;
         }
 

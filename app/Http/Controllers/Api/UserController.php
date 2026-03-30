@@ -34,6 +34,14 @@ class UserController extends Controller
             });
         }
 
+        // Admin cannot see super-admin users
+        $currentUser = $request->user();
+        if ($currentUser && ! $currentUser->isSuperAdmin()) {
+            $users->setCollection(
+                $users->getCollection()->filter(fn ($u) => ! $u->hasRole('super-admin'))
+            );
+        }
+
         return response()->json(UserResource::collection($users)->response()->getData(true));
     }
 
