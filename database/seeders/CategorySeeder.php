@@ -10,16 +10,16 @@ class CategorySeeder extends Seeder
     public function run(): void
     {
         $categories = [
-            'Infrastructure',
-            'Public Safety',
-            'Environmental',
-            'Public Health',
-            'Traffic & Transport',
-            'Utilities',
-            'Community',
-            'Government Services',
-            'Education',
-            'Other',
+            'Infrastruktur',
+            'Keselamatan Awam',
+            'Alam Sekitar',
+            'Kesihatan Awam',
+            'Trafik & Pengangkutan',
+            'Utiliti',
+            'Komuniti',
+            'Perkhidmatan Kerajaan',
+            'Pendidikan',
+            'Lain-lain',
         ];
 
         foreach ($categories as $i => $name) {
