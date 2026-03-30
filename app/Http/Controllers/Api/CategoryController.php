@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Category;
+use App\Models\Report;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -48,7 +49,12 @@ class CategoryController extends Controller
             'sort_order' => ['sometimes', 'integer', 'min:0'],
         ]);
 
+        $oldName = $category->name;
         $category->update($validated);
+
+        if (isset($validated['name']) && $validated['name'] !== $oldName) {
+            Report::where('category', $oldName)->update(['category' => $validated['name']]);
+        }
 
         return response()->json([
             'message' => 'Kategori berjaya dikemas kini.',
