@@ -17,11 +17,12 @@
 
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div>
-                            <label class="label-text">Kategori *</label>
+                            <label class="label-text">Jenis Aktiviti *</label>
                             <select v-model="form.category" required class="input-field">
-                                <option value="">Pilih kategori</option>
+                                <option value="">Pilih jenis aktiviti</option>
                                 <option v-for="c in categoryOptions" :key="c" :value="c">{{ c }}</option>
                             </select>
+                            <input v-if="form.category === 'Lain-lain'" v-model="customCategory" type="text" class="input-field mt-2" placeholder="Nyatakan jenis aktiviti..." required />
                         </div>
                         <div>
                             <label class="label-text">Tarikh *</label>
@@ -63,6 +64,7 @@ const notify = useNotification();
 const today = computed(() => new Date().toISOString().split('T')[0]);
 const categoryOptions = ref([]);
 const form = ref({ title: '', category: '', description: '', incident_date: '' });
+const customCategory = ref('');
 const attachments = ref([]);
 const submitting = ref(false);
 const errorMsg = ref('');
@@ -79,7 +81,11 @@ async function handleSubmit() {
     errorMsg.value = '';
     try {
         const formData = new FormData();
-        Object.entries(form.value).forEach(([key, val]) => formData.append(key, val));
+        const submitData = { ...form.value };
+        if (submitData.category === 'Lain-lain' && customCategory.value.trim()) {
+            submitData.category = customCategory.value.trim();
+        }
+        Object.entries(submitData).forEach(([key, val]) => formData.append(key, val));
         attachments.value.forEach((file) => formData.append('attachments[]', file));
 
         await reportsApi.create(formData);

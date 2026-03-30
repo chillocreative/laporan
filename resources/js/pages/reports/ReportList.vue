@@ -16,7 +16,7 @@
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
                     <input v-model="filters.search" @input="debouncedFetch" type="text" placeholder="Cari laporan..." class="input-field" />
                     <select v-model="filters.category" @change="fetchReports" class="input-field">
-                        <option value="">Semua Kategori</option>
+                        <option value="">Semua Jenis Aktiviti</option>
                         <option v-for="c in categoryOptions" :key="c" :value="c">{{ c }}</option>
                     </select>
                     <select v-model="filters.risk_level" @change="fetchReports" class="input-field">
@@ -105,7 +105,7 @@ const debouncedFetch = () => {
 
 const columns = [
     { key: 'title', label: 'Tajuk' },
-    { key: 'category', label: 'Kategori' },
+    { key: 'category', label: 'Jenis Aktiviti' },
     { key: 'user', label: 'Pengguna' },
     { key: 'ai_analysis', label: 'Risiko' },
     { key: 'incident_date', label: 'Tarikh' },

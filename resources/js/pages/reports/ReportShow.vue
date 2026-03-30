@@ -20,7 +20,7 @@
                         <div class="card-header"><h3 class="font-semibold text-gray-900">Butiran Laporan</h3></div>
                         <div class="card-body space-y-4">
                             <div class="grid grid-cols-2 gap-4 text-sm">
-                                <div><span class="text-gray-500">Kategori:</span><p class="font-medium">{{ report.category }}</p></div>
+                                <div><span class="text-gray-500">Jenis Aktiviti:</span><p class="font-medium">{{ report.category }}</p></div>
                                 <div><span class="text-gray-500">Tarikh:</span><p class="font-medium">{{ report.incident_date }}</p></div>
                             </div>
                             <div>

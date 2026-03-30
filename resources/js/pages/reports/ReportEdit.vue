@@ -19,10 +19,11 @@
 
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div>
-                            <label class="label-text">Kategori *</label>
+                            <label class="label-text">Jenis Aktiviti *</label>
                             <select v-model="form.category" required class="input-field">
                                 <option v-for="c in categoryOptions" :key="c" :value="c">{{ c }}</option>
                             </select>
+                            <input v-if="form.category === 'Lain-lain'" v-model="customCategory" type="text" class="input-field mt-2" placeholder="Nyatakan jenis aktiviti..." required />
                         </div>
                         <div>
                             <label class="label-text">Tarikh *</label>
@@ -67,6 +68,7 @@ const notify = useNotification();
 const reportId = computed(() => props.id || route.params.id);
 const categoryOptions = ref([]);
 const form = ref({ title: '', category: '', description: '', incident_date: '' });
+const customCategory = ref('');
 const newAttachments = ref([]);
 const loading = ref(true);
 const submitting = ref(false);
@@ -81,6 +83,10 @@ onMounted(async () => {
         const { data } = await reportsApi.get(reportId.value);
         const r = data.data;
         form.value = { title: r.title, category: r.category, description: r.description, incident_date: r.incident_date };
+        if (!catRes.data.data.includes(r.category)) {
+            customCategory.value = r.category;
+            form.value.category = 'Lain-lain';
+        }
     } catch { router.push({ name: 'reports.index' }); }
     loading.value = false;
 });
@@ -90,7 +96,11 @@ async function handleSubmit() {
     errorMsg.value = '';
     try {
         const formData = new FormData();
-        Object.entries(form.value).forEach(([key, val]) => formData.append(key, val));
+        const submitData = { ...form.value };
+        if (submitData.category === 'Lain-lain' && customCategory.value.trim()) {
+            submitData.category = customCategory.value.trim();
+        }
+        Object.entries(submitData).forEach(([key, val]) => formData.append(key, val));
         newAttachments.value.forEach((file) => formData.append('attachments[]', file));
         await reportsApi.update(reportId.value, formData);
         notify.success('Laporan dikemas kini!');
