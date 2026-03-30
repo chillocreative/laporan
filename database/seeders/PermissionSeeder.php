@@ -77,6 +77,9 @@ class PermissionSeeder extends Seeder
             $adminPerms = Permission::whereIn('slug', [
                 'reports.view-all',
                 'reports.view-own',
+                'reports.create',
+                'reports.edit-any',
+                'reports.delete-any',
                 'reports.update-status',
                 'users.view-all',
                 'users.create',
