@@ -88,7 +88,7 @@ onMounted(async () => {
         const { data } = await reportsApi.get(reportId.value);
         const r = data.data;
         form.value = { title: r.title, category: r.category, description: r.description, incident_date: r.incident_date, incident_time: r.incident_time || '' };
-        if (!catRes.data.data.includes(r.category)) {
+        if (!categoryOptions.value.includes(r.category)) {
             customCategory.value = r.category;
             form.value.category = 'Lain-lain';
         }

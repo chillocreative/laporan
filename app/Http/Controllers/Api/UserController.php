@@ -113,7 +113,7 @@ class UserController extends Controller
         $this->activityLogService->log('user_approved', $user, "User approved: {$user->email} as {$role->name}");
 
         try {
-            Mail::to($user->email)->send(new UserApprovedMail($user, $role->name));
+            Mail::to($user->email)->queue(new UserApprovedMail($user, $role->name));
         } catch (\Throwable $e) {
             // Log but don't fail the approval
             \Illuminate\Support\Facades\Log::warning("Failed to send approval email to {$user->email}: {$e->getMessage()}");
