@@ -17,7 +17,8 @@
                         </svg>
                     </div>
                     <h2 class="text-lg font-semibold text-gray-900 mb-2">Semak E-mel Anda</h2>
-                    <p class="text-sm text-gray-600 mb-6">Kami telah menghantar pautan tetapan semula kata laluan ke alamat e-mel anda. Sila semak peti masuk anda.</p>
+                    <p class="text-sm text-gray-600 mb-2">Kami telah menghantar pautan tetapan semula kata laluan ke alamat e-mel anda. Sila semak peti masuk anda.</p>
+                    <p class="text-xs text-amber-600 bg-amber-50 rounded-lg px-3 py-2 mb-6">Jika anda tidak menerima e-mel, sila semak folder spam atau junk anda.</p>
                     <router-link :to="{ name: 'login' }" class="btn-primary inline-block">Kembali ke Log Masuk</router-link>
                 </div>
 
