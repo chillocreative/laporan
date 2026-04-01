@@ -10,7 +10,7 @@ class BluehostSuperAdminSeeder extends Seeder
 {
     public function run(): void
     {
-        $superAdmin = User::firstOrCreate(
+        $superAdmin = User::updateOrCreate(
             ['email' => 'bluehostmedia@gmail.com'],
             [
                 'name' => 'Super Admin',
