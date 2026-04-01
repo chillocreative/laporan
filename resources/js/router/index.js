@@ -16,18 +16,20 @@ const routes = [
         meta: { guest: true },
     },
 
-    // Forgot / Reset Password (guest only)
+    // Forgot Password (guest only)
     {
         path: '/forgot-password',
         name: 'forgot-password',
         component: () => import('../pages/auth/ForgotPassword.vue'),
         meta: { guest: true },
     },
+
+    // Force change password (authenticated, temporary password)
     {
-        path: '/reset-password',
-        name: 'reset-password',
-        component: () => import('../pages/auth/ResetPassword.vue'),
-        meta: { guest: true },
+        path: '/change-password',
+        name: 'force-change-password',
+        component: () => import('../pages/auth/ForceChangePassword.vue'),
+        meta: { auth: true, forceChangePassword: true },
     },
 
     // Authenticated layout

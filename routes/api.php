@@ -30,11 +30,9 @@ Route::post('/register', [AuthController::class, 'register'])
 Route::get('/settings/public', [SettingsController::class, 'publicSettings']);
 Route::get('/roles/assignable', [RoleController::class, 'assignable']);
 
-// Password Reset
+// Forgot Password (sends temporary password via email)
 Route::post('/forgot-password', [AuthController::class, 'forgotPassword'])
     ->middleware('throttle:3,1');
-Route::post('/reset-password', [AuthController::class, 'resetPassword'])
-    ->middleware('throttle:5,1');
 
 /*
 |--------------------------------------------------------------------------

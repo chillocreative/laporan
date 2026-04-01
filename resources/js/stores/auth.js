@@ -10,6 +10,7 @@ export const useAuthStore = defineStore('auth', {
 
     getters: {
         isAuthenticated: (state) => !!state.user,
+        mustChangePassword: (state) => !!state.user?.must_change_password,
         userName: (state) => state.user?.name || '',
         userRoles: (state) => state.user?.roles?.map(r => r.slug) || [],
         userPermissions: (state) => state.user?.permissions || [],

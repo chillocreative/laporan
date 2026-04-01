@@ -71,7 +71,11 @@ async function handleLogin() {
     errorMsg.value = '';
     try {
         await authStore.login(form.value);
-        router.push({ name: 'dashboard' });
+        if (authStore.mustChangePassword) {
+            router.push({ name: 'force-change-password' });
+        } else {
+            router.push({ name: 'dashboard' });
+        }
     } catch (e) {
         errorMsg.value = e.response?.data?.message || e.response?.data?.errors?.email?.[0] || 'Log masuk gagal.';
     } finally {

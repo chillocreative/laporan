@@ -27,7 +27,6 @@ use App\Repositories\Eloquent\SecurityLogRepository;
 use App\Repositories\Eloquent\SettingsRepository;
 use App\Repositories\Eloquent\UserRepository;
 use App\Services\SettingsService;
-use Illuminate\Auth\Notifications\ResetPassword;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
@@ -56,11 +55,6 @@ class AppServiceProvider extends ServiceProvider
 
         // Event listeners
         Event::listen(ReportCreated::class, QueueReportAnalysis::class);
-
-        // Custom password reset URL for SPA
-        ResetPassword::createUrlUsing(function ($user, string $token) {
-            return config('app.url').'/reset-password?token='.$token.'&email='.urlencode($user->email);
-        });
 
         // Override mail config from database SMTP settings
         try {

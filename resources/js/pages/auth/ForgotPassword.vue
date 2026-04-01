@@ -6,7 +6,7 @@
                     <img src="/jata.png" alt="Logo" class="h-20 w-auto mx-auto drop-shadow-lg" />
                 </div>
                 <h1 class="text-2xl font-bold text-white">{{ settingsStore.systemName }}</h1>
-                <p class="mt-1 text-primary-200 text-sm">Tetapkan semula kata laluan anda</p>
+                <p class="mt-1 text-primary-200 text-sm">Lupa kata laluan</p>
             </div>
 
             <div class="bg-white rounded-2xl shadow-xl p-8">
@@ -17,13 +17,14 @@
                         </svg>
                     </div>
                     <h2 class="text-lg font-semibold text-gray-900 mb-2">Semak E-mel Anda</h2>
-                    <p class="text-sm text-gray-600 mb-2">Kami telah menghantar pautan tetapan semula kata laluan ke alamat e-mel anda. Sila semak peti masuk anda.</p>
-                    <p class="text-xs text-amber-600 bg-amber-50 rounded-lg px-3 py-2 mb-6">Jika anda tidak menerima e-mel, sila semak folder spam atau junk anda.</p>
-                    <router-link :to="{ name: 'login' }" class="btn-primary inline-block">Kembali ke Log Masuk</router-link>
+                    <p class="text-sm text-gray-600 mb-2">Jika e-mel anda berdaftar, kami telah menghantar kata laluan sementara ke alamat e-mel anda. Sila gunakan kata laluan tersebut untuk log masuk.</p>
+                    <p class="text-xs text-amber-600 bg-amber-50 rounded-lg px-3 py-2 mb-4">Jika anda tidak menerima e-mel, sila semak folder spam atau junk anda.</p>
+                    <p class="text-xs text-gray-500 mb-6">Anda akan diminta menukar kata laluan selepas log masuk.</p>
+                    <router-link :to="{ name: 'login' }" class="btn-primary inline-block">Log Masuk</router-link>
                 </div>
 
                 <template v-else>
-                    <p class="text-sm text-gray-600 mb-5">Masukkan alamat e-mel anda dan kami akan menghantar pautan untuk menetapkan semula kata laluan anda.</p>
+                    <p class="text-sm text-gray-600 mb-5">Masukkan alamat e-mel anda dan kami akan menghantar kata laluan sementara untuk log masuk.</p>
 
                     <form @submit.prevent="handleSubmit" class="space-y-5">
                         <div v-if="errorMsg" class="rounded-lg bg-red-50 p-3 text-sm text-red-700">{{ errorMsg }}</div>

@@ -21,6 +21,11 @@ export function setupGuards(router) {
             return next({ name: 'login' });
         }
 
+        // Force change password — redirect to change-password page if flagged
+        if (isAuth && authStore.mustChangePassword && !to.meta.forceChangePassword) {
+            return next({ name: 'force-change-password' });
+        }
+
         // Role check
         if (to.meta.roles) {
             const hasRole = to.meta.roles.some(r => authStore.hasRole(r));

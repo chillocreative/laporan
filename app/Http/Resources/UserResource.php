@@ -28,6 +28,7 @@ class UserResource extends JsonResource
                     ->pluck('slug')
                     ->values()
             ),
+            'must_change_password' => $this->must_change_password,
             'created_at' => $this->created_at?->toISOString(),
             'updated_at' => $this->updated_at?->toISOString(),
         ];
