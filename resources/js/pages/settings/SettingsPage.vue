@@ -109,6 +109,20 @@
                         {{ alerts.smtp.message }}
                     </Alert>
 
+                    <!-- Brevo info box -->
+                    <div class="mb-5 rounded-lg border border-blue-200 bg-blue-50 p-4">
+                        <h4 class="text-sm font-semibold text-blue-800 mb-1">Tetapan Brevo SMTP</h4>
+                        <p class="text-xs text-blue-700 mb-2">
+                            Sistem ini menggunakan Brevo (dahulunya Sendinblue) untuk menghantar e-mel seperti tetapan semula kata laluan dan notifikasi kelulusan akaun.
+                        </p>
+                        <ul class="text-xs text-blue-700 list-disc list-inside space-y-0.5">
+                            <li><strong>Hos:</strong> smtp-relay.brevo.com</li>
+                            <li><strong>Port:</strong> 587 (TLS) / 465 (SSL)</li>
+                            <li><strong>Nama Pengguna:</strong> E-mel log masuk Brevo anda</li>
+                            <li><strong>Kata Laluan:</strong> Kunci SMTP (bukan kunci API) — dapatkan di <em>SMTP &amp; API &gt; SMTP</em></li>
+                        </ul>
+                    </div>
+
                     <div class="space-y-4">
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <div>
@@ -138,27 +152,27 @@
                                     v-model="forms.smtp.smtp_username"
                                     type="text"
                                     class="input-field"
-                                    placeholder="your-smtp-login"
+                                    placeholder="your-email@brevo.com"
                                 />
                             </div>
                             <div>
-                                <label class="label-text">Kata Laluan</label>
+                                <label class="label-text">Kata Laluan SMTP</label>
                                 <input
                                     v-model="forms.smtp.smtp_password"
                                     type="password"
                                     class="input-field"
-                                    placeholder="Masukkan kata laluan SMTP"
+                                    placeholder="Kunci SMTP Brevo"
                                 />
-                                <p class="mt-1 text-xs text-gray-500">Disimpan secara disulitkan di pelayan.</p>
+                                <p class="mt-1 text-xs text-gray-500">Gunakan kunci SMTP (bukan kunci API). Disimpan secara disulitkan.</p>
                             </div>
                         </div>
 
                         <div>
                             <label class="label-text">Penyulitan</label>
                             <select v-model="forms.smtp.smtp_encryption" class="input-field">
-                                <option value="tls">TLS</option>
-                                <option value="ssl">SSL</option>
-                                <option value="none">None</option>
+                                <option value="tls">TLS (Port 587 — Disyorkan)</option>
+                                <option value="ssl">SSL (Port 465)</option>
+                                <option value="none">Tiada</option>
                             </select>
                         </div>
 
@@ -171,6 +185,7 @@
                                     class="input-field"
                                     placeholder="noreply@yourdomain.com"
                                 />
+                                <p class="mt-1 text-xs text-gray-500">Gunakan domain yang telah disahkan di Brevo.</p>
                             </div>
                             <div>
                                 <label class="label-text">Nama Pengirim</label>
@@ -178,13 +193,31 @@
                                     v-model="forms.smtp.smtp_from_name"
                                     type="text"
                                     class="input-field"
-                                    placeholder="System Name"
+                                    placeholder="Sistem Pelaporan"
                                 />
                             </div>
                         </div>
                     </div>
 
-                    <div class="mt-6 flex justify-end">
+                    <div class="mt-6 flex items-center justify-between">
+                        <!-- Test Email -->
+                        <div class="flex items-center gap-2">
+                            <input
+                                v-model="testEmail"
+                                type="email"
+                                class="input-field w-56 text-sm"
+                                placeholder="E-mel penerima ujian"
+                            />
+                            <button
+                                @click="sendTestEmail"
+                                :disabled="sendingTest || !testEmail"
+                                class="btn-secondary text-sm"
+                            >
+                                <span v-if="sendingTest">Menghantar...</span>
+                                <span v-else>Hantar E-mel Ujian</span>
+                            </button>
+                        </div>
+
                         <button
                             @click="saveGroup('smtp')"
                             :disabled="saving.smtp"
@@ -443,12 +476,32 @@ const alerts = reactive({
 
 const logoPreview = ref(null);
 const logoInput = ref(null);
+const testEmail = ref('');
+const sendingTest = ref(false);
 
 function onLogoChange(event) {
     const file = event.target.files[0];
     if (file) {
         forms.branding.logo = file;
         logoPreview.value = URL.createObjectURL(file);
+    }
+}
+
+async function sendTestEmail() {
+    sendingTest.value = true;
+    clearAlert('smtp');
+    try {
+        const { data } = await settingsApi.sendTestEmail(testEmail.value);
+        alerts.smtp.type = 'success';
+        alerts.smtp.message = data.message;
+        notification.success(data.message);
+    } catch (error) {
+        const message = error.response?.data?.message || 'Gagal menghantar e-mel ujian. Semak tetapan SMTP anda.';
+        alerts.smtp.type = 'error';
+        alerts.smtp.message = message;
+        notification.error(message);
+    } finally {
+        sendingTest.value = false;
     }
 }
 

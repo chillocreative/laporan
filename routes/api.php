@@ -106,6 +106,7 @@ Route::middleware('auth:sanctum')->group(function () {
         // Settings
         Route::get('/settings', [SettingsController::class, 'index']);
         Route::put('/settings/{group}', [SettingsController::class, 'update']);
+        Route::post('/settings/smtp/test', [SettingsController::class, 'sendTestEmail']);
 
         // Monitoring Logs
         Route::get('/logs/activity', [ActivityLogController::class, 'index']);

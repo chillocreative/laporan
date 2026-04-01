@@ -18,4 +18,7 @@ export default {
         }
         return api.put(`/settings/${group}`, data);
     },
+    sendTestEmail(email) {
+        return api.post('/settings/smtp/test', { email });
+    },
 };
