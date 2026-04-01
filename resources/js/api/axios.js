@@ -15,10 +15,11 @@ const api = axios.create({
 api.interceptors.response.use(
     (response) => response,
     (error) => {
-        if (error.response?.status === 401) {
+        const currentRoute = router.currentRoute.value;
+        if (error.response?.status === 401 && !currentRoute.meta.guest) {
             router.push({ name: 'login' });
         }
-        if (error.response?.status === 403) {
+        if (error.response?.status === 403 && !currentRoute.meta.guest) {
             router.push({ name: 'dashboard' });
         }
         return Promise.reject(error);
