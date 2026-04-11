@@ -29,7 +29,7 @@
 
                         <div>
                             <label class="label-text">Nama Penuh</label>
-                            <input v-model="form.name" type="text" required class="input-field" />
+                            <input v-model="form.name" type="text" required class="input-field uppercase" />
                         </div>
 
                         <div>

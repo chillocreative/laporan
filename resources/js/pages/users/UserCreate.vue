@@ -12,7 +12,7 @@
 
                     <div>
                         <label class="label-text">Nama *</label>
-                        <input v-model="form.name" type="text" required class="input-field" placeholder="Nama penuh" />
+                        <input v-model="form.name" type="text" required class="input-field uppercase" placeholder="Nama penuh" />
                         <p v-if="errors.name" class="mt-1 text-xs text-red-600">{{ errors.name }}</p>
                     </div>
 

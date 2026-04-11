@@ -11,7 +11,7 @@
 
                     <div>
                         <label class="label-text">Nama *</label>
-                        <input v-model="profileForm.name" type="text" required class="input-field" />
+                        <input v-model="profileForm.name" type="text" required class="input-field uppercase" />
                         <p v-if="profileErrors.name" class="mt-1 text-xs text-red-600">{{ profileErrors.name }}</p>
                     </div>
 
