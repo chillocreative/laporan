@@ -47,9 +47,21 @@ class SettingsService
         ];
 
         foreach ($fields as $key => $encrypted) {
-            if (isset($data[$key])) {
-                $this->settingsRepository->set($key, $data[$key], $encrypted, 'openai');
+            if (! isset($data[$key])) {
+                continue;
             }
+
+            // Don't overwrite the stored API key with the masked display value
+            // (e.g. "sk-abcde...wxyz") that the settings page renders. Real
+            // OpenAI keys are alphanumeric+dashes and never contain "...".
+            if ($key === 'openai_api_key') {
+                $value = (string) $data[$key];
+                if ($value === '' || str_contains($value, '...')) {
+                    continue;
+                }
+            }
+
+            $this->settingsRepository->set($key, $data[$key], $encrypted, 'openai');
         }
 
         $this->activityLogService->log('settings_updated', null, 'OpenAI settings updated');

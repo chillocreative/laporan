@@ -119,7 +119,13 @@ class OpenAIService
 
     public function isEnabled(): bool
     {
-        return (bool) $this->settingsRepository->get('openai_enabled', false);
+        $value = $this->settingsRepository->get('openai_enabled', false);
+
+        if (is_bool($value)) {
+            return $value;
+        }
+
+        return filter_var($value, FILTER_VALIDATE_BOOLEAN);
     }
 
     protected function getSystemPrompt(): string
@@ -166,7 +172,11 @@ class OpenAIService
     {
         $dailyLimit = (int) $this->settingsRepository->get('openai_daily_limit', '100');
 
-        $todayCount = $this->openaiLogRepository->getAll(1)->total();
+        if ($dailyLimit <= 0) {
+            return false;
+        }
+
+        $todayCount = (int) ($this->openaiLogRepository->getTodayUsage()['total_requests'] ?? 0);
 
         return $todayCount >= $dailyLimit;
     }
