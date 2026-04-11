@@ -5,9 +5,20 @@
                 <h1 class="page-title">Laporan</h1>
                 <p class="page-subtitle">Urus dan jejaki semua laporan</p>
             </div>
-            <router-link v-if="auth.hasPermission('reports.create')" :to="{ name: 'reports.create' }" class="btn-primary">
-                + Laporan Baru
-            </router-link>
+            <div class="flex items-center gap-2">
+                <button
+                    v-if="auth.isSuperAdmin && pendingAnalysisCount > 0"
+                    @click="confirmAnalyzePending"
+                    :disabled="analyzingPending"
+                    class="btn-secondary"
+                    :title="`${pendingAnalysisCount} laporan belum dianalisis`"
+                >
+                    {{ analyzingPending ? 'Menganalisis...' : `Analisis Tertunggak (${pendingAnalysisCount})` }}
+                </button>
+                <router-link v-if="auth.hasPermission('reports.create')" :to="{ name: 'reports.create' }" class="btn-primary">
+                    + Laporan Baru
+                </router-link>
+            </div>
         </div>
 
         <!-- Filters -->
@@ -107,6 +118,8 @@ const reports = ref([]);
 const loading = ref(true);
 const pagination = reactive({ currentPage: 1, lastPage: 1, total: 0 });
 const filters = reactive({ search: '', category: '', risk_level: '', user_id: '', role: '' });
+const pendingAnalysisCount = ref(0);
+const analyzingPending = ref(false);
 
 // Filter out super-admin and admin roles for the dropdown
 const filteredRoleOptions = computed(() => {
@@ -178,8 +191,37 @@ async function handleDelete() {
     deleteTarget.value = null;
 }
 
+async function fetchPendingAnalysisCount() {
+    if (!auth.isSuperAdmin.value) return;
+    try {
+        const { data } = await reportsApi.pendingAnalysisCount();
+        pendingAnalysisCount.value = data.data?.count || 0;
+    } catch {}
+}
+
+function confirmAnalyzePending() {
+    if (!confirm(`Mulakan analisis AI untuk ${pendingAnalysisCount.value} laporan tertunggak? Setiap kali butang ini diklik akan memproses sehingga 25 laporan.`)) {
+        return;
+    }
+    handleAnalyzePending();
+}
+
+async function handleAnalyzePending() {
+    analyzingPending.value = true;
+    try {
+        const { data } = await reportsApi.analyzePending(25);
+        notify.success(data.message);
+        pendingAnalysisCount.value = data.data?.remaining ?? 0;
+        fetchReports(pagination.currentPage);
+    } catch (e) {
+        notify.error(e.response?.data?.message || 'Gagal mencetuskan analisis pukal.');
+    }
+    analyzingPending.value = false;
+}
+
 onMounted(() => {
     fetchReports();
+    fetchPendingAnalysisCount();
     categoriesApi.active().then(({ data }) => { categoryOptions.value = data.data; }).catch(() => {});
     if (auth.hasPermission('users.view-all')) {
         usersApi.list({ per_page: 1000, exclude_admin_roles: true }).then(({ data }) => { userOptions.value = data.data; }).catch(() => {});

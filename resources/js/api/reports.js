@@ -30,4 +30,10 @@ export default {
     analysisStatus(id) {
         return api.get(`/reports/${id}/analysis-status`);
     },
+    pendingAnalysisCount() {
+        return api.get('/reports/pending-analysis-count');
+    },
+    analyzePending(limit = 25) {
+        return api.post('/reports/analyze-pending', { limit });
+    },
 };

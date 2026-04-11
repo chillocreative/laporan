@@ -151,4 +151,69 @@ class ReportController extends Controller
             ],
         ]);
     }
+
+    public function pendingAnalysisCount(Request $request): JsonResponse
+    {
+        if (! $request->user()->isSuperAdmin()) {
+            abort(403);
+        }
+
+        return response()->json([
+            'data' => [
+                'count' => Report::whereNull('ai_analyzed_at')->count(),
+            ],
+        ]);
+    }
+
+    public function analyzePending(Request $request): JsonResponse
+    {
+        if (! $request->user()->isSuperAdmin()) {
+            abort(403, 'Hanya Super Admin boleh mencetuskan analisis pukal.');
+        }
+
+        if (! $this->openAIService->isEnabled()) {
+            return response()->json([
+                'message' => 'Analisis AI tidak aktif. Aktifkan di Tetapan terlebih dahulu.',
+            ], 422);
+        }
+
+        $limit = (int) $request->input('limit', 25);
+        $limit = max(1, min($limit, 100));
+
+        @set_time_limit(0);
+        @ignore_user_abort(true);
+
+        $reports = Report::whereNull('ai_analyzed_at')
+            ->orderBy('id')
+            ->limit($limit)
+            ->get();
+
+        $succeeded = 0;
+        $failed = 0;
+
+        foreach ($reports as $report) {
+            try {
+                $result = $this->openAIService->analyzeReport($report);
+                if ($result) {
+                    $succeeded++;
+                } else {
+                    $failed++;
+                }
+            } catch (\Throwable $e) {
+                $failed++;
+            }
+        }
+
+        $remaining = Report::whereNull('ai_analyzed_at')->count();
+
+        return response()->json([
+            'message' => "Berjaya menganalisis {$succeeded} laporan. Gagal: {$failed}. Tertunggak: {$remaining}.",
+            'data' => [
+                'processed' => $reports->count(),
+                'succeeded' => $succeeded,
+                'failed' => $failed,
+                'remaining' => $remaining,
+            ],
+        ]);
+    }
 }

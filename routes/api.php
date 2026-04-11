@@ -57,6 +57,10 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/categories/active', [CategoryController::class, 'active']);
 
     // Reports
+    // Bulk-analysis endpoints registered before apiResource so the static
+    // paths aren't captured by the {report} model binding.
+    Route::get('/reports/pending-analysis-count', [ReportController::class, 'pendingAnalysisCount']);
+    Route::post('/reports/analyze-pending', [ReportController::class, 'analyzePending']);
     Route::apiResource('reports', ReportController::class)
         ->middleware('throttle:60,1');
     Route::post('/reports/{report}/analyze', [ReportController::class, 'triggerAnalysis']);
