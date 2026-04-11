@@ -8,6 +8,8 @@ use Illuminate\Support\Facades\Storage;
 
 class SettingsService
 {
+    private const SECRET_MASK = '••••••••';
+
     public function __construct(
         protected SettingsRepositoryInterface $settingsRepository,
         protected ActivityLogService $activityLogService,
@@ -80,9 +82,17 @@ class SettingsService
         ];
 
         foreach ($fields as $key => $encrypted) {
-            if (isset($data[$key])) {
-                $this->settingsRepository->set($key, $data[$key], $encrypted, 'smtp');
+            if (! isset($data[$key])) {
+                continue;
             }
+
+            // Don't overwrite the stored password with the masked display
+            // value the settings page renders.
+            if ($key === 'smtp_password' && $this->isMaskedSecret($data[$key])) {
+                continue;
+            }
+
+            $this->settingsRepository->set($key, $data[$key], $encrypted, 'smtp');
         }
 
         $this->activityLogService->log('settings_updated', null, 'SMTP settings updated');
@@ -94,11 +104,18 @@ class SettingsService
             $this->settingsRepository->set('recaptcha_site_key', $data['recaptcha_site_key'], false, 'captcha');
         }
 
-        if (isset($data['recaptcha_secret_key'])) {
+        if (isset($data['recaptcha_secret_key']) && ! $this->isMaskedSecret($data['recaptcha_secret_key'])) {
             $this->settingsRepository->set('recaptcha_secret_key', $data['recaptcha_secret_key'], true, 'captcha');
         }
 
         $this->activityLogService->log('settings_updated', null, 'Captcha settings updated');
+    }
+
+    protected function isMaskedSecret(mixed $value): bool
+    {
+        $value = (string) $value;
+
+        return $value === '' || $value === self::SECRET_MASK;
     }
 
     public function updateLogo(UploadedFile $file): string
@@ -146,7 +163,7 @@ class SettingsService
         $settings = $this->getByGroup('smtp');
 
         if (isset($settings['smtp_password']) && $settings['smtp_password']) {
-            $settings['smtp_password'] = '••••••••';
+            $settings['smtp_password'] = self::SECRET_MASK;
             $settings['smtp_password_set'] = true;
         } else {
             $settings['smtp_password_set'] = false;
@@ -187,7 +204,7 @@ class SettingsService
 
         // Mask secret key
         if (isset($settings['recaptcha_secret_key']) && $settings['recaptcha_secret_key']) {
-            $settings['recaptcha_secret_key'] = '••••••••';
+            $settings['recaptcha_secret_key'] = self::SECRET_MASK;
             $settings['recaptcha_secret_key_set'] = true;
         } else {
             $settings['recaptcha_secret_key_set'] = false;
