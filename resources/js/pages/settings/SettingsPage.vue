@@ -42,6 +42,17 @@
                                 placeholder="Masukkan nama sistem"
                             />
                         </div>
+
+                        <div>
+                            <label class="label-text">URL Pereka (Chillo Creative)</label>
+                            <input
+                                v-model="forms.general.credit_url"
+                                type="url"
+                                class="input-field"
+                                placeholder="https://www.chillocreative.com"
+                            />
+                            <p class="mt-1 text-xs text-gray-500">URL yang dipautkan pada teks "Chillo Creative" di kaki halaman log masuk. Kosongkan untuk hanya memaparkan teks tanpa pautan.</p>
+                        </div>
                     </div>
 
                     <div class="mt-6 flex justify-end">
@@ -428,6 +439,7 @@ const tabs = [
 const forms = reactive({
     general: {
         system_name: '',
+        credit_url: '',
     },
     branding: {
         logo: null,
@@ -514,6 +526,7 @@ function distributeSettings(grouped) {
     // General
     if (grouped.general) {
         forms.general.system_name = grouped.general.system_name || '';
+        forms.general.credit_url = grouped.general.credit_url || '';
     }
 
     // Branding - only set preview from existing logo URL

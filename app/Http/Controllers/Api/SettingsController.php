@@ -70,6 +70,7 @@ class SettingsController extends Controller
             'system_name' => $this->settingsService->get('system_name', 'Sistem Pelaporan'),
             'system_logo' => $this->settingsService->get('system_logo'),
             'recaptcha_site_key' => $this->settingsService->get('recaptcha_site_key'),
+            'credit_url' => $this->settingsService->get('credit_url', 'https://www.chillocreative.com'),
         ]);
     }
 }

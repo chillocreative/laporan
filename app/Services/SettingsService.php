@@ -33,6 +33,10 @@ class SettingsService
             $this->settingsRepository->set('system_name', $data['system_name'], false, 'general');
         }
 
+        if (array_key_exists('credit_url', $data)) {
+            $this->settingsRepository->set('credit_url', $data['credit_url'] ?? '', false, 'general');
+        }
+
         $this->activityLogService->log('settings_updated', null, 'General settings updated');
     }
 

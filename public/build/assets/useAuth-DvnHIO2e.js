@@ -1,1 +1,0 @@
-import{u as n,A as e}from"./app-CL0Ki1hT.js";function t(){const s=n();return{user:e(()=>s.user),isAuthenticated:e(()=>s.isAuthenticated),isSuperAdmin:e(()=>s.isSuperAdmin),isAdmin:e(()=>s.isAdmin),isUser:e(()=>s.isUser),loading:e(()=>s.loading),hasRole:i=>s.hasRole(i),hasAnyRole:i=>s.hasAnyRole(i),hasPermission:i=>s.hasPermission(i)}}export{t as u};

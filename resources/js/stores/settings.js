@@ -6,6 +6,7 @@ export const useSettingsStore = defineStore('settings', {
         systemName: 'Sistem Pelaporan',
         systemLogo: null,
         recaptchaSiteKey: null,
+        creditUrl: 'https://www.chillocreative.com',
         loaded: false,
     }),
 
@@ -16,6 +17,7 @@ export const useSettingsStore = defineStore('settings', {
                 this.systemName = data.system_name || 'Sistem Pelaporan';
                 this.systemLogo = data.system_logo;
                 this.recaptchaSiteKey = data.recaptcha_site_key;
+                this.creditUrl = data.credit_url || '';
                 this.loaded = true;
             } catch {
                 // Use defaults

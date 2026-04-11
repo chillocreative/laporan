@@ -42,7 +42,17 @@
             </div>
 
             <div class="mt-6 text-center">
-                <p class="text-[11px] text-primary-200/60">&copy; {{ settingsStore.systemName }} {{ new Date().getFullYear() }} &middot; Build &amp; Design by: <a href="https://www.chillocreative.com" target="_blank" class="text-primary-200/80 hover:text-white transition-colors">Chillo Creative</a></p>
+                <p class="text-[11px] text-primary-200/60">
+                    &copy; {{ settingsStore.systemName }} {{ new Date().getFullYear() }} &middot; Build &amp; Design by:
+                    <a
+                        v-if="settingsStore.creditUrl"
+                        :href="settingsStore.creditUrl"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        class="text-primary-200/80 hover:text-white transition-colors"
+                    >Chillo Creative</a>
+                    <span v-else class="text-primary-200/80">Chillo Creative</span>
+                </p>
             </div>
         </div>
     </div>

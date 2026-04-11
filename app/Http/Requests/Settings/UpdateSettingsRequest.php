@@ -29,6 +29,7 @@ class UpdateSettingsRequest extends FormRequest
     {
         return [
             'system_name' => ['required', 'string', 'max:255'],
+            'credit_url' => ['nullable', 'url', 'max:255'],
         ];
     }
 
