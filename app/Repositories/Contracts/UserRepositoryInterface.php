@@ -9,7 +9,7 @@ interface UserRepositoryInterface extends BaseRepositoryInterface
 {
     public function findByEmail(string $email): ?User;
 
-    public function getWithRoles(int $perPage = 15): LengthAwarePaginator;
+    public function getWithRoles(array $filters = [], int $perPage = 15): LengthAwarePaginator;
 
     public function assignRole(int $userId, int $roleId): void;
 

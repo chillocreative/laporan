@@ -18,9 +18,30 @@ class UserRepository extends BaseRepository implements UserRepositoryInterface
         return $this->model->where('email', $email)->first();
     }
 
-    public function getWithRoles(int $perPage = 15): LengthAwarePaginator
+    public function getWithRoles(array $filters = [], int $perPage = 15): LengthAwarePaginator
     {
-        return $this->model->with('roles')->latest()->paginate($perPage);
+        $query = $this->model->with('roles');
+
+        if (! empty($filters['search'])) {
+            $search = $filters['search'];
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                    ->orWhere('email', 'like', "%{$search}%");
+            });
+        }
+
+        if (! empty($filters['role'])) {
+            $role = $filters['role'];
+            $query->whereHas('roles', function ($q) use ($role) {
+                $q->where('slug', $role)->orWhere('name', $role);
+            });
+        }
+
+        if (isset($filters['is_active']) && $filters['is_active'] !== '' && $filters['is_active'] !== null) {
+            $query->where('is_active', (bool) $filters['is_active']);
+        }
+
+        return $query->latest()->paginate($perPage);
     }
 
     public function assignRole(int $userId, int $roleId): void

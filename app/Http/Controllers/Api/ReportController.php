@@ -25,11 +25,13 @@ class ReportController extends Controller
         $filters = $request->only([
             'status', 'category', 'risk_level', 'search',
             'date_from', 'date_to', 'sort_by', 'sort_dir',
+            'user_id', 'role',
         ]);
 
         // Non-admin users only see own reports
         if (! $user->hasAnyRole(['super-admin', 'admin'])) {
             $filters['user_id'] = $user->id;
+            unset($filters['role']);
         }
 
         $reports = $this->reportService->getAllWithFilters(

@@ -25,7 +25,9 @@ class UserController extends Controller
     {
         $this->authorize('viewAny', User::class);
 
-        $users = $this->userRepository->getWithRoles($request->integer('per_page', 15));
+        $filters = $request->only(['search', 'role', 'is_active']);
+
+        $users = $this->userRepository->getWithRoles($filters, $request->integer('per_page', 15));
 
         // Exclude admin/super-admin users if requested (for filter dropdowns)
         if ($request->boolean('exclude_admin_roles')) {
