@@ -2,8 +2,6 @@
 
 namespace App\Providers;
 
-use App\Events\ReportCreated;
-use App\Listeners\QueueReportAnalysis;
 use App\Models\Report;
 use App\Models\Role;
 use App\Models\Setting;
@@ -27,7 +25,6 @@ use App\Repositories\Eloquent\SecurityLogRepository;
 use App\Repositories\Eloquent\SettingsRepository;
 use App\Repositories\Eloquent\UserRepository;
 use App\Services\SettingsService;
-use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 
@@ -52,9 +49,6 @@ class AppServiceProvider extends ServiceProvider
         Gate::policy(User::class, UserPolicy::class);
         Gate::policy(Role::class, RolePolicy::class);
         Gate::policy(Setting::class, SettingsPolicy::class);
-
-        // Event listeners
-        Event::listen(ReportCreated::class, QueueReportAnalysis::class);
 
         // Override mail config from database SMTP settings
         try {

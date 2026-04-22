@@ -49,12 +49,6 @@ class ReportController extends Controller
             $request->file('attachments', [])
         );
 
-        // Automatically trigger AI analysis if enabled
-        if ($this->openAIService->isEnabled()) {
-            $this->openAIService->analyzeReport($report);
-            $report->refresh();
-        }
-
         return response()->json([
             'message' => 'Laporan berjaya dicipta.',
             'data' => new ReportResource($report),

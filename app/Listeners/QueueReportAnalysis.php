@@ -12,17 +12,28 @@ class QueueReportAnalysis
 
     public function handle(ReportCreated $event): void
     {
-        $enabled = (bool) $this->settingsRepository->get('openai_enabled', false);
-        if (! $enabled) {
+        if (! $this->boolSetting('openai_enabled', false)) {
             return;
         }
 
-        $useQueue = (bool) $this->settingsRepository->get('openai_queue_enabled', true);
-
-        if ($useQueue) {
+        // dispatch() requires a running queue worker; dispatchAfterResponse()
+        // runs in the same PHP process after the HTTP response is flushed, so
+        // shared hosting without a worker still analyzes new reports.
+        if ($this->boolSetting('openai_queue_enabled', false)) {
             AnalyzeReportWithAI::dispatch($event->report);
         } else {
-            AnalyzeReportWithAI::dispatchSync($event->report);
+            AnalyzeReportWithAI::dispatchAfterResponse($event->report);
         }
+    }
+
+    protected function boolSetting(string $key, bool $default): bool
+    {
+        $value = $this->settingsRepository->get($key, $default);
+
+        if (is_bool($value)) {
+            return $value;
+        }
+
+        return filter_var($value, FILTER_VALIDATE_BOOLEAN);
     }
 }
