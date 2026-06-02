@@ -99,8 +99,20 @@ class RoleController extends Controller
 
     public function assignable(): JsonResponse
     {
-        // Roles available for self-registration (exclude super-admin)
+        // Roles available for admin assignment (exclude super-admin)
         $roles = Role::where('slug', '!=', 'super-admin')
+            ->select('id', 'name', 'slug')
+            ->get();
+
+        return response()->json(['data' => $roles]);
+    }
+
+    public function registerable(): JsonResponse
+    {
+        // Organisasi options for self-registration: non-system roles only
+        // (excludes Super Admin, Admin, User).
+        $roles = Role::where('is_system', false)
+            ->orderBy('name')
             ->select('id', 'name', 'slug')
             ->get();
 

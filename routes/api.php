@@ -29,6 +29,7 @@ Route::post('/register', [AuthController::class, 'register'])
 
 Route::get('/settings/public', [SettingsController::class, 'publicSettings']);
 Route::get('/roles/assignable', [RoleController::class, 'assignable']);
+Route::get('/roles/registerable', [RoleController::class, 'registerable']);
 
 // Forgot Password (sends temporary password via email)
 Route::post('/forgot-password', [AuthController::class, 'forgotPassword'])

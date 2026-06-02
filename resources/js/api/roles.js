@@ -22,4 +22,7 @@ export default {
     assignable() {
         return api.get('/roles/assignable');
     },
+    registerable() {
+        return api.get('/roles/registerable');
+    },
 };

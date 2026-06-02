@@ -34,10 +34,9 @@
 
                         <div>
                             <label class="label-text">Organisasi</label>
-                            <select v-model="form.organization" required class="input-field">
-                                <option value="">Pilih organisasi</option>
-                                <option value="MBSP">MBSP</option>
-                                <option value="MBPP">MBPP</option>
+                            <select v-model="form.organization" required class="input-field" :disabled="loadingOrganizations">
+                                <option value="">{{ loadingOrganizations ? 'Memuatkan...' : 'Pilih organisasi' }}</option>
+                                <option v-for="org in organizations" :key="org.id" :value="org.name">{{ org.name }}</option>
                             </select>
                         </div>
 
@@ -75,6 +74,7 @@
 import { ref, onMounted } from 'vue';
 import { useSettingsStore } from '../../stores/settings';
 import authApi from '../../api/auth';
+import rolesApi from '../../api/roles';
 
 const settingsStore = useSettingsStore();
 
@@ -84,9 +84,24 @@ const form = ref({
 const loading = ref(false);
 const errorMsg = ref('');
 const registered = ref(false);
+const organizations = ref([]);
+const loadingOrganizations = ref(false);
+
+async function fetchOrganizations() {
+    loadingOrganizations.value = true;
+    try {
+        const { data } = await rolesApi.registerable();
+        organizations.value = data.data;
+    } catch {
+        errorMsg.value = 'Gagal memuatkan senarai organisasi.';
+    } finally {
+        loadingOrganizations.value = false;
+    }
+}
 
 onMounted(async () => {
     if (!settingsStore.loaded) settingsStore.fetchPublic();
+    fetchOrganizations();
 });
 
 async function handleRegister() {

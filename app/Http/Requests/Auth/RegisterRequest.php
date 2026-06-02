@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Auth;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class RegisterRequest extends FormRequest
 {
@@ -15,9 +16,20 @@ class RegisterRequest extends FormRequest
     {
         return [
             'name' => ['required', 'string', 'max:255'],
-            'organization' => ['required', 'string', 'in:MBSP,MBPP'],
+            'organization' => [
+                'required',
+                'string',
+                Rule::exists('roles', 'name')->where('is_system', false),
+            ],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
+        ];
+    }
+
+    public function messages(): array
+    {
+        return [
+            'organization.exists' => 'Sila pilih organisasi yang sah.',
         ];
     }
 }
