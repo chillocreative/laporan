@@ -21,7 +21,9 @@ class RegisterRequest extends FormRequest
                 'string',
                 Rule::exists('roles', 'name')->where('is_system', false),
             ],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email'],
+            // Ignore soft-deleted users: a deleted account that still owns this
+            // email is restored & overwritten in UserRepository::create().
+            'email' => ['required', 'string', 'email', 'max:255', Rule::unique('users', 'email')->whereNull('deleted_at')],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
         ];
     }

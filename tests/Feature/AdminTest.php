@@ -100,6 +100,46 @@ class AdminTest extends TestCase
         $this->assertDatabaseHas('users', ['email' => 'newuser@test.com']);
     }
 
+    public function test_admin_can_recreate_user_with_soft_deleted_email(): void
+    {
+        $userRole = Role::where('slug', 'user')->first();
+
+        // An existing account is created, then soft-deleted. Its email row
+        // still occupies the unique index but is hidden from the user list.
+        $deleted = User::create([
+            'name' => 'Old MPKK',
+            'email' => 'mpkk@test.com',
+            'password' => 'password123',
+            'is_active' => true,
+        ]);
+        $deleted->roles()->attach($userRole->id);
+        $deleted->delete();
+
+        // Re-registering the same email must succeed (restore + overwrite),
+        // not fail with "email has already been taken".
+        $response = $this->actingAs($this->admin)
+            ->postJson('/api/users', [
+                'name' => 'New MPKK',
+                'email' => 'mpkk@test.com',
+                'password' => 'password123',
+                'password_confirmation' => 'password123',
+                'role_ids' => [$userRole->id],
+                'is_active' => true,
+            ]);
+
+        $response->assertStatus(201)
+            ->assertJsonPath('data.email', 'mpkk@test.com');
+
+        // The trashed row was reused (not duplicated) and is now active.
+        $this->assertSame(1, User::withTrashed()->where('email', 'mpkk@test.com')->count());
+        $this->assertDatabaseHas('users', [
+            'id' => $deleted->id,
+            'email' => 'mpkk@test.com',
+            'name' => 'NEW MPKK', // name mutator uppercases
+            'deleted_at' => null,
+        ]);
+    }
+
     public function test_admin_can_toggle_user_active(): void
     {
         $targetUser = User::create([

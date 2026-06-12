@@ -18,6 +18,32 @@ class UserRepository extends BaseRepository implements UserRepositoryInterface
         return $this->model->where('email', $email)->first();
     }
 
+    /**
+     * Create a user, or restore-and-overwrite a soft-deleted user that still
+     * owns the same email.
+     *
+     * The users table has a hard unique index on `email` that does not account
+     * for soft deletes, so a plain insert with the email of a trashed account
+     * would violate the constraint. Restoring the existing row reuses it (and
+     * keeps any historical reports linked) instead.
+     */
+    public function create(array $data): User
+    {
+        if (! empty($data['email'])) {
+            $trashed = $this->model->onlyTrashed()->where('email', $data['email'])->first();
+
+            if ($trashed) {
+                $trashed->restore();
+                $trashed->fill($data);
+                $trashed->save();
+
+                return $trashed;
+            }
+        }
+
+        return $this->model->create($data);
+    }
+
     public function getWithRoles(array $filters = [], int $perPage = 15): LengthAwarePaginator
     {
         $query = $this->model->with('roles');
