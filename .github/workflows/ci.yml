@@ -101,7 +101,7 @@ jobs:
         run: npm run build
 
   deploy:
-    name: Deploy to cPanel
+    name: Deploy to cPanel via FTP
     runs-on: ubuntu-latest
     needs: [tests, lint, frontend]
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
@@ -110,19 +110,75 @@ jobs:
       cancel-in-progress: false
 
     steps:
-      - name: Deploy over SSH
-        uses: appleboy/ssh-action@v1.2.0
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
         with:
-          host: ${{ secrets.CPANEL_SSH_HOST }}
-          username: ${{ secrets.CPANEL_SSH_USER }}
-          port: ${{ secrets.CPANEL_SSH_PORT }}
-          key: ${{ secrets.CPANEL_SSH_KEY }}
-          command_timeout: 20m
-          script: |
-            set -e
-            cd "${{ secrets.CPANEL_APP_PATH }}"
-            # Bootstrap: pull the latest main so scripts/deploy-ci.sh exists,
-            # then hand off to the script (which does its own reset/build).
-            git fetch --prune origin main
-            git reset --hard origin/main
-            bash scripts/deploy-ci.sh
+          php-version: '8.2'
+          tools: composer:v2
+          coverage: none
+
+      - name: Install composer dependencies (production)
+        run: composer install --no-dev --optimize-autoloader --no-interaction --prefer-dist
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install npm dependencies
+        run: npm ci
+
+      - name: Build frontend assets
+        run: npm run build
+
+      - name: Upload to cPanel via FTP
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          port: ${{ secrets.FTP_PORT }}
+          protocol: ftp
+          server-dir: /laporan.cc/
+          local-dir: ./
+          exclude: |
+            **/.git*
+            **/.git*/**
+            **/.github*
+            **/.github*/**
+            **/node_modules/**
+            **/tests/**
+            .env
+            .env.example
+            .editorconfig
+            .dockerignore
+            docker-compose.yml
+            docker/**
+            phpunit.xml
+            deploy.sh
+            scripts/**
+            docs/**
+            CPANEL_DEPLOYMENT.md
+            README.md
+            package-lock.json
+            package.json
+            vite.config.js
+            storage/logs/**
+            storage/framework/cache/data/**
+            storage/framework/sessions/**
+            storage/framework/views/**
+            database/database.sqlite
+
+      - name: Post-deploy notes
+        run: |
+          echo "::notice title=Deploy complete::Files uploaded to ${{ secrets.FTP_SERVER }}."
+          echo ""
+          echo "If this deploy includes new migrations, run manually via cPanel Terminal:"
+          echo "  cd /home/chilloc1/laporan.cc && php artisan migrate --force"
+          echo ""
+          echo "To rebuild Laravel caches after config changes:"
+          echo "  cd /home/chilloc1/laporan.cc && php artisan config:cache && php artisan route:cache && php artisan view:cache"
