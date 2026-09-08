@@ -7,7 +7,6 @@ use App\Repositories\Contracts\ReportRepositoryInterface;
 use App\Repositories\Contracts\SecurityLogRepositoryInterface;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Queue;
-use Illuminate\Support\Facades\Storage;
 
 class MonitoringService
 {

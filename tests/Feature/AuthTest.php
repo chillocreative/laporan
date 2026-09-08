@@ -25,13 +25,6 @@ class AuthTest extends TestCase
 
     // ─── Helpers ─────────────────────────────────────────────
 
-    /**
-     * Create a user via the factory with a known plain-text password.
-     *
-     * The factory already hashes the password with Hash::make and the User
-     * model has the `hashed` cast, but Laravel's hashed cast is idempotent
-     * (it skips values that are already bcrypt/argon hashes).
-     */
     protected function createUser(array $overrides = [], ?string $roleSlug = 'user'): User
     {
         $user = User::factory()->create($overrides);
@@ -44,15 +37,25 @@ class AuthTest extends TestCase
         return $user->refresh();
     }
 
+    protected function makeOrganizationRole(string $name = 'Kementerian Ujian'): Role
+    {
+        return Role::create([
+            'name' => $name,
+            'slug' => \Illuminate\Support\Str::slug($name),
+            'description' => 'Organisasi ujian.',
+            'is_system' => false,
+        ]);
+    }
+
     // ─── Login ───────────────────────────────────────────────
 
     public function test_user_can_login_with_valid_credentials(): void
     {
-        $user = $this->createUser(['email' => 'john@example.com']);
+        $this->createUser(['email' => 'john@example.com']);
 
         $response = $this->postJson('/api/login', [
             'email' => 'john@example.com',
-            'password' => 'password', // factory default
+            'password' => 'password',
         ]);
 
         $response->assertOk()
@@ -61,7 +64,7 @@ class AuthTest extends TestCase
                 'user' => ['id', 'name', 'email', 'is_active', 'roles'],
             ])
             ->assertJsonPath('user.email', 'john@example.com')
-            ->assertJsonPath('message', 'Login successful.');
+            ->assertJsonPath('message', 'Log masuk berjaya.');
     }
 
     public function test_login_fails_with_invalid_credentials(): void
@@ -92,7 +95,7 @@ class AuthTest extends TestCase
         $response->assertUnprocessable()
             ->assertJsonValidationErrors(['email'])
             ->assertJsonFragment([
-                'email' => ['Your account has been deactivated.'],
+                'email' => ['Akaun anda telah dinyahaktifkan.'],
             ]);
     }
 
@@ -130,35 +133,23 @@ class AuthTest extends TestCase
 
     public function test_user_can_register(): void
     {
-        $role = Role::where('slug', 'user')->firstOrFail();
+        $organization = $this->makeOrganizationRole();
 
-        // SettingsSeeder leaves recaptcha_secret_key as null, so
-        // RecaptchaService::verify() will return true (skip verification).
         $response = $this->postJson('/api/register', [
             'name' => 'Jane Doe',
             'email' => 'jane@example.com',
+            'organization' => $organization->name,
             'password' => 'secret1234',
             'password_confirmation' => 'secret1234',
-            'role_id' => $role->id,
-            'recaptcha_token' => 'test-token',
         ]);
 
         $response->assertCreated()
-            ->assertJsonStructure([
-                'message',
-                'user' => ['id', 'name', 'email'],
-            ])
-            ->assertJsonPath('user.email', 'jane@example.com')
-            ->assertJsonPath('message', 'Registration successful.');
+            ->assertJsonStructure(['message', 'pending_approval'])
+            ->assertJsonPath('pending_approval', true);
 
         $this->assertDatabaseHas('users', [
             'email' => 'jane@example.com',
-            'name' => 'Jane Doe',
         ]);
-
-        // Verify role was assigned
-        $newUser = User::where('email', 'jane@example.com')->first();
-        $this->assertTrue($newUser->hasRole('user'));
     }
 
     public function test_register_validates_required_fields(): void
@@ -169,24 +160,22 @@ class AuthTest extends TestCase
             ->assertJsonValidationErrors([
                 'name',
                 'email',
+                'organization',
                 'password',
-                'role_id',
-                'recaptcha_token',
             ]);
     }
 
     public function test_register_validates_unique_email(): void
     {
+        $organization = $this->makeOrganizationRole();
         $this->createUser(['email' => 'taken@example.com']);
-        $role = Role::where('slug', 'user')->firstOrFail();
 
         $response = $this->postJson('/api/register', [
             'name' => 'Duplicate',
             'email' => 'taken@example.com',
+            'organization' => $organization->name,
             'password' => 'secret1234',
             'password_confirmation' => 'secret1234',
-            'role_id' => $role->id,
-            'recaptcha_token' => 'test-token',
         ]);
 
         $response->assertUnprocessable()
@@ -195,34 +184,33 @@ class AuthTest extends TestCase
 
     public function test_register_validates_password_confirmation(): void
     {
-        $role = Role::where('slug', 'user')->firstOrFail();
+        $organization = $this->makeOrganizationRole();
 
         $response = $this->postJson('/api/register', [
             'name' => 'Jane Doe',
             'email' => 'jane@example.com',
+            'organization' => $organization->name,
             'password' => 'secret1234',
             'password_confirmation' => 'mismatch99',
-            'role_id' => $role->id,
-            'recaptcha_token' => 'test-token',
         ]);
 
         $response->assertUnprocessable()
             ->assertJsonValidationErrors(['password']);
     }
 
-    public function test_register_validates_role_must_exist(): void
+    public function test_register_rejects_system_role_as_organization(): void
     {
+        // System roles (admin, super-admin, user) are not valid organisations.
         $response = $this->postJson('/api/register', [
             'name' => 'Jane Doe',
             'email' => 'jane@example.com',
+            'organization' => 'Admin',
             'password' => 'secret1234',
             'password_confirmation' => 'secret1234',
-            'role_id' => 9999,
-            'recaptcha_token' => 'test-token',
         ]);
 
         $response->assertUnprocessable()
-            ->assertJsonValidationErrors(['role_id']);
+            ->assertJsonValidationErrors(['organization']);
     }
 
     // ─── Authenticated user profile ──────────────────────────
@@ -253,15 +241,11 @@ class AuthTest extends TestCase
     {
         $user = $this->createUser();
 
-        // The logout endpoint calls Auth::guard('web')->logout() and
-        // invalidates the session.  We add the Origin header so that
-        // EnsureFrontendRequestsAreStateful boots the session middleware
-        // (needed because AuthService calls request()->session()).
         $this->actingAs($user)
             ->withHeaders(['Origin' => config('app.url')])
             ->postJson('/api/logout')
             ->assertOk()
-            ->assertJsonPath('message', 'Logged out successfully.');
+            ->assertJsonPath('message', 'Berjaya log keluar.');
     }
 
     public function test_unauthenticated_user_cannot_logout(): void

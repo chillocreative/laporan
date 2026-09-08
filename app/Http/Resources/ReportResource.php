@@ -14,9 +14,15 @@ class ReportResource extends JsonResource
             'user' => new UserResource($this->whenLoaded('user')),
             'title' => $this->title,
             'category' => $this->category,
+            'location' => $this->location,
             'description' => $this->description,
             'incident_date' => $this->incident_date?->format('Y-m-d'),
             'incident_time' => $this->incident_time,
+            'status' => $this->status ? [
+                'value' => $this->status->value,
+                'label' => $this->status->label(),
+                'color' => $this->status->color(),
+            ] : null,
             'attachments' => ReportAttachmentResource::collection($this->whenLoaded('attachments')),
             'ai_analysis' => $this->when($this->ai_analyzed_at !== null, fn () => [
                 'summary' => $this->ai_summary,

@@ -10,7 +10,7 @@ return new class extends Migration
         // Get current active category names
         $activeCategories = DB::table('categories')->pluck('name')->toArray();
 
-        if (!empty($activeCategories)) {
+        if (! empty($activeCategories)) {
             // Update any reports whose category no longer exists to 'Lain-lain'
             DB::table('reports')
                 ->whereNotIn('category', $activeCategories)

@@ -6,16 +6,16 @@ use Illuminate\Support\Facades\DB;
 return new class extends Migration
 {
     private array $mapping = [
-        'Infrastructure'     => 'Infrastruktur',
-        'Public Safety'      => 'Keselamatan Awam',
-        'Environmental'      => 'Alam Sekitar',
-        'Public Health'      => 'Kesihatan Awam',
+        'Infrastructure' => 'Infrastruktur',
+        'Public Safety' => 'Keselamatan Awam',
+        'Environmental' => 'Alam Sekitar',
+        'Public Health' => 'Kesihatan Awam',
         'Traffic & Transport' => 'Trafik & Pengangkutan',
-        'Utilities'          => 'Utiliti',
-        'Community'          => 'Komuniti',
+        'Utilities' => 'Utiliti',
+        'Community' => 'Komuniti',
         'Government Services' => 'Perkhidmatan Kerajaan',
-        'Education'          => 'Pendidikan',
-        'Other'              => 'Lain-lain',
+        'Education' => 'Pendidikan',
+        'Other' => 'Lain-lain',
     ];
 
     public function up(): void

@@ -64,6 +64,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/reports/analyze-pending', [ReportController::class, 'analyzePending']);
     Route::apiResource('reports', ReportController::class)
         ->middleware('throttle:60,1');
+    Route::patch('/reports/{report}/status', [ReportController::class, 'updateStatus']);
     Route::post('/reports/{report}/analyze', [ReportController::class, 'triggerAnalysis']);
     Route::get('/reports/{report}/analysis-status', [ReportController::class, 'analysisStatus']);
     Route::delete('/attachments/{attachment}', [ReportAttachmentController::class, 'destroy']);
