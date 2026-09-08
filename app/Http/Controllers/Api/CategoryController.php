@@ -44,7 +44,7 @@ class CategoryController extends Controller
     public function update(Request $request, Category $category): JsonResponse
     {
         $validated = $request->validate([
-            'name' => ['sometimes', 'required', 'string', 'max:100', 'unique:categories,name,' . $category->id],
+            'name' => ['sometimes', 'required', 'string', 'max:100', 'unique:categories,name,'.$category->id],
             'is_active' => ['sometimes', 'boolean'],
             'sort_order' => ['sometimes', 'integer', 'min:0'],
         ]);

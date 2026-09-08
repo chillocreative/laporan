@@ -19,7 +19,7 @@ class RegisterRequest extends FormRequest
             'organization' => [
                 'required',
                 'string',
-                Rule::exists('roles', 'name')->where('is_system', false),
+                Rule::exists('roles', 'name')->where('is_system', 0),
             ],
             // Ignore soft-deleted users: a deleted account that still owns this
             // email is restored & overwritten in UserRepository::create().

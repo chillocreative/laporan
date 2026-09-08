@@ -16,7 +16,9 @@ class ReportTest extends TestCase
     use RefreshDatabase;
 
     protected User $user;
+
     protected User $admin;
+
     protected User $superAdmin;
 
     protected function setUp(): void
@@ -47,6 +49,7 @@ class ReportTest extends TestCase
             'location' => 'Jalan Ampang, Kuala Lumpur',
             'description' => 'There is a large pothole causing traffic hazards near the intersection.',
             'incident_date' => now()->subDay()->format('Y-m-d'),
+            'incident_time' => '14:30',
         ], $overrides);
     }
 
@@ -59,6 +62,7 @@ class ReportTest extends TestCase
             'location' => 'Test Location',
             'description' => 'Test description for the report.',
             'incident_date' => now()->subDay(),
+            'incident_time' => '10:00',
             'status' => ReportStatus::Pending,
         ], $overrides));
     }
@@ -73,7 +77,7 @@ class ReportTest extends TestCase
             ->postJson('/api/reports', $this->validReportData());
 
         $response->assertStatus(201)
-            ->assertJsonPath('message', 'Report created successfully.')
+            ->assertJsonPath('message', 'Laporan berjaya dicipta.')
             ->assertJsonPath('data.title', 'Pothole on Jalan Ampang')
             ->assertJsonPath('data.category', 'Infrastructure')
             ->assertJsonPath('data.status.value', 'pending');
@@ -97,9 +101,9 @@ class ReportTest extends TestCase
             ->assertJsonValidationErrors([
                 'title',
                 'category',
-                'location',
                 'description',
                 'incident_date',
+                'incident_time',
             ]);
     }
 
@@ -142,7 +146,7 @@ class ReportTest extends TestCase
 
     public function test_admin_can_view_any_report(): void
     {
-        $report = $this->createReport(); // owned by $this->user
+        $report = $this->createReport();
 
         $response = $this->actingAs($this->admin)
             ->getJson("/api/reports/{$report->id}");
@@ -157,11 +161,9 @@ class ReportTest extends TestCase
 
     public function test_user_can_list_own_reports(): void
     {
-        // Create 2 reports for $this->user
         $this->createReport(['title' => 'User Report 1']);
         $this->createReport(['title' => 'User Report 2']);
 
-        // Create 1 report for another user
         $otherUser = User::factory()->create(['is_active' => true]);
         $otherUser->roles()->attach(Role::where('slug', 'user')->first());
         $this->createReport(['user_id' => $otherUser->id, 'title' => 'Other Report']);
@@ -215,7 +217,7 @@ class ReportTest extends TestCase
             ]);
 
         $response->assertOk()
-            ->assertJsonPath('message', 'Report updated successfully.')
+            ->assertJsonPath('message', 'Laporan berjaya dikemas kini.')
             ->assertJsonPath('data.title', 'Updated Title');
 
         $this->assertDatabaseHas('reports', [
@@ -255,7 +257,7 @@ class ReportTest extends TestCase
             ->deleteJson("/api/reports/{$report->id}");
 
         $response->assertOk()
-            ->assertJsonPath('message', 'Report deleted successfully.');
+            ->assertJsonPath('message', 'Laporan berjaya dipadam.');
 
         $this->assertSoftDeleted('reports', ['id' => $report->id]);
     }
@@ -274,7 +276,7 @@ class ReportTest extends TestCase
             ]);
 
         $response->assertOk()
-            ->assertJsonPath('message', 'Report status updated.')
+            ->assertJsonPath('message', 'Status laporan dikemas kini.')
             ->assertJsonPath('data.status.value', 'under_review');
 
         $this->assertDatabaseHas('reports', [
@@ -305,15 +307,13 @@ class ReportTest extends TestCase
 
     public function test_admin_can_trigger_ai_analysis(): void
     {
-        // OpenAI is disabled by default (no settings seeded, or openai_enabled = 0)
-        // The controller returns 422 when AI is disabled.
         $report = $this->createReport();
 
         $response = $this->actingAs($this->admin)
             ->postJson("/api/reports/{$report->id}/analyze");
 
         $response->assertStatus(422)
-            ->assertJsonPath('message', 'AI analysis is currently disabled. Enable it in Settings.');
+            ->assertJsonPath('message', 'Analisis AI tidak aktif pada masa ini. Aktifkan di Tetapan.');
     }
 
     // ------------------------------------------------------------------

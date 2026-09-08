@@ -31,35 +31,29 @@ class AdminTest extends TestCase
             SettingsSeeder::class,
         ]);
 
-        // Create super-admin user
         $this->superAdmin = User::create([
             'name' => 'Super Admin',
             'email' => 'superadmin@test.com',
             'password' => 'password123',
             'is_active' => true,
         ]);
-        $superAdminRole = Role::where('slug', 'super-admin')->first();
-        $this->superAdmin->roles()->attach($superAdminRole->id);
+        $this->superAdmin->roles()->attach(Role::where('slug', 'super-admin')->first()->id);
 
-        // Create admin user
         $this->admin = User::create([
             'name' => 'Admin User',
             'email' => 'admin@test.com',
             'password' => 'password123',
             'is_active' => true,
         ]);
-        $adminRole = Role::where('slug', 'admin')->first();
-        $this->admin->roles()->attach($adminRole->id);
+        $this->admin->roles()->attach(Role::where('slug', 'admin')->first()->id);
 
-        // Create regular user
         $this->regularUser = User::create([
             'name' => 'Regular User',
             'email' => 'user@test.com',
             'password' => 'password123',
             'is_active' => true,
         ]);
-        $userRole = Role::where('slug', 'user')->first();
-        $this->regularUser->roles()->attach($userRole->id);
+        $this->regularUser->roles()->attach(Role::where('slug', 'user')->first()->id);
     }
 
     // =========================================================================
@@ -94,7 +88,7 @@ class AdminTest extends TestCase
             ]);
 
         $response->assertStatus(201)
-            ->assertJsonPath('message', 'User created successfully.')
+            ->assertJsonPath('message', 'Pengguna berjaya dicipta.')
             ->assertJsonPath('data.email', 'newuser@test.com');
 
         $this->assertDatabaseHas('users', ['email' => 'newuser@test.com']);
@@ -104,8 +98,6 @@ class AdminTest extends TestCase
     {
         $userRole = Role::where('slug', 'user')->first();
 
-        // An existing account is created, then soft-deleted. Its email row
-        // still occupies the unique index but is hidden from the user list.
         $deleted = User::create([
             'name' => 'Old MPKK',
             'email' => 'mpkk@test.com',
@@ -115,8 +107,6 @@ class AdminTest extends TestCase
         $deleted->roles()->attach($userRole->id);
         $deleted->delete();
 
-        // Re-registering the same email must succeed (restore + overwrite),
-        // not fail with "email has already been taken".
         $response = $this->actingAs($this->admin)
             ->postJson('/api/users', [
                 'name' => 'New MPKK',
@@ -130,12 +120,11 @@ class AdminTest extends TestCase
         $response->assertStatus(201)
             ->assertJsonPath('data.email', 'mpkk@test.com');
 
-        // The trashed row was reused (not duplicated) and is now active.
         $this->assertSame(1, User::withTrashed()->where('email', 'mpkk@test.com')->count());
         $this->assertDatabaseHas('users', [
             'id' => $deleted->id,
             'email' => 'mpkk@test.com',
-            'name' => 'NEW MPKK', // name mutator uppercases
+            'name' => 'NEW MPKK',
             'deleted_at' => null,
         ]);
     }
@@ -148,14 +137,13 @@ class AdminTest extends TestCase
             'password' => 'password123',
             'is_active' => true,
         ]);
-        $userRole = Role::where('slug', 'user')->first();
-        $targetUser->roles()->attach($userRole->id);
+        $targetUser->roles()->attach(Role::where('slug', 'user')->first()->id);
 
         $response = $this->actingAs($this->admin)
             ->patchJson("/api/users/{$targetUser->id}/toggle-active");
 
         $response->assertStatus(200)
-            ->assertJsonPath('message', 'User deactivated successfully.');
+            ->assertJsonPath('message', 'Pengguna berjaya dinyahaktifkan.');
 
         $this->assertDatabaseHas('users', [
             'id' => $targetUser->id,
@@ -201,7 +189,7 @@ class AdminTest extends TestCase
             ]);
 
         $response->assertStatus(201)
-            ->assertJsonPath('message', 'Role created successfully.')
+            ->assertJsonPath('message', 'Peranan berjaya dicipta.')
             ->assertJsonPath('data.slug', 'report-manager');
 
         $this->assertDatabaseHas('roles', ['slug' => 'report-manager']);
@@ -209,10 +197,6 @@ class AdminTest extends TestCase
 
     public function test_super_admin_cannot_delete_system_role(): void
     {
-        // Gate::before grants super-admin full bypass, so we verify the
-        // RolePolicy itself denies deletion of system roles.  Because no
-        // non-super-admin can reach the role routes (middleware: role:super-admin),
-        // we assert the policy directly.
         $systemRole = Role::where('slug', 'admin')->first();
 
         $this->assertFalse(
@@ -220,16 +204,24 @@ class AdminTest extends TestCase
             'RolePolicy should deny deletion of system roles.'
         );
 
-        // Also verify the role still exists in the database (no accidental deletion).
         $this->assertDatabaseHas('roles', ['id' => $systemRole->id]);
     }
 
-    public function test_admin_cannot_access_roles(): void
+    public function test_admin_can_list_roles_but_cannot_create(): void
     {
-        $response = $this->actingAs($this->admin)
-            ->getJson('/api/roles');
+        // Admin has read-only access to roles.
+        $this->actingAs($this->admin)
+            ->getJson('/api/roles')
+            ->assertStatus(200);
 
-        $response->assertStatus(403);
+        // Only Super Admin can create roles.
+        $this->actingAs($this->admin)
+            ->postJson('/api/roles', [
+                'name' => 'Denied Role',
+                'slug' => 'denied-role',
+                'permission_ids' => [],
+            ])
+            ->assertStatus(403);
     }
 
     // =========================================================================
@@ -253,7 +245,7 @@ class AdminTest extends TestCase
             ]);
 
         $response->assertStatus(200)
-            ->assertJsonPath('message', 'Settings updated successfully.');
+            ->assertJsonPath('message', 'Tetapan berjaya dikemas kini.');
     }
 
     public function test_admin_cannot_access_settings(): void
@@ -310,19 +302,16 @@ class AdminTest extends TestCase
 
     public function test_regular_user_cannot_access_logs(): void
     {
-        $response = $this->actingAs($this->regularUser)
-            ->getJson('/api/logs/activity');
+        $this->actingAs($this->regularUser)
+            ->getJson('/api/logs/activity')
+            ->assertStatus(403);
 
-        $response->assertStatus(403);
+        $this->actingAs($this->regularUser)
+            ->getJson('/api/logs/security')
+            ->assertStatus(403);
 
-        $response = $this->actingAs($this->regularUser)
-            ->getJson('/api/logs/security');
-
-        $response->assertStatus(403);
-
-        $response = $this->actingAs($this->regularUser)
-            ->getJson('/api/logs/ai');
-
-        $response->assertStatus(403);
+        $this->actingAs($this->regularUser)
+            ->getJson('/api/logs/ai')
+            ->assertStatus(403);
     }
 }
