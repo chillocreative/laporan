@@ -40,7 +40,7 @@ class MinitMesyuaratController extends Controller
 
     public function store(StoreMinitMesyuaratRequest $request): JsonResponse
     {
-        $userId = $request->user()->id;
+        $userId = $request->targetUserId();
         $file = $request->file('file');
         $extension = $file->getClientOriginalExtension();
         $directory = "minit-mesyuarat/{$userId}";

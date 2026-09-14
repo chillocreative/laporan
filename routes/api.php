@@ -73,24 +73,16 @@ Route::middleware('auth:sanctum')->group(function () {
 
     /*
     |----------------------------------------------------------------------
-    | MPKK Routes (Pengurusan) — view/edit/delete also open to Admin/Super
-    | Admin for oversight; creation stays MPKK-only (records are always
-    | owned by the uploading MPKK user).
+    | MPKK Routes (Pengurusan) — also open to Admin/Super Admin for
+    | oversight, including creating a record on behalf of an MPKK user.
     |----------------------------------------------------------------------
     */
 
     Route::middleware('role:mpkk,admin,super-admin')->group(function () {
         Route::apiResource('penyata-kewangan', PenyataKewanganController::class)
-            ->only(['index', 'update', 'destroy']);
+            ->only(['index', 'store', 'update', 'destroy']);
         Route::apiResource('minit-mesyuarat', MinitMesyuaratController::class)
-            ->only(['index', 'update', 'destroy']);
-    });
-
-    Route::middleware('role:mpkk')->group(function () {
-        Route::post('/penyata-kewangan', [PenyataKewanganController::class, 'store'])
-            ->name('penyata-kewangan.store');
-        Route::post('/minit-mesyuarat', [MinitMesyuaratController::class, 'store'])
-            ->name('minit-mesyuarat.store');
+            ->only(['index', 'store', 'update', 'destroy']);
     });
 
     /*
