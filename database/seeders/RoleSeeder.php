@@ -28,6 +28,12 @@ class RoleSeeder extends Seeder
                 'description' => 'Self-service reporting',
                 'is_system' => true,
             ],
+            [
+                'name' => 'MPKK',
+                'slug' => 'mpkk',
+                'description' => 'Majlis Pengurusan Kampung/Komuniti — pengurusan penyata kewangan dan minit mesyuarat',
+                'is_system' => false,
+            ],
         ];
 
         foreach ($roles as $role) {

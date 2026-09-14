@@ -4,7 +4,9 @@ use App\Http\Controllers\Api\ActivityLogController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\DashboardController;
+use App\Http\Controllers\Api\MinitMesyuaratController;
 use App\Http\Controllers\Api\OpenAILogController;
+use App\Http\Controllers\Api\PenyataKewanganController;
 use App\Http\Controllers\Api\ProfileController;
 use App\Http\Controllers\Api\ReportAttachmentController;
 use App\Http\Controllers\Api\ReportController;
@@ -68,6 +70,19 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/reports/{report}/analyze', [ReportController::class, 'triggerAnalysis']);
     Route::get('/reports/{report}/analysis-status', [ReportController::class, 'analysisStatus']);
     Route::delete('/attachments/{attachment}', [ReportAttachmentController::class, 'destroy']);
+
+    /*
+    |----------------------------------------------------------------------
+    | MPKK Routes (Pengurusan)
+    |----------------------------------------------------------------------
+    */
+
+    Route::middleware('role:mpkk')->group(function () {
+        Route::apiResource('penyata-kewangan', PenyataKewanganController::class)
+            ->only(['index', 'store', 'update', 'destroy']);
+        Route::apiResource('minit-mesyuarat', MinitMesyuaratController::class)
+            ->only(['index', 'store', 'update', 'destroy']);
+    });
 
     /*
     |----------------------------------------------------------------------
@@ -135,4 +150,20 @@ Route::get('/attachments/{attachment}/download', [ReportAttachmentController::cl
 
 Route::get('/attachments/{attachment}/view', [ReportAttachmentController::class, 'view'])
     ->name('attachments.view')
+    ->middleware('signed');
+
+Route::get('/penyata-kewangan/{penyataKewangan}/download', [PenyataKewanganController::class, 'download'])
+    ->name('penyata-kewangan.download')
+    ->middleware('signed');
+
+Route::get('/penyata-kewangan/{penyataKewangan}/view', [PenyataKewanganController::class, 'view'])
+    ->name('penyata-kewangan.view')
+    ->middleware('signed');
+
+Route::get('/minit-mesyuarat/{minitMesyuarat}/download', [MinitMesyuaratController::class, 'download'])
+    ->name('minit-mesyuarat.download')
+    ->middleware('signed');
+
+Route::get('/minit-mesyuarat/{minitMesyuarat}/view', [MinitMesyuaratController::class, 'view'])
+    ->name('minit-mesyuarat.view')
     ->middleware('signed');
