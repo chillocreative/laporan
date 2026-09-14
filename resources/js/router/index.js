@@ -119,18 +119,18 @@ const routes = [
                 props: true,
             },
 
-            // Pengurusan (MPKK only)
+            // Pengurusan (MPKK, with Admin/Super Admin oversight)
             {
                 path: 'pengurusan/penyata-kewangan',
                 name: 'pengurusan.penyata-kewangan',
                 component: () => import('../pages/pengurusan/PenyataKewanganList.vue'),
-                meta: { roles: ['mpkk'] },
+                meta: { roles: ['mpkk', 'admin', 'super-admin'] },
             },
             {
                 path: 'pengurusan/minit-mesyuarat',
                 name: 'pengurusan.minit-mesyuarat',
                 component: () => import('../pages/pengurusan/MinitMesyuaratList.vue'),
-                meta: { roles: ['mpkk'] },
+                meta: { roles: ['mpkk', 'admin', 'super-admin'] },
             },
 
             // Profile (all authenticated users)

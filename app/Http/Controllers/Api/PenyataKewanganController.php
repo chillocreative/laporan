@@ -20,38 +20,44 @@ class PenyataKewanganController extends Controller
 
     public function index(Request $request): JsonResponse
     {
-        $records = PenyataKewangan::where('user_id', $request->user()->id)
-            ->orderByDesc('bulan')
-            ->get()
-            ->map(function ($record) {
-                $data = $record->toArray();
-                $data['download_url'] = URL::temporarySignedRoute(
-                    'penyata-kewangan.download',
-                    now()->addMinutes(30),
-                    ['penyataKewangan' => $record->id]
-                );
-                $data['view_url'] = URL::temporarySignedRoute(
-                    'penyata-kewangan.view',
-                    now()->addMinutes(30),
-                    ['penyataKewangan' => $record->id]
-                );
+        $query = PenyataKewangan::query()->orderByDesc('bulan');
 
-                return $data;
-            });
+        if ($request->user()->hasAnyRole(['super-admin', 'admin'])) {
+            $query->with('user:id,name');
+        } else {
+            $query->where('user_id', $request->user()->id);
+        }
+
+        $records = $query->get()->map(function ($record) {
+            $data = $record->toArray();
+            $data['download_url'] = URL::temporarySignedRoute(
+                'penyata-kewangan.download',
+                now()->addMinutes(30),
+                ['penyataKewangan' => $record->id]
+            );
+            $data['view_url'] = URL::temporarySignedRoute(
+                'penyata-kewangan.view',
+                now()->addMinutes(30),
+                ['penyataKewangan' => $record->id]
+            );
+
+            return $data;
+        });
 
         return response()->json(['data' => $records]);
     }
 
     public function store(StorePenyataKewanganRequest $request): JsonResponse
     {
+        $userId = $request->targetUserId();
         $file = $request->file('file');
-        $directory = "penyata-kewangan/{$request->user()->id}";
+        $directory = "penyata-kewangan/{$userId}";
         $filename = Str::uuid().'.'.$file->extension();
 
         $path = $file->storeAs($directory, $filename, 'private');
 
         $record = PenyataKewangan::create([
-            'user_id' => $request->user()->id,
+            'user_id' => $userId,
             'bulan' => $request->bulan,
             'original_name' => $file->getClientOriginalName(),
             'file_path' => $path,
@@ -69,7 +75,9 @@ class PenyataKewanganController extends Controller
 
     public function update(UpdatePenyataKewanganRequest $request, PenyataKewangan $penyataKewangan): JsonResponse
     {
-        abort_if($penyataKewangan->user_id !== $request->user()->id, 403, 'Tidak dibenarkan.');
+        $isOwnerOrAdmin = $penyataKewangan->user_id === $request->user()->id
+            || $request->user()->hasAnyRole(['super-admin', 'admin']);
+        abort_if(! $isOwnerOrAdmin, 403, 'Tidak dibenarkan.');
 
         if ($request->hasFile('file')) {
             Storage::disk('private')->delete($penyataKewangan->file_path);
@@ -101,7 +109,9 @@ class PenyataKewanganController extends Controller
 
     public function destroy(Request $request, PenyataKewangan $penyataKewangan): JsonResponse
     {
-        abort_if($penyataKewangan->user_id !== $request->user()->id, 403, 'Tidak dibenarkan.');
+        $isOwnerOrAdmin = $penyataKewangan->user_id === $request->user()->id
+            || $request->user()->hasAnyRole(['super-admin', 'admin']);
+        abort_if(! $isOwnerOrAdmin, 403, 'Tidak dibenarkan.');
 
         Storage::disk('private')->delete($penyataKewangan->file_path);
         $penyataKewangan->delete();
@@ -117,7 +127,7 @@ class PenyataKewanganController extends Controller
             abort(403, 'Pautan muat turun tidak sah atau telah tamat tempoh.');
         }
 
-        if ($request->user()?->id !== $penyataKewangan->user_id) {
+        if ($request->user()?->id !== $penyataKewangan->user_id && ! $request->user()?->hasAnyRole(['super-admin', 'admin'])) {
             abort(403, 'Tidak dibenarkan.');
         }
 
@@ -133,7 +143,7 @@ class PenyataKewanganController extends Controller
             abort(403, 'Pautan tidak sah atau telah tamat tempoh.');
         }
 
-        if ($request->user()?->id !== $penyataKewangan->user_id) {
+        if ($request->user()?->id !== $penyataKewangan->user_id && ! $request->user()?->hasAnyRole(['super-admin', 'admin'])) {
             abort(403, 'Tidak dibenarkan.');
         }
 

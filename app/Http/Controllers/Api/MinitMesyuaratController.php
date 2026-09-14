@@ -20,11 +20,15 @@ class MinitMesyuaratController extends Controller
 
     public function index(Request $request): JsonResponse
     {
-        $records = MinitMesyuarat::where('user_id', $request->user()->id)
-            ->orderByDesc('bulan')
-            ->get();
+        $query = MinitMesyuarat::query()->orderByDesc('bulan');
 
-        $data = $records->map(function ($record) {
+        if ($request->user()->hasAnyRole(['super-admin', 'admin'])) {
+            $query->with('user:id,name');
+        } else {
+            $query->where('user_id', $request->user()->id);
+        }
+
+        $data = $query->get()->map(function ($record) {
             return array_merge($record->toArray(), [
                 'download_url' => URL::temporarySignedRoute('minit-mesyuarat.download', now()->addMinutes(30), ['minitMesyuarat' => $record->id]),
                 'view_url' => URL::temporarySignedRoute('minit-mesyuarat.view', now()->addMinutes(30), ['minitMesyuarat' => $record->id]),
@@ -36,15 +40,16 @@ class MinitMesyuaratController extends Controller
 
     public function store(StoreMinitMesyuaratRequest $request): JsonResponse
     {
+        $userId = $request->targetUserId();
         $file = $request->file('file');
         $extension = $file->getClientOriginalExtension();
-        $directory = "minit-mesyuarat/{$request->user()->id}";
+        $directory = "minit-mesyuarat/{$userId}";
         $filename = Str::uuid().'.'.$extension;
 
         $file->storeAs($directory, $filename, 'private');
 
         $record = MinitMesyuarat::create([
-            'user_id' => $request->user()->id,
+            'user_id' => $userId,
             'bulan' => $request->bulan,
             'original_name' => $file->getClientOriginalName(),
             'file_path' => $directory.'/'.$filename,
@@ -62,7 +67,9 @@ class MinitMesyuaratController extends Controller
 
     public function update(UpdateMinitMesyuaratRequest $request, MinitMesyuarat $minitMesyuarat): JsonResponse
     {
-        abort_if($minitMesyuarat->user_id !== $request->user()->id, 403, 'Tidak dibenarkan.');
+        $isOwnerOrAdmin = $minitMesyuarat->user_id === $request->user()->id
+            || $request->user()->hasAnyRole(['super-admin', 'admin']);
+        abort_if(! $isOwnerOrAdmin, 403, 'Tidak dibenarkan.');
 
         if ($request->hasFile('file')) {
             Storage::disk('private')->delete($minitMesyuarat->file_path);
@@ -96,7 +103,9 @@ class MinitMesyuaratController extends Controller
 
     public function destroy(Request $request, MinitMesyuarat $minitMesyuarat): JsonResponse
     {
-        abort_if($minitMesyuarat->user_id !== $request->user()->id, 403, 'Tidak dibenarkan.');
+        $isOwnerOrAdmin = $minitMesyuarat->user_id === $request->user()->id
+            || $request->user()->hasAnyRole(['super-admin', 'admin']);
+        abort_if(! $isOwnerOrAdmin, 403, 'Tidak dibenarkan.');
 
         Storage::disk('private')->delete($minitMesyuarat->file_path);
         $minitMesyuarat->delete();
@@ -112,7 +121,7 @@ class MinitMesyuaratController extends Controller
             abort(403, 'Pautan muat turun tidak sah atau telah tamat tempoh.');
         }
 
-        if ($request->user()?->id !== $minitMesyuarat->user_id) {
+        if ($request->user()?->id !== $minitMesyuarat->user_id && ! $request->user()?->hasAnyRole(['super-admin', 'admin'])) {
             abort(403, 'Anda tidak dibenarkan mengakses fail ini.');
         }
 
@@ -125,7 +134,7 @@ class MinitMesyuaratController extends Controller
             abort(403, 'Pautan tidak sah atau telah tamat tempoh.');
         }
 
-        if ($request->user()?->id !== $minitMesyuarat->user_id) {
+        if ($request->user()?->id !== $minitMesyuarat->user_id && ! $request->user()?->hasAnyRole(['super-admin', 'admin'])) {
             abort(403, 'Anda tidak dibenarkan mengakses fail ini.');
         }
 

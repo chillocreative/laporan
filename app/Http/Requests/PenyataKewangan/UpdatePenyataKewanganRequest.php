@@ -21,7 +21,7 @@ class UpdatePenyataKewanganRequest extends FormRequest
                 'date',
                 Rule::unique('penyata_kewangans')
                     ->ignore($this->route('penyata_kewangan'))
-                    ->where('user_id', $this->user()->id),
+                    ->where('user_id', $this->route('penyata_kewangan')->user_id),
             ],
             'file' => [
                 'nullable',

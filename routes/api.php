@@ -73,11 +73,11 @@ Route::middleware('auth:sanctum')->group(function () {
 
     /*
     |----------------------------------------------------------------------
-    | MPKK Routes (Pengurusan)
+    | MPKK Routes (Pengurusan) — also open to Admin/Super Admin for oversight
     |----------------------------------------------------------------------
     */
 
-    Route::middleware('role:mpkk')->group(function () {
+    Route::middleware('role:mpkk,admin,super-admin')->group(function () {
         Route::apiResource('penyata-kewangan', PenyataKewanganController::class)
             ->only(['index', 'store', 'update', 'destroy']);
         Route::apiResource('minit-mesyuarat', MinitMesyuaratController::class)

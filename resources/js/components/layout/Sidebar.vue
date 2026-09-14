@@ -115,6 +115,14 @@ const navItems = computed(() => [
         label: 'Peranan', route: 'roles.index', show: auth.isSuperAdmin.value,
         icon: 'M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z',
     },
+    {
+        label: 'Penyata Kewangan', route: 'pengurusan.penyata-kewangan', show: auth.hasAnyRole(['super-admin', 'admin']),
+        icon: 'M2.25 18.75a60.07 60.07 0 0115.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75M3.75 4.5v.75A.75.75 0 013 6h-.75m0 0v-.375c0-.621.504-1.125 1.125-1.125H20.625c.621 0 1.125.504 1.125 1.125V6h-.75m-19.5 0h19.5m-19.5 6h19.5m-19.5 6h19.5',
+    },
+    {
+        label: 'Minit Mesyuarat', route: 'pengurusan.minit-mesyuarat', show: auth.hasAnyRole(['super-admin', 'admin']),
+        icon: 'M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z',
+    },
     { heading: 'Sistem', show: auth.isSuperAdmin.value },
     {
         label: 'Tetapan', route: 'settings', show: auth.isSuperAdmin.value,

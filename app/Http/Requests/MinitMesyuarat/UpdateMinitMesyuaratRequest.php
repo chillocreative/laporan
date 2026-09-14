@@ -19,7 +19,7 @@ class UpdateMinitMesyuaratRequest extends FormRequest
                 'sometimes',
                 'required',
                 'date',
-                Rule::unique('minit_mesyuarats')->ignore($this->route('minit_mesyuarat'))->where('user_id', $this->user()->id),
+                Rule::unique('minit_mesyuarats')->ignore($this->route('minit_mesyuarat'))->where('user_id', $this->route('minit_mesyuarat')->user_id),
             ],
             'file' => ['nullable', 'file', 'mimes:pdf,doc,docx', 'max:5120'],
         ];

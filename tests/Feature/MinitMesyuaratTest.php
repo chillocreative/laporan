@@ -21,6 +21,8 @@ class MinitMesyuaratTest extends TestCase
 
     protected User $user;
 
+    protected User $admin;
+
     protected function setUp(): void
     {
         parent::setUp();
@@ -37,6 +39,9 @@ class MinitMesyuaratTest extends TestCase
 
         $this->user = User::factory()->create(['is_active' => true]);
         $this->user->roles()->attach(Role::where('slug', 'user')->first());
+
+        $this->admin = User::factory()->create(['is_active' => true]);
+        $this->admin->roles()->attach(Role::where('slug', 'admin')->first());
     }
 
     public function test_mpkk_user_can_upload_pdf_minit_mesyuarat(): void
@@ -166,5 +171,94 @@ class MinitMesyuaratTest extends TestCase
         $this->assertEquals('new.pdf', $record->original_name);
         Storage::disk('private')->assertMissing('minit-mesyuarat/old.pdf');
         Storage::disk('private')->assertExists($record->file_path);
+    }
+
+    // ------------------------------------------------------------------
+    // Admin oversight
+    // ------------------------------------------------------------------
+
+    public function test_admin_sees_records_from_all_mpkk_users(): void
+    {
+        MinitMesyuarat::create([
+            'user_id' => $this->mpkk->id,
+            'bulan' => '2026-08-01',
+            'original_name' => 'mine.pdf',
+            'file_path' => 'minit-mesyuarat/mine.pdf',
+            'file_size' => 100,
+            'mime_type' => 'application/pdf',
+        ]);
+        MinitMesyuarat::create([
+            'user_id' => $this->otherMpkk->id,
+            'bulan' => '2026-08-01',
+            'original_name' => 'theirs.pdf',
+            'file_path' => 'minit-mesyuarat/theirs.pdf',
+            'file_size' => 100,
+            'mime_type' => 'application/pdf',
+        ]);
+
+        $response = $this->actingAs($this->admin)->getJson('/api/minit-mesyuarat');
+
+        $response->assertOk();
+        $this->assertCount(2, $response->json('data'));
+        $this->assertNotNull($response->json('data.0.user'));
+    }
+
+    public function test_admin_can_create_record_for_a_specific_mpkk_user(): void
+    {
+        $response = $this->actingAs($this->admin)->postJson('/api/minit-mesyuarat', [
+            'user_id' => $this->mpkk->id,
+            'bulan' => '2026-09-01',
+            'file' => UploadedFile::fake()->create('minit.pdf', 500, 'application/pdf'),
+        ]);
+
+        $response->assertCreated();
+        $this->assertDatabaseHas('minit_mesyuarats', [
+            'user_id' => $this->mpkk->id,
+            'bulan' => '2026-09-01',
+        ]);
+    }
+
+    public function test_admin_create_without_user_id_is_rejected(): void
+    {
+        $response = $this->actingAs($this->admin)->postJson('/api/minit-mesyuarat', [
+            'bulan' => '2026-09-01',
+            'file' => UploadedFile::fake()->create('minit.pdf', 500, 'application/pdf'),
+        ]);
+
+        $response->assertStatus(422)->assertJsonValidationErrors('user_id');
+    }
+
+    public function test_admin_create_for_non_mpkk_user_is_rejected(): void
+    {
+        $response = $this->actingAs($this->admin)->postJson('/api/minit-mesyuarat', [
+            'user_id' => $this->user->id,
+            'bulan' => '2026-09-01',
+            'file' => UploadedFile::fake()->create('minit.pdf', 500, 'application/pdf'),
+        ]);
+
+        $response->assertStatus(422)->assertJsonValidationErrors('user_id');
+    }
+
+    public function test_admin_can_update_and_delete_any_mpkk_users_record(): void
+    {
+        $record = MinitMesyuarat::create([
+            'user_id' => $this->mpkk->id,
+            'bulan' => '2026-08-01',
+            'original_name' => 'mine.pdf',
+            'file_path' => 'minit-mesyuarat/mine.pdf',
+            'file_size' => 100,
+            'mime_type' => 'application/pdf',
+        ]);
+
+        $update = $this->actingAs($this->admin)->postJson("/api/minit-mesyuarat/{$record->id}", [
+            '_method' => 'PUT',
+            'bulan' => '2026-10-01',
+        ]);
+        $update->assertOk();
+        $this->assertDatabaseHas('minit_mesyuarats', ['id' => $record->id, 'bulan' => '2026-10-01']);
+
+        $delete = $this->actingAs($this->admin)->deleteJson("/api/minit-mesyuarat/{$record->id}");
+        $delete->assertOk();
+        $this->assertDatabaseMissing('minit_mesyuarats', ['id' => $record->id]);
     }
 }

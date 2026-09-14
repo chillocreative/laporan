@@ -21,6 +21,8 @@ class PenyataKewanganTest extends TestCase
 
     protected User $user;
 
+    protected User $admin;
+
     protected function setUp(): void
     {
         parent::setUp();
@@ -37,6 +39,9 @@ class PenyataKewanganTest extends TestCase
 
         $this->user = User::factory()->create(['is_active' => true]);
         $this->user->roles()->attach(Role::where('slug', 'user')->first());
+
+        $this->admin = User::factory()->create(['is_active' => true]);
+        $this->admin->roles()->attach(Role::where('slug', 'admin')->first());
     }
 
     public function test_mpkk_user_can_upload_penyata_kewangan(): void
@@ -196,5 +201,105 @@ class PenyataKewanganTest extends TestCase
         $response->assertOk();
         $this->assertDatabaseMissing('penyata_kewangans', ['id' => $record->id]);
         Storage::disk('private')->assertMissing('penyata-kewangan/mine.pdf');
+    }
+
+    // ------------------------------------------------------------------
+    // Admin oversight
+    // ------------------------------------------------------------------
+
+    public function test_admin_sees_records_from_all_mpkk_users(): void
+    {
+        PenyataKewangan::create([
+            'user_id' => $this->mpkk->id,
+            'bulan' => '2026-08-01',
+            'original_name' => 'mine.pdf',
+            'file_path' => 'penyata-kewangan/mine.pdf',
+            'file_size' => 100,
+            'mime_type' => 'application/pdf',
+        ]);
+        PenyataKewangan::create([
+            'user_id' => $this->otherMpkk->id,
+            'bulan' => '2026-08-01',
+            'original_name' => 'theirs.pdf',
+            'file_path' => 'penyata-kewangan/theirs.pdf',
+            'file_size' => 100,
+            'mime_type' => 'application/pdf',
+        ]);
+
+        $response = $this->actingAs($this->admin)->getJson('/api/penyata-kewangan');
+
+        $response->assertOk();
+        $this->assertCount(2, $response->json('data'));
+        $this->assertNotNull($response->json('data.0.user'));
+    }
+
+    public function test_admin_can_create_record_for_a_specific_mpkk_user(): void
+    {
+        $response = $this->actingAs($this->admin)->postJson('/api/penyata-kewangan', [
+            'user_id' => $this->mpkk->id,
+            'bulan' => '2026-09-01',
+            'file' => UploadedFile::fake()->create('penyata.pdf', 500, 'application/pdf'),
+        ]);
+
+        $response->assertCreated();
+        $this->assertDatabaseHas('penyata_kewangans', [
+            'user_id' => $this->mpkk->id,
+            'bulan' => '2026-09-01',
+        ]);
+    }
+
+    public function test_admin_create_without_user_id_is_rejected(): void
+    {
+        $response = $this->actingAs($this->admin)->postJson('/api/penyata-kewangan', [
+            'bulan' => '2026-09-01',
+            'file' => UploadedFile::fake()->create('penyata.pdf', 500, 'application/pdf'),
+        ]);
+
+        $response->assertStatus(422)->assertJsonValidationErrors('user_id');
+    }
+
+    public function test_admin_create_for_non_mpkk_user_is_rejected(): void
+    {
+        $response = $this->actingAs($this->admin)->postJson('/api/penyata-kewangan', [
+            'user_id' => $this->user->id,
+            'bulan' => '2026-09-01',
+            'file' => UploadedFile::fake()->create('penyata.pdf', 500, 'application/pdf'),
+        ]);
+
+        $response->assertStatus(422)->assertJsonValidationErrors('user_id');
+    }
+
+    public function test_mpkk_user_cannot_set_user_id_when_creating_own_record(): void
+    {
+        $response = $this->actingAs($this->mpkk)->postJson('/api/penyata-kewangan', [
+            'user_id' => $this->otherMpkk->id,
+            'bulan' => '2026-09-01',
+            'file' => UploadedFile::fake()->create('penyata.pdf', 500, 'application/pdf'),
+        ]);
+
+        $response->assertStatus(422)->assertJsonValidationErrors('user_id');
+    }
+
+    public function test_admin_can_update_and_delete_any_mpkk_users_record(): void
+    {
+        $record = PenyataKewangan::create([
+            'user_id' => $this->mpkk->id,
+            'bulan' => '2026-08-01',
+            'original_name' => 'mine.pdf',
+            'file_path' => 'penyata-kewangan/mine.pdf',
+            'file_size' => 100,
+            'mime_type' => 'application/pdf',
+        ]);
+
+        $update = $this->actingAs($this->admin)->postJson("/api/penyata-kewangan/{$record->id}", [
+            '_method' => 'PUT',
+            'bulan' => '2026-10-01',
+        ]);
+        $update->assertOk();
+        $this->assertDatabaseHas('penyata_kewangans', ['id' => $record->id, 'bulan' => '2026-10-01']);
+
+        $delete = $this->actingAs($this->admin)->deleteJson("/api/penyata-kewangan/{$record->id}");
+        $delete->assertOk();
+        $this->assertDatabaseMissing('penyata_kewangans', ['id' => $record->id]);
     }
 }
