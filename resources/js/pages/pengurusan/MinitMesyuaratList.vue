@@ -5,7 +5,7 @@
                 <h1 class="page-title">Minit Mesyuarat</h1>
                 <p class="page-subtitle">Urus minit mesyuarat bulanan MPKK</p>
             </div>
-            <button @click="openCreate" class="btn-primary">+ Minit Mesyuarat Baru</button>
+            <button v-if="!isAdmin" @click="openCreate" class="btn-primary">+ Minit Mesyuarat Baru</button>
         </div>
 
         <Alert v-if="alertMsg" :type="alertType" class="mb-4">{{ alertMsg }}</Alert>
@@ -46,16 +46,12 @@
             <div class="relative bg-white rounded-xl shadow-xl w-full max-w-md p-6">
                 <h3 class="text-lg font-semibold text-gray-900 mb-4">{{ editingRecord ? 'Edit Minit Mesyuarat' : 'Minit Mesyuarat Baru' }}</h3>
                 <form @submit.prevent="handleSave" class="space-y-4">
-                    <div v-if="isAdmin && !editingRecord">
-                        <label class="label-text">Pengguna MPKK *</label>
-                        <select v-model="form.user_id" required class="input-field">
-                            <option value="">Pilih pengguna MPKK</option>
-                            <option v-for="u in mpkkUserOptions" :key="u.id" :value="u.id">{{ u.name }}</option>
-                        </select>
-                    </div>
                     <div>
                         <label class="label-text">Bulan *</label>
-                        <input v-model="form.bulan" type="month" required class="input-field" />
+                        <select v-model="form.month" required class="input-field">
+                            <option value="">Pilih bulan</option>
+                            <option v-for="(name, idx) in MALAY_MONTHS" :key="idx" :value="idx + 1">{{ name }}</option>
+                        </select>
                     </div>
                     <div>
                         <label class="label-text">Fail Minit Mesyuarat (PDF/DOC/DOCX)</label>
@@ -88,7 +84,6 @@
 import { ref, computed, onMounted } from 'vue';
 import { useAuth } from '../../composables/useAuth';
 import minitMesyuaratApi from '../../api/minitMesyuarat';
-import usersApi from '../../api/users';
 import DataTable from '../../components/common/DataTable.vue';
 import Alert from '../../components/common/Alert.vue';
 import ConfirmDialog from '../../components/common/ConfirmDialog.vue';
@@ -99,11 +94,12 @@ const isAdmin = computed(() => auth.hasAnyRole(['super-admin', 'admin']));
 
 const records = ref([]);
 const loading = ref(true);
-const mpkkUserOptions = ref([]);
 
 const showModal = ref(false);
 const editingRecord = ref(null);
-const form = ref({ user_id: '', bulan: '' });
+// `year` is tracked internally (not shown in the UI) so editing a record keeps
+// its original year; new records use the current year.
+const form = ref({ month: '', year: new Date().getFullYear() });
 const formError = ref('');
 const saving = ref(false);
 
@@ -141,17 +137,9 @@ async function fetchRecords() {
     loading.value = false;
 }
 
-async function fetchMpkkUsers() {
-    if (!isAdmin.value) return;
-    try {
-        const { data } = await usersApi.list({ role: 'mpkk', per_page: 1000 });
-        mpkkUserOptions.value = data.data;
-    } catch {}
-}
-
 function openCreate() {
     editingRecord.value = null;
-    form.value = { user_id: '', bulan: '' };
+    form.value = { month: '', year: new Date().getFullYear() };
     files.value = [];
     formError.value = '';
     showModal.value = true;
@@ -159,7 +147,8 @@ function openCreate() {
 
 function openEdit(rec) {
     editingRecord.value = rec;
-    form.value = { user_id: rec.user_id, bulan: rec.bulan.substring(0, 7) };
+    const [year, month] = rec.bulan.split('-');
+    form.value = { month: Number(month), year: Number(year) };
     files.value = [];
     formError.value = '';
     showModal.value = true;
@@ -169,13 +158,8 @@ async function handleSave() {
     saving.value = true;
     formError.value = '';
 
-    let bulanToSend = form.value.bulan;
-    if (bulanToSend && !bulanToSend.endsWith('-01')) {
-        bulanToSend += '-01';
-    }
-
     const formData = new FormData();
-    formData.append('bulan', bulanToSend);
+    formData.append('bulan', `${form.value.year}-${String(form.value.month).padStart(2, '0')}-01`);
     if (files.value[0]) {
         formData.append('file', files.value[0]);
     }
@@ -185,9 +169,6 @@ async function handleSave() {
             await minitMesyuaratApi.update(editingRecord.value.id, formData);
             showAlert('success', 'Minit mesyuarat dikemas kini.');
         } else {
-            if (isAdmin.value) {
-                formData.append('user_id', form.value.user_id);
-            }
             await minitMesyuaratApi.create(formData);
             showAlert('success', 'Minit mesyuarat dicipta.');
         }
@@ -223,8 +204,5 @@ function showAlert(type, msg) {
     setTimeout(() => { alertMsg.value = ''; }, 4000);
 }
 
-onMounted(() => {
-    fetchRecords();
-    fetchMpkkUsers();
-});
+onMounted(fetchRecords);
 </script>

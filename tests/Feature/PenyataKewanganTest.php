@@ -233,51 +233,15 @@ class PenyataKewanganTest extends TestCase
         $this->assertNotNull($response->json('data.0.user'));
     }
 
-    public function test_admin_can_create_record_for_a_specific_mpkk_user(): void
-    {
-        $response = $this->actingAs($this->admin)->postJson('/api/penyata-kewangan', [
-            'user_id' => $this->mpkk->id,
-            'bulan' => '2026-09-01',
-            'file' => UploadedFile::fake()->create('penyata.pdf', 500, 'application/pdf'),
-        ]);
-
-        $response->assertCreated();
-        $this->assertDatabaseHas('penyata_kewangans', [
-            'user_id' => $this->mpkk->id,
-            'bulan' => '2026-09-01',
-        ]);
-    }
-
-    public function test_admin_create_without_user_id_is_rejected(): void
+    public function test_admin_cannot_create_records(): void
     {
         $response = $this->actingAs($this->admin)->postJson('/api/penyata-kewangan', [
             'bulan' => '2026-09-01',
             'file' => UploadedFile::fake()->create('penyata.pdf', 500, 'application/pdf'),
         ]);
 
-        $response->assertStatus(422)->assertJsonValidationErrors('user_id');
-    }
-
-    public function test_admin_create_for_non_mpkk_user_is_rejected(): void
-    {
-        $response = $this->actingAs($this->admin)->postJson('/api/penyata-kewangan', [
-            'user_id' => $this->user->id,
-            'bulan' => '2026-09-01',
-            'file' => UploadedFile::fake()->create('penyata.pdf', 500, 'application/pdf'),
-        ]);
-
-        $response->assertStatus(422)->assertJsonValidationErrors('user_id');
-    }
-
-    public function test_mpkk_user_cannot_set_user_id_when_creating_own_record(): void
-    {
-        $response = $this->actingAs($this->mpkk)->postJson('/api/penyata-kewangan', [
-            'user_id' => $this->otherMpkk->id,
-            'bulan' => '2026-09-01',
-            'file' => UploadedFile::fake()->create('penyata.pdf', 500, 'application/pdf'),
-        ]);
-
-        $response->assertStatus(422)->assertJsonValidationErrors('user_id');
+        $response->assertForbidden();
+        $this->assertDatabaseMissing('penyata_kewangans', ['bulan' => '2026-09-01']);
     }
 
     public function test_admin_can_update_and_delete_any_mpkk_users_record(): void

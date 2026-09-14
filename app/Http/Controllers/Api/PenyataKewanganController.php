@@ -49,7 +49,7 @@ class PenyataKewanganController extends Controller
 
     public function store(StorePenyataKewanganRequest $request): JsonResponse
     {
-        $userId = $request->targetUserId();
+        $userId = $request->user()->id;
         $file = $request->file('file');
         $directory = "penyata-kewangan/{$userId}";
         $filename = Str::uuid().'.'.$file->extension();
