@@ -54,6 +54,49 @@
                     </div>
                 </div>
 
+                <!-- MPKK summary -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+                    <div class="card">
+                        <div class="card-header"><h3 class="text-base font-semibold text-gray-900">Ringkasan MPKK</h3></div>
+                        <div class="card-body">
+                            <div class="grid grid-cols-2 gap-4">
+                                <div>
+                                    <p class="text-sm font-medium text-gray-500">Jumlah Laporan</p>
+                                    <p class="text-2xl font-bold text-gray-900">{{ stats.mpkk?.total_reports || 0 }}</p>
+                                </div>
+                                <div>
+                                    <p class="text-sm font-medium text-gray-500">Jumlah Penyata Kewangan</p>
+                                    <p class="text-2xl font-bold text-gray-900">{{ stats.mpkk?.total_penyata_kewangan || 0 }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- MPKK report list -->
+                <div class="card mb-6">
+                    <div class="card-header"><h3 class="text-base font-semibold text-gray-900">Laporan Dihantar oleh MPKK</h3></div>
+                    <div class="card-body p-0">
+                        <table class="min-w-full divide-y divide-gray-100">
+                            <thead>
+                                <tr>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">MPKK</th>
+                                    <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">Laporan Dihantar</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-100">
+                                <tr v-for="m in stats.mpkk?.users" :key="m.user_id">
+                                    <td class="px-6 py-3 text-sm text-gray-700">{{ m.user_name }}</td>
+                                    <td class="px-6 py-3 text-sm font-semibold text-gray-900 text-right">{{ m.report_count || 0 }}</td>
+                                </tr>
+                                <tr v-if="!stats.mpkk?.users?.length">
+                                    <td colspan="2" class="px-6 py-6 text-sm text-gray-400 text-center">Tiada pengguna MPKK</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
                 <!-- System health -->
                 <div v-if="stats.system_health" class="card">
                     <div class="card-header"><h3 class="text-base font-semibold text-gray-900">Kesihatan Sistem</h3></div>
@@ -123,6 +166,49 @@
                                 <div v-if="!Object.keys(stats.reports?.by_risk_level || {}).length" class="text-sm text-gray-400 text-center py-4">Tiada analisis AI lagi</div>
                             </div>
                         </div>
+                    </div>
+                </div>
+
+                <!-- MPKK summary -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+                    <div class="card">
+                        <div class="card-header"><h3 class="text-base font-semibold text-gray-900">Ringkasan MPKK</h3></div>
+                        <div class="card-body">
+                            <div class="grid grid-cols-2 gap-4">
+                                <div>
+                                    <p class="text-sm font-medium text-gray-500">Jumlah Laporan</p>
+                                    <p class="text-2xl font-bold text-gray-900">{{ stats.mpkk?.total_reports || 0 }}</p>
+                                </div>
+                                <div>
+                                    <p class="text-sm font-medium text-gray-500">Jumlah Penyata Kewangan</p>
+                                    <p class="text-2xl font-bold text-gray-900">{{ stats.mpkk?.total_penyata_kewangan || 0 }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- MPKK report list -->
+                <div class="card mb-6">
+                    <div class="card-header"><h3 class="text-base font-semibold text-gray-900">Laporan Dihantar oleh MPKK</h3></div>
+                    <div class="card-body p-0">
+                        <table class="min-w-full divide-y divide-gray-100">
+                            <thead>
+                                <tr>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">MPKK</th>
+                                    <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">Laporan Dihantar</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-100">
+                                <tr v-for="m in stats.mpkk?.users" :key="m.user_id">
+                                    <td class="px-6 py-3 text-sm text-gray-700">{{ m.user_name }}</td>
+                                    <td class="px-6 py-3 text-sm font-semibold text-gray-900 text-right">{{ m.report_count || 0 }}</td>
+                                </tr>
+                                <tr v-if="!stats.mpkk?.users?.length">
+                                    <td colspan="2" class="px-6 py-6 text-sm text-gray-400 text-center">Tiada pengguna MPKK</td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
 

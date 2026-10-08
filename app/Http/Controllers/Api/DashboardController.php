@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\ReportResource;
+use App\Models\PenyataKewangan;
+use App\Models\Report;
 use App\Models\User;
 use App\Repositories\Contracts\ReportRepositoryInterface;
 use App\Services\MonitoringService;
@@ -25,6 +27,7 @@ class DashboardController extends Controller
         if ($user->hasRole('super-admin')) {
             $stats = $this->monitoringService->getDashboardStats();
             $stats['top_reporters'] = app(ReportRepositoryInterface::class)->getTopReporters(5);
+            $stats['mpkk'] = $this->getMpkkStats();
 
             return response()->json([
                 'data' => $stats,
@@ -62,6 +65,31 @@ class DashboardController extends Controller
             'pending_approvals' => $pendingApprovals,
             'recent_reports' => ReportResource::collection($recentReports)->response()->getData(true),
             'top_reporters' => $topReporters,
+            'mpkk' => $this->getMpkkStats(),
+        ];
+    }
+
+    /**
+     * Report/financial-statement totals for MPKK users, plus a per-MPKK
+     * breakdown (0 for MPKK users who have not submitted any report).
+     */
+    protected function getMpkkStats(): array
+    {
+        $mpkkUsers = User::whereHas('roles', fn ($q) => $q->where('slug', 'mpkk'))
+            ->withCount('reports')
+            ->orderBy('name')
+            ->get(['id', 'name']);
+
+        $ids = $mpkkUsers->pluck('id');
+
+        return [
+            'total_reports' => Report::whereIn('user_id', $ids)->count(),
+            'total_penyata_kewangan' => PenyataKewangan::whereIn('user_id', $ids)->count(),
+            'users' => $mpkkUsers->map(fn ($u) => [
+                'user_id' => $u->id,
+                'user_name' => $u->name,
+                'report_count' => $u->reports_count,
+            ])->values(),
         ];
     }
 
