@@ -77,33 +77,8 @@
                     </div>
                 </div>
 
-                <!-- MPKK report list -->
-                <div class="card mb-6">
-                    <div class="card-header"><h3 class="text-base font-semibold text-gray-900">Senarai MPKK</h3></div>
-                    <div class="card-body p-0">
-                        <table class="min-w-full divide-y divide-gray-100">
-                            <thead>
-                                <tr>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Nama MPKK</th>
-                                    <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">Jumlah Laporan</th>
-                                    <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">Jumlah Penyata Kewangan</th>
-                                    <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">Jumlah Minit Mesyuarat</th>
-                                </tr>
-                            </thead>
-                            <tbody class="divide-y divide-gray-100">
-                                <tr v-for="m in stats.mpkk?.users" :key="m.user_id">
-                                    <td class="px-6 py-3 text-sm text-gray-700">{{ m.user_name }}</td>
-                                    <td class="px-6 py-3 text-sm font-semibold text-gray-900 text-right">{{ m.report_count || 0 }}</td>
-                                    <td class="px-6 py-3 text-sm font-semibold text-gray-900 text-right">{{ m.penyata_kewangan_count || 0 }}</td>
-                                    <td class="px-6 py-3 text-sm font-semibold text-gray-900 text-right">{{ m.minit_mesyuarat_count || 0 }}</td>
-                                </tr>
-                                <tr v-if="!stats.mpkk?.users?.length">
-                                    <td colspan="4" class="px-6 py-6 text-sm text-gray-400 text-center">Tiada pengguna MPKK</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
+                <!-- MPKK list grouped by DUN -->
+                <MpkkDunTable :duns="stats.mpkk?.duns || []" />
 
                 <!-- System health -->
                 <div v-if="stats.system_health" class="card">
@@ -200,33 +175,8 @@
                     </div>
                 </div>
 
-                <!-- MPKK report list -->
-                <div class="card mb-6">
-                    <div class="card-header"><h3 class="text-base font-semibold text-gray-900">Senarai MPKK</h3></div>
-                    <div class="card-body p-0">
-                        <table class="min-w-full divide-y divide-gray-100">
-                            <thead>
-                                <tr>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Nama MPKK</th>
-                                    <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">Jumlah Laporan</th>
-                                    <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">Jumlah Penyata Kewangan</th>
-                                    <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">Jumlah Minit Mesyuarat</th>
-                                </tr>
-                            </thead>
-                            <tbody class="divide-y divide-gray-100">
-                                <tr v-for="m in stats.mpkk?.users" :key="m.user_id">
-                                    <td class="px-6 py-3 text-sm text-gray-700">{{ m.user_name }}</td>
-                                    <td class="px-6 py-3 text-sm font-semibold text-gray-900 text-right">{{ m.report_count || 0 }}</td>
-                                    <td class="px-6 py-3 text-sm font-semibold text-gray-900 text-right">{{ m.penyata_kewangan_count || 0 }}</td>
-                                    <td class="px-6 py-3 text-sm font-semibold text-gray-900 text-right">{{ m.minit_mesyuarat_count || 0 }}</td>
-                                </tr>
-                                <tr v-if="!stats.mpkk?.users?.length">
-                                    <td colspan="4" class="px-6 py-6 text-sm text-gray-400 text-center">Tiada pengguna MPKK</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
+                <!-- MPKK list grouped by DUN -->
+                <MpkkDunTable :duns="stats.mpkk?.duns || []" />
 
                 <!-- Laporan Terkini -->
                 <div class="card">
@@ -296,6 +246,7 @@ import { ref, computed, onMounted } from 'vue';
 import { useAuth } from '../../composables/useAuth';
 import dashboardApi from '../../api/dashboard';
 import StatCard from '../../components/common/StatCard.vue';
+import MpkkDunTable from '../../components/common/MpkkDunTable.vue';
 import LoadingSpinner from '../../components/common/LoadingSpinner.vue';
 
 const auth = useAuth();

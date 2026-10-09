@@ -32,4 +32,25 @@ class DashboardMpkkTest extends TestCase
             ->assertJsonPath('data.mpkk.users.0.penyata_kewangan_count', 0)
             ->assertJsonPath('data.mpkk.users.0.minit_mesyuarat_count', 0);
     }
+
+    public function test_dashboard_groups_mpkk_by_dun(): void
+    {
+        $this->seed(RoleSeeder::class);
+
+        $admin = User::factory()->create(['is_active' => true]);
+        $admin->roles()->attach(Role::where('slug', 'admin')->first());
+
+        foreach (['MPKK JALAN KEDAH', 'MPKK BUMBUNG LIMA', 'MPKK KUALA MUDA', 'MPKK ENTAH'] as $name) {
+            $u = User::factory()->create(['is_active' => true, 'name' => $name]);
+            $u->roles()->attach(Role::where('slug', 'mpkk')->first());
+        }
+
+        $duns = collect($this->actingAs($admin)->getJson('/api/dashboard')->assertOk()->json('data.mpkk.duns'))
+            ->keyBy('dun');
+
+        $this->assertSame(['Pinang Tunggal', 'Bertam', 'Penaga', 'Belum Ditetapkan'], $duns->keys()->all());
+        $this->assertSame('MPKK BUMBUNG LIMA', $duns['Pinang Tunggal']['users'][0]['user_name']);
+        $this->assertSame(1, $duns['Bertam']['total_mpkk']);
+        $this->assertSame('MPKK ENTAH', $duns['Belum Ditetapkan']['users'][0]['user_name']);
+    }
 }

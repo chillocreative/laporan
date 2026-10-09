@@ -11,6 +11,7 @@ use App\Models\User;
 use App\Repositories\Contracts\ReportRepositoryInterface;
 use App\Services\MonitoringService;
 use App\Services\ReportService;
+use App\Support\MpkkDun;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -87,6 +88,7 @@ class DashboardController extends Controller
             'total_reports' => Report::whereIn('user_id', $ids)->count(),
             'total_penyata_kewangan' => PenyataKewangan::whereIn('user_id', $ids)->count(),
             'total_minit_mesyuarat' => MinitMesyuarat::whereIn('user_id', $ids)->count(),
+            'duns' => $this->groupByDun($mpkkUsers),
             'users' => $mpkkUsers->map(fn ($u) => [
                 'user_id' => $u->id,
                 'user_name' => $u->name,
@@ -102,5 +104,44 @@ class DashboardController extends Controller
         return [
             'total' => app(ReportRepositoryInterface::class)->getCountByUser($userId),
         ];
+    }
+
+    /**
+     * Group MPKK users by DUN with per-DUN totals. DUNs without any MPKK
+     * are omitted (except the three configured ones, which always show).
+     */
+    protected function groupByDun($mpkkUsers): array
+    {
+        $groups = [];
+        foreach (MpkkDun::order() as $dun) {
+            $groups[$dun] = [];
+        }
+
+        foreach ($mpkkUsers as $u) {
+            $groups[MpkkDun::dunFor($u->name)][] = [
+                'user_id' => $u->id,
+                'user_name' => $u->name,
+                'report_count' => $u->reports_count,
+                'penyata_kewangan_count' => $u->penyata_kewangans_count,
+                'minit_mesyuarat_count' => $u->minit_mesyuarats_count,
+            ];
+        }
+
+        $result = [];
+        foreach ($groups as $dun => $users) {
+            if (! $users && $dun === MpkkDun::UNASSIGNED) {
+                continue;
+            }
+            $result[] = [
+                'dun' => $dun,
+                'total_mpkk' => count($users),
+                'report_count' => array_sum(array_column($users, 'report_count')),
+                'penyata_kewangan_count' => array_sum(array_column($users, 'penyata_kewangan_count')),
+                'minit_mesyuarat_count' => array_sum(array_column($users, 'minit_mesyuarat_count')),
+                'users' => $users,
+            ];
+        }
+
+        return $result;
     }
 }
