@@ -95,7 +95,7 @@ const navItems = computed(() => [
     { heading: 'Pengurusan', show: auth.hasRole('mpkk') },
     {
         label: 'Penyata Kewangan', route: 'pengurusan.penyata-kewangan', show: auth.hasRole('mpkk'),
-        icon: 'M2.25 18.75a60.07 60.07 0 0115.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75M3.75 4.5v.75A.75.75 0 013 6h-.75m0 0v-.375c0-.621.504-1.125 1.125-1.125H20.625c.621 0 1.125.504 1.125 1.125V6h-.75m-19.5 0h19.5m-19.5 6h19.5m-19.5 6h19.5',
+        icon: 'M12 6v12m-3-2.818l.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 11-18 0 9 9 0 0118 0z',
     },
     {
         label: 'Minit Mesyuarat', route: 'pengurusan.minit-mesyuarat', show: auth.hasRole('mpkk'),
@@ -117,7 +117,7 @@ const navItems = computed(() => [
     },
     {
         label: 'Penyata Kewangan', route: 'pengurusan.penyata-kewangan', show: auth.canViewAll.value,
-        icon: 'M2.25 18.75a60.07 60.07 0 0115.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75M3.75 4.5v.75A.75.75 0 013 6h-.75m0 0v-.375c0-.621.504-1.125 1.125-1.125H20.625c.621 0 1.125.504 1.125 1.125V6h-.75m-19.5 0h19.5m-19.5 6h19.5m-19.5 6h19.5',
+        icon: 'M12 6v12m-3-2.818l.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 11-18 0 9 9 0 0118 0z',
     },
     {
         label: 'Minit Mesyuarat', route: 'pengurusan.minit-mesyuarat', show: auth.canViewAll.value,
