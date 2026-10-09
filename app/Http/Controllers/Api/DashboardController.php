@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\ReportResource;
+use App\Models\MinitMesyuarat;
 use App\Models\PenyataKewangan;
 use App\Models\Report;
 use App\Models\User;
@@ -85,6 +86,7 @@ class DashboardController extends Controller
         return [
             'total_reports' => Report::whereIn('user_id', $ids)->count(),
             'total_penyata_kewangan' => PenyataKewangan::whereIn('user_id', $ids)->count(),
+            'total_minit_mesyuarat' => MinitMesyuarat::whereIn('user_id', $ids)->count(),
             'users' => $mpkkUsers->map(fn ($u) => [
                 'user_id' => $u->id,
                 'user_name' => $u->name,

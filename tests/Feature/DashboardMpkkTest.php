@@ -26,6 +26,7 @@ class DashboardMpkkTest extends TestCase
 
         $response->assertJsonPath('data.mpkk.total_reports', 0)
             ->assertJsonPath('data.mpkk.total_penyata_kewangan', 0)
+            ->assertJsonPath('data.mpkk.total_minit_mesyuarat', 0)
             ->assertJsonPath('data.mpkk.users.0.user_name', 'MPKK TEST')
             ->assertJsonPath('data.mpkk.users.0.report_count', 0);
     }

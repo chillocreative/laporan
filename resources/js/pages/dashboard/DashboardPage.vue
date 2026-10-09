@@ -59,7 +59,7 @@
                     <div class="card">
                         <div class="card-header"><h3 class="text-base font-semibold text-gray-900">Ringkasan MPKK</h3></div>
                         <div class="card-body">
-                            <div class="grid grid-cols-2 gap-4">
+                            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
                                 <div>
                                     <p class="text-sm font-medium text-gray-500">Jumlah Laporan</p>
                                     <p class="text-2xl font-bold text-gray-900">{{ stats.mpkk?.total_reports || 0 }}</p>
@@ -67,6 +67,10 @@
                                 <div>
                                     <p class="text-sm font-medium text-gray-500">Jumlah Penyata Kewangan</p>
                                     <p class="text-2xl font-bold text-gray-900">{{ stats.mpkk?.total_penyata_kewangan || 0 }}</p>
+                                </div>
+                                <div>
+                                    <p class="text-sm font-medium text-gray-500">Jumlah Minit Mesyuarat</p>
+                                    <p class="text-2xl font-bold text-gray-900">{{ stats.mpkk?.total_minit_mesyuarat || 0 }}</p>
                                 </div>
                             </div>
                         </div>
@@ -174,7 +178,7 @@
                     <div class="card">
                         <div class="card-header"><h3 class="text-base font-semibold text-gray-900">Ringkasan MPKK</h3></div>
                         <div class="card-body">
-                            <div class="grid grid-cols-2 gap-4">
+                            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
                                 <div>
                                     <p class="text-sm font-medium text-gray-500">Jumlah Laporan</p>
                                     <p class="text-2xl font-bold text-gray-900">{{ stats.mpkk?.total_reports || 0 }}</p>
@@ -182,6 +186,10 @@
                                 <div>
                                     <p class="text-sm font-medium text-gray-500">Jumlah Penyata Kewangan</p>
                                     <p class="text-2xl font-bold text-gray-900">{{ stats.mpkk?.total_penyata_kewangan || 0 }}</p>
+                                </div>
+                                <div>
+                                    <p class="text-sm font-medium text-gray-500">Jumlah Minit Mesyuarat</p>
+                                    <p class="text-2xl font-bold text-gray-900">{{ stats.mpkk?.total_minit_mesyuarat || 0 }}</p>
                                 </div>
                             </div>
                         </div>
