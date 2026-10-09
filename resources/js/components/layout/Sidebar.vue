@@ -101,14 +101,14 @@ const navItems = computed(() => [
         label: 'Minit Mesyuarat', route: 'pengurusan.minit-mesyuarat', show: auth.hasRole('mpkk'),
         icon: 'M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z',
     },
-    { heading: 'Pengurusan', show: auth.hasAnyRole(['super-admin', 'admin']) },
+    { heading: 'Pengurusan', show: auth.canViewAll.value },
     {
-        label: 'Pengguna', route: 'users.index', show: auth.hasAnyRole(['super-admin', 'admin']),
+        label: 'Pengguna', route: 'users.index', show: auth.canViewAll.value,
         badge: pendingUsersCount.value,
         icon: 'M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z',
     },
     {
-        label: 'Kategori', route: 'categories.index', show: auth.hasAnyRole(['super-admin', 'admin']),
+        label: 'Kategori', route: 'categories.index', show: auth.canViewAll.value,
         icon: 'M9.568 3H5.25A2.25 2.25 0 003 5.25v4.318c0 .597.237 1.17.659 1.591l9.581 9.581c.699.699 1.78.872 2.607.33a18.095 18.095 0 005.223-5.223c.542-.827.369-1.908-.33-2.607L11.16 3.66A2.25 2.25 0 009.568 3z M6 6h.008v.008H6V6z',
     },
     {
@@ -116,11 +116,11 @@ const navItems = computed(() => [
         icon: 'M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z',
     },
     {
-        label: 'Penyata Kewangan', route: 'pengurusan.penyata-kewangan', show: auth.hasAnyRole(['super-admin', 'admin']),
+        label: 'Penyata Kewangan', route: 'pengurusan.penyata-kewangan', show: auth.canViewAll.value,
         icon: 'M2.25 18.75a60.07 60.07 0 0115.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75M3.75 4.5v.75A.75.75 0 013 6h-.75m0 0v-.375c0-.621.504-1.125 1.125-1.125H20.625c.621 0 1.125.504 1.125 1.125V6h-.75m-19.5 0h19.5m-19.5 6h19.5m-19.5 6h19.5',
     },
     {
-        label: 'Minit Mesyuarat', route: 'pengurusan.minit-mesyuarat', show: auth.hasAnyRole(['super-admin', 'admin']),
+        label: 'Minit Mesyuarat', route: 'pengurusan.minit-mesyuarat', show: auth.canViewAll.value,
         icon: 'M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z',
     },
     { heading: 'Sistem', show: auth.isSuperAdmin.value },

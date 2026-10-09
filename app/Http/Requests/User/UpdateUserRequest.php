@@ -23,6 +23,7 @@ class UpdateUserRequest extends FormRequest
             'role_ids' => ['sometimes', 'array', 'min:1'],
             'role_ids.*' => ['integer', 'exists:roles,id'],
             'is_active' => ['sometimes', 'boolean'],
+            'can_view_all' => ['sometimes', 'boolean'],
         ];
     }
 }

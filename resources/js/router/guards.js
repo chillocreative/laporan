@@ -28,7 +28,8 @@ export function setupGuards(router) {
 
         // Role check
         if (to.meta.roles) {
-            const hasRole = to.meta.roles.some(r => authStore.hasRole(r));
+            const hasRole = to.meta.roles.some(r => authStore.hasRole(r))
+                || (to.meta.oversight && authStore.canViewAll);
             if (!hasRole) {
                 return next({ name: 'dashboard' });
             }

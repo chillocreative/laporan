@@ -9,6 +9,8 @@ export function useAuth() {
         isAuthenticated: computed(() => store.isAuthenticated),
         isSuperAdmin: computed(() => store.isSuperAdmin),
         isAdmin: computed(() => store.isAdmin),
+        canViewAll: computed(() => store.canViewAll),
+        isAdminOrAbove: computed(() => store.isSuperAdmin || store.isAdmin),
         isUser: computed(() => store.isUser),
         loading: computed(() => store.loading),
         hasRole: (slug) => store.hasRole(slug),

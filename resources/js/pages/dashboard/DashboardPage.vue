@@ -128,7 +128,7 @@
             </template>
 
             <!-- Admin Dashboard -->
-            <template v-else-if="auth.isAdmin.value">
+            <template v-else-if="auth.canViewAll.value">
                 <!-- Stats row -->
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
                     <StatCard title="Jumlah Laporan" :value="stats.reports?.total || 0" color="blue"

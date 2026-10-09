@@ -22,7 +22,7 @@ class MinitMesyuaratController extends Controller
     {
         $query = MinitMesyuarat::query()->orderByDesc('bulan');
 
-        if ($request->user()->hasAnyRole(['super-admin', 'admin'])) {
+        if ($request->user()->canViewAll()) {
             $query->with('user:id,name');
         } else {
             $query->where('user_id', $request->user()->id);
@@ -121,7 +121,7 @@ class MinitMesyuaratController extends Controller
             abort(403, 'Pautan muat turun tidak sah atau telah tamat tempoh.');
         }
 
-        if ($request->user()?->id !== $minitMesyuarat->user_id && ! $request->user()?->hasAnyRole(['super-admin', 'admin'])) {
+        if ($request->user()?->id !== $minitMesyuarat->user_id && ! $request->user()?->canViewAll()) {
             abort(403, 'Anda tidak dibenarkan mengakses fail ini.');
         }
 
@@ -134,7 +134,7 @@ class MinitMesyuaratController extends Controller
             abort(403, 'Pautan tidak sah atau telah tamat tempoh.');
         }
 
-        if ($request->user()?->id !== $minitMesyuarat->user_id && ! $request->user()?->hasAnyRole(['super-admin', 'admin'])) {
+        if ($request->user()?->id !== $minitMesyuarat->user_id && ! $request->user()?->canViewAll()) {
             abort(403, 'Anda tidak dibenarkan mengakses fail ini.');
         }
 

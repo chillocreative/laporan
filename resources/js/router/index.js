@@ -74,7 +74,7 @@ const routes = [
                 path: 'users',
                 name: 'users.index',
                 component: () => import('../pages/users/UserList.vue'),
-                meta: { roles: ['super-admin', 'admin'] },
+                meta: { roles: ['super-admin', 'admin'], oversight: true },
             },
             {
                 path: 'users/create',
@@ -95,7 +95,7 @@ const routes = [
                 path: 'categories',
                 name: 'categories.index',
                 component: () => import('../pages/categories/CategoryList.vue'),
-                meta: { roles: ['super-admin', 'admin'] },
+                meta: { roles: ['super-admin', 'admin'], oversight: true },
             },
 
             // Roles (super-admin only)
@@ -124,13 +124,13 @@ const routes = [
                 path: 'pengurusan/penyata-kewangan',
                 name: 'pengurusan.penyata-kewangan',
                 component: () => import('../pages/pengurusan/PenyataKewanganList.vue'),
-                meta: { roles: ['mpkk', 'admin', 'super-admin'] },
+                meta: { roles: ['mpkk', 'admin', 'super-admin'], oversight: true },
             },
             {
                 path: 'pengurusan/minit-mesyuarat',
                 name: 'pengurusan.minit-mesyuarat',
                 component: () => import('../pages/pengurusan/MinitMesyuaratList.vue'),
-                meta: { roles: ['mpkk', 'admin', 'super-admin'] },
+                meta: { roles: ['mpkk', 'admin', 'super-admin'], oversight: true },
             },
 
             // Profile (all authenticated users)

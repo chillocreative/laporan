@@ -22,7 +22,7 @@ class PenyataKewanganController extends Controller
     {
         $query = PenyataKewangan::query()->orderByDesc('bulan');
 
-        if ($request->user()->hasAnyRole(['super-admin', 'admin'])) {
+        if ($request->user()->canViewAll()) {
             $query->with('user:id,name');
         } else {
             $query->where('user_id', $request->user()->id);
@@ -127,7 +127,7 @@ class PenyataKewanganController extends Controller
             abort(403, 'Pautan muat turun tidak sah atau telah tamat tempoh.');
         }
 
-        if ($request->user()?->id !== $penyataKewangan->user_id && ! $request->user()?->hasAnyRole(['super-admin', 'admin'])) {
+        if ($request->user()?->id !== $penyataKewangan->user_id && ! $request->user()?->canViewAll()) {
             abort(403, 'Tidak dibenarkan.');
         }
 
@@ -143,7 +143,7 @@ class PenyataKewanganController extends Controller
             abort(403, 'Pautan tidak sah atau telah tamat tempoh.');
         }
 
-        if ($request->user()?->id !== $penyataKewangan->user_id && ! $request->user()?->hasAnyRole(['super-admin', 'admin'])) {
+        if ($request->user()?->id !== $penyataKewangan->user_id && ! $request->user()?->canViewAll()) {
             abort(403, 'Tidak dibenarkan.');
         }
 

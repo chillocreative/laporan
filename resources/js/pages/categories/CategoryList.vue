@@ -5,7 +5,7 @@
                 <h1 class="page-title">Kategori</h1>
                 <p class="page-subtitle">Urus kategori laporan</p>
             </div>
-            <button @click="openCreate" class="btn-primary">+ Kategori Baru</button>
+            <button v-if="auth.isAdminOrAbove.value" @click="openCreate" class="btn-primary">+ Kategori Baru</button>
         </div>
 
         <Alert v-if="alertMsg" :type="alertType" class="mb-4">{{ alertMsg }}</Alert>
@@ -21,7 +21,7 @@
                 <template #cell-sort_order="{ item }">
                     <span class="text-sm text-gray-500">{{ item.sort_order }}</span>
                 </template>
-                <template #actions="{ item }">
+                <template v-if="auth.isAdminOrAbove.value" #actions="{ item }">
                     <div class="flex items-center gap-2 justify-end">
                         <button @click="openEdit(item)" class="text-gray-400 hover:text-primary-600" title="Edit">
                             <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125" /></svg>

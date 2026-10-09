@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Middleware\CheckOversight;
 use App\Http\Middleware\CheckRole;
 use App\Http\Middleware\SanitizeInput;
 use App\Http\Middleware\SecurityHeaders;
@@ -17,6 +18,7 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->alias([
             'role' => CheckRole::class,
+            'oversight' => CheckOversight::class,
         ]);
 
         $middleware->append(SecurityHeaders::class);

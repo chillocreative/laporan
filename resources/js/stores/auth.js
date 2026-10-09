@@ -16,6 +16,7 @@ export const useAuthStore = defineStore('auth', {
         userPermissions: (state) => state.user?.permissions || [],
         isSuperAdmin: (state) => state.user?.roles?.some(r => r.slug === 'super-admin') || false,
         isAdmin: (state) => state.user?.roles?.some(r => r.slug === 'admin') || false,
+        canViewAll() { return this.isSuperAdmin || this.isAdmin || !!this.user?.can_view_all; },
         isUser: (state) => state.user?.roles?.some(r => r.slug === 'user') || false,
     },
 

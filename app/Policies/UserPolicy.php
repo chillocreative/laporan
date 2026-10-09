@@ -8,12 +8,12 @@ class UserPolicy
 {
     public function viewAny(User $user): bool
     {
-        return $user->hasPermission('users.view-all');
+        return $user->hasPermission('users.view-all') || $user->canViewAll();
     }
 
     public function view(User $user, User $model): bool
     {
-        if ($user->hasPermission('users.view-all')) {
+        if ($user->hasPermission('users.view-all') || $user->canViewAll()) {
             return true;
         }
 

@@ -29,7 +29,7 @@ class ReportController extends Controller
         ]);
 
         // Non-admin users only see own reports
-        if (! $user->hasAnyRole(['super-admin', 'admin'])) {
+        if (! $user->canViewAll()) {
             $filters['user_id'] = $user->id;
             unset($filters['role']);
         }

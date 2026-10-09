@@ -35,7 +35,7 @@ class DashboardController extends Controller
             ]);
         }
 
-        if ($user->hasRole('admin')) {
+        if ($user->hasRole('admin') || $user->canViewAll()) {
             return response()->json([
                 'data' => $this->getAdminDashboardStats(),
             ]);

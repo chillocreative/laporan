@@ -10,12 +10,13 @@ class ReportPolicy
     public function viewAny(User $user): bool
     {
         return $user->hasPermission('reports.view-all')
-            || $user->hasPermission('reports.view-own');
+            || $user->hasPermission('reports.view-own')
+            || $user->canViewAll();
     }
 
     public function view(User $user, Report $report): bool
     {
-        if ($user->hasPermission('reports.view-all')) {
+        if ($user->hasPermission('reports.view-all') || $user->canViewAll()) {
             return true;
         }
 

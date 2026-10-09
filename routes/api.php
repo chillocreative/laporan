@@ -80,9 +80,15 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::middleware('role:mpkk,admin,super-admin')->group(function () {
         Route::apiResource('penyata-kewangan', PenyataKewanganController::class)
-            ->only(['index', 'store', 'update', 'destroy']);
+            ->only(['store', 'update', 'destroy']);
         Route::apiResource('minit-mesyuarat', MinitMesyuaratController::class)
-            ->only(['index', 'store', 'update', 'destroy']);
+            ->only(['store', 'update', 'destroy']);
+    });
+
+    // Listing: MPKK (own records) plus view-only oversight users.
+    Route::middleware('oversight:mpkk')->group(function () {
+        Route::get('/penyata-kewangan', [PenyataKewanganController::class, 'index'])->name('penyata-kewangan.index');
+        Route::get('/minit-mesyuarat', [MinitMesyuaratController::class, 'index'])->name('minit-mesyuarat.index');
     });
 
     /*
@@ -93,12 +99,19 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::middleware('role:super-admin,admin')->group(function () {
         Route::get('/users/pending-count', [UserController::class, 'pendingCount']);
-        Route::apiResource('users', UserController::class);
+        Route::apiResource('users', UserController::class)->except(['index', 'show']);
         Route::patch('/users/{user}/toggle-active', [UserController::class, 'toggleActive']);
         Route::post('/users/{user}/approve', [UserController::class, 'approve']);
 
         // Categories management
-        Route::apiResource('categories', CategoryController::class)->except(['show']);
+        Route::apiResource('categories', CategoryController::class)->except(['index', 'show']);
+    });
+
+    // View-only oversight (Admin, Super Admin, or users flagged can_view_all)
+    Route::middleware('oversight')->group(function () {
+        Route::get('/users', [UserController::class, 'index'])->name('users.index');
+        Route::get('/users/{user}', [UserController::class, 'show'])->name('users.show');
+        Route::get('/categories', [CategoryController::class, 'index'])->name('categories.index');
     });
 
     /*

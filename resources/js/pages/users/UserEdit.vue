@@ -53,6 +53,14 @@
                         </div>
                     </div>
 
+                    <div>
+                        <label class="flex items-center gap-2 cursor-pointer">
+                            <input v-model="form.can_view_all" type="checkbox" class="rounded border-gray-300 text-primary-600 focus:ring-primary-500" />
+                            <span class="text-sm text-gray-700">Akses lihat semua (seperti Admin, lihat sahaja)</span>
+                        </label>
+                        <p class="mt-1 text-xs text-gray-500">Boleh melihat dashboard, laporan, pengguna, kategori, penyata kewangan dan minit mesyuarat semua pengguna, tanpa kebenaran mengubah. Menu Sistem tidak dipaparkan.</p>
+                    </div>
+
                     <div class="flex items-center justify-end gap-3 pt-4 border-t border-gray-100">
                         <router-link :to="{ name: 'users.index' }" class="btn-secondary">Batal</router-link>
                         <button type="submit" :disabled="submitting" class="btn-primary">
@@ -79,7 +87,7 @@ const router = useRouter();
 const notify = useNotification();
 
 const userId = computed(() => props.id || route.params.id);
-const form = ref({ name: '', email: '', password: '', password_confirmation: '', role_id: '', is_active: true });
+const form = ref({ name: '', email: '', password: '', password_confirmation: '', role_id: '', is_active: true, can_view_all: false });
 const roles = ref([]);
 const loading = ref(true);
 const submitting = ref(false);
@@ -100,6 +108,7 @@ onMounted(async () => {
             password_confirmation: '',
             role_id: u.roles?.[0]?.id || '',
             is_active: !!u.is_active,
+            can_view_all: !!u.can_view_all,
         };
         roles.value = rolesRes.data.data;
     } catch {
@@ -118,6 +127,7 @@ async function handleSubmit() {
             email: form.value.email,
             role_ids: [form.value.role_id],
             is_active: form.value.is_active ? 1 : 0,
+            can_view_all: form.value.can_view_all ? 1 : 0,
         };
         if (form.value.password) {
             payload.password = form.value.password;

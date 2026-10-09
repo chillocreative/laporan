@@ -21,6 +21,7 @@ class User extends Authenticatable
         'email',
         'password',
         'is_active',
+        'can_view_all',
         'must_change_password',
     ];
 
@@ -107,6 +108,15 @@ class User extends Authenticatable
     public function isSuperAdmin(): bool
     {
         return $this->hasRole('super-admin');
+    }
+
+    /**
+     * View-only oversight of all records: Admin, Super Admin, or a user
+     * individually flagged `can_view_all`.
+     */
+    public function canViewAll(): bool
+    {
+        return $this->isSuperAdmin() || $this->isAdmin() || (bool) $this->can_view_all;
     }
 
     public function isAdmin(): bool

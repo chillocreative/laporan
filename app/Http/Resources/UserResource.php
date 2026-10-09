@@ -15,6 +15,7 @@ class UserResource extends JsonResource
             'organization' => $this->organization,
             'email' => $this->email,
             'is_active' => $this->is_active,
+            'can_view_all' => (bool) $this->can_view_all,
             'roles' => $this->whenLoaded('roles', fn () => $this->roles->map(fn ($role) => [
                 'id' => $role->id,
                 'name' => $role->name,
