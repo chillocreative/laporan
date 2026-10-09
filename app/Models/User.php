@@ -60,6 +60,16 @@ class User extends Authenticatable
         return $this->hasMany(Report::class);
     }
 
+    public function penyataKewangans(): HasMany
+    {
+        return $this->hasMany(PenyataKewangan::class);
+    }
+
+    public function minitMesyuarats(): HasMany
+    {
+        return $this->hasMany(MinitMesyuarat::class);
+    }
+
     public function activityLogs(): HasMany
     {
         return $this->hasMany(ActivityLog::class);

@@ -77,7 +77,7 @@ class DashboardController extends Controller
     protected function getMpkkStats(): array
     {
         $mpkkUsers = User::whereHas('roles', fn ($q) => $q->where('slug', 'mpkk'))
-            ->withCount('reports')
+            ->withCount(['reports', 'penyataKewangans', 'minitMesyuarats'])
             ->orderBy('name')
             ->get(['id', 'name']);
 
@@ -91,6 +91,8 @@ class DashboardController extends Controller
                 'user_id' => $u->id,
                 'user_name' => $u->name,
                 'report_count' => $u->reports_count,
+                'penyata_kewangan_count' => $u->penyata_kewangans_count,
+                'minit_mesyuarat_count' => $u->minit_mesyuarats_count,
             ])->values(),
         ];
     }
